@@ -1,0 +1,12 @@
+# Managed by Ansible.
+license_key: {{ newrelic_license_key }}
+display_name: {{ sensor_name }}
+
+# The honeypot is the interesting thing on this machine, not the machine.
+# Process metrics are off because they are noisy and the box runs almost
+# nothing besides one container.
+enable_process_metrics: false
+
+custom_attributes:
+  role: honeypot
+  project: arapuca

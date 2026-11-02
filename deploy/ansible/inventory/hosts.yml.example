@@ -1,0 +1,14 @@
+# Copy to hosts.yml and fill in. hosts.yml is git ignored, because it carries
+# the real address and the real operator port.
+#
+# Terraform prints a ready made fragment:
+#   terraform -chdir=deploy/terraform/oci output -raw ansible_inventory > \
+#     deploy/ansible/inventory/hosts.yml
+
+all:
+  hosts:
+    arapuca:
+      ansible_host: 203.0.113.10
+      ansible_port: 49222
+      ansible_user: ubuntu
+      ansible_ssh_private_key_file: ~/.ssh/arapuca_oci_ed25519

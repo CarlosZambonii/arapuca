@@ -1,0 +1,375 @@
+# Arapuca VPS provisioning.
+#
+# Task ordering is the security design, not a style choice:
+#
+#   1. Verify the real sshd is already off port 22. cloud-init does the move
+#      at first boot, and this play refuses to continue if it did not, because
+#      everything after step 3 makes port 22 reachable.
+#   2. Harden the base system.
+#   3. Install Docker and the New Relic agent.
+#   4. Start the honeypot container.
+#   5. Only now open 22 and 80 in the host firewall, with the honeypot already
+#      listening behind them.
+#
+# Run with:
+#   ansible-playbook -i inventory/hosts.yml site.yml \
+#     -e newrelic_license_key=$NEW_RELIC_LICENSE_KEY \
+#     -e maxmind_account_id=$MAXMIND_ACCOUNT_ID \
+#     -e maxmind_license_key=$MAXMIND_LICENSE_KEY
+
+- name: Provision the Arapuca sensor
+  hosts: all
+  become: true
+
+  vars:
+    arapuca_user: ubuntu
+    arapuca_dir: /opt/arapuca
+    arapuca_image: "ghcr.io/arapuca/arapuca:latest"
+    # The container listens here; the host maps the privileged ports onto them.
+    arapuca_ssh_container_port: 2222
+    arapuca_http_container_port: 8080
+    # Secrets come from the command line or the environment, never from a file
+    # in this repository.
+    newrelic_license_key: ""
+    maxmind_account_id: ""
+    maxmind_license_key: ""
+    virustotal_api_key: ""
+    sensor_name: "arapuca"
+
+  pre_tasks:
+    - name: Work out which port the operator connection arrived on
+      ansible.builtin.set_fact:
+        operator_ssh_port: "{{ ansible_port | default(22) }}"
+
+    # Safety invariant S6, verified rather than assumed. If this play is
+    # reached over port 22, the real sshd is still there and opening 22 to the
+    # internet would expose it.
+    - name: Refuse to continue if the operator connection is on port 22
+      ansible.builtin.assert:
+        that:
+          - operator_ssh_port | int != 22
+        fail_msg: >-
+          This play is connected over port 22, which means the real sshd was
+          never moved. Opening port 22 for the honeypot would expose it.
+          Check that cloud-init ran, then reconnect on the relocated port.
+        success_msg: "Operator SSH is on port {{ operator_ssh_port }}, port 22 is free"
+
+    - name: Confirm sshd is listening only on the operator port
+      ansible.builtin.shell:
+        cmd: ss -tlnH | awk '{print $4}' | sed 's/.*://' | sort -u
+      register: listening_ports
+      changed_when: false
+
+    - name: Refuse to continue if anything is listening on port 22
+      ansible.builtin.assert:
+        that:
+          - "'22' not in listening_ports.stdout_lines"
+        fail_msg: "Something is listening on port 22. It must be free before the honeypot takes it."
+
+  tasks:
+    # -----------------------------------------------------------------------
+    # Base hardening
+    # -----------------------------------------------------------------------
+    - name: Install base packages
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - fail2ban
+          - gnupg
+          - iptables-persistent
+          - jq
+          - logrotate
+          - unattended-upgrades
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # The stock Oracle image leaves this listening on port 111. Nothing here
+    # uses NFS, and an unused listener is an unused listener.
+    - name: Remove rpcbind
+      ansible.builtin.apt:
+        name:
+          - rpcbind
+        state: absent
+        purge: true
+
+    - name: Enable unattended upgrades
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        mode: "0644"
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+
+    - name: Harden sshd further
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/98-arapuca-hardening.conf
+        mode: "0644"
+        content: |
+          # The honeypot takes port 22. This is the operator path, and it is
+          # the only way back in, so it is locked down rather than hidden.
+          PermitRootLogin no
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          PubkeyAuthentication yes
+          MaxAuthTries 3
+          MaxSessions 4
+          LoginGraceTime 30
+          AllowAgentForwarding no
+          X11Forwarding no
+          ClientAliveInterval 300
+          ClientAliveCountMax 2
+      notify: Reload sshd
+
+    # fail2ban protects the operator port. The honeypot ports are deliberately
+    # left alone: banning attackers is the opposite of the point.
+    - name: Configure fail2ban for the operator port only
+      ansible.builtin.copy:
+        dest: /etc/fail2ban/jail.d/arapuca.conf
+        mode: "0644"
+        content: |
+          [sshd]
+          enabled = true
+          port = {{ operator_ssh_port }}
+          maxretry = 4
+          findtime = 600
+          bantime = 3600
+          # Only the real sshd. The honeypot wants brute force traffic, so its
+          # ports must never be filtered.
+          logpath = %(sshd_log)s
+          backend = %(sshd_backend)s
+      notify: Restart fail2ban
+
+    - name: Apply sysctl hardening
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        sysctl_set: true
+        state: present
+        reload: true
+      loop:
+        - { name: net.ipv4.conf.all.rp_filter, value: "1" }
+        - { name: net.ipv4.conf.all.accept_redirects, value: "0" }
+        - { name: net.ipv4.conf.all.send_redirects, value: "0" }
+        - { name: net.ipv4.conf.all.accept_source_route, value: "0" }
+        - { name: net.ipv4.tcp_syncookies, value: "1" }
+        - { name: kernel.kptr_restrict, value: "2" }
+        - { name: kernel.dmesg_restrict, value: "1" }
+        # The honeypot holds many short lived connections from scanners.
+        - { name: net.ipv4.tcp_max_syn_backlog, value: "2048" }
+        - { name: net.core.somaxconn, value: "1024" }
+
+    # -----------------------------------------------------------------------
+    # Docker
+    # -----------------------------------------------------------------------
+    - name: Add the Docker apt key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+
+    - name: Add the Docker repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [arch={{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}
+          signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        filename: docker
+        state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Start Docker
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+
+    # Docker inserts its own iptables rules and bypasses the INPUT chain for
+    # published ports. Saying so here saves the next person an afternoon.
+    - name: Record how Docker interacts with the firewall
+      ansible.builtin.copy:
+        dest: "{{ arapuca_dir }}/FIREWALL-NOTES.md"
+        mode: "0644"
+        content: |
+          # Firewall notes
+
+          Docker publishes ports by writing DNAT rules into the nat table and
+          accepting in the DOCKER chain, which is traversed before the INPUT
+          chain. A published port is therefore reachable even when INPUT would
+          have rejected it.
+
+          That is why the honeypot ports are controlled at the OCI security
+          list, which is outside the host, rather than with iptables here. The
+          INPUT rules below cover traffic to the host itself: the operator SSH
+          port, and nothing else.
+      tags: [docs]
+
+    # -----------------------------------------------------------------------
+    # New Relic
+    # -----------------------------------------------------------------------
+    - name: Add the New Relic apt key
+      ansible.builtin.get_url:
+        url: https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg
+        dest: /etc/apt/keyrings/newrelic-infra.gpg
+        mode: "0644"
+      when: newrelic_license_key | length > 0
+
+    - name: Add the New Relic repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/etc/apt/keyrings/newrelic-infra.gpg]
+          https://download.newrelic.com/infrastructure_agent/linux/apt
+          {{ ansible_distribution_release }} main
+        filename: newrelic-infra
+        state: present
+      when: newrelic_license_key | length > 0
+
+    - name: Install the New Relic Infrastructure Agent
+      ansible.builtin.apt:
+        name: newrelic-infra
+        state: present
+        update_cache: true
+      when: newrelic_license_key | length > 0
+
+    - name: Configure the agent
+      ansible.builtin.template:
+        src: newrelic-infra.yml.j2
+        dest: /etc/newrelic-infra.yml
+        mode: "0600"
+      when: newrelic_license_key | length > 0
+      notify: Restart newrelic-infra
+
+    - name: Configure log forwarding
+      ansible.builtin.template:
+        src: newrelic-logging.yml.j2
+        dest: /etc/newrelic-infra/logging.d/arapuca.yml
+        mode: "0644"
+      when: newrelic_license_key | length > 0
+      notify: Restart newrelic-infra
+
+    # -----------------------------------------------------------------------
+    # GeoLite2
+    # -----------------------------------------------------------------------
+    - name: Install the GeoLite2 updater
+      ansible.builtin.apt:
+        name: geoipupdate
+        state: present
+      when: maxmind_license_key | length > 0
+
+    - name: Configure the GeoLite2 updater
+      ansible.builtin.copy:
+        dest: /etc/GeoIP.conf
+        mode: "0600"
+        content: |
+          AccountID {{ maxmind_account_id }}
+          LicenseKey {{ maxmind_license_key }}
+          EditionIDs GeoLite2-City GeoLite2-ASN
+          DatabaseDirectory /var/lib/arapuca/geoip
+      when: maxmind_license_key | length > 0
+      no_log: true
+
+    - name: Refresh the GeoLite2 databases weekly
+      ansible.builtin.cron:
+        name: geoipupdate
+        weekday: "3"
+        hour: "4"
+        minute: "17"
+        job: "/usr/bin/geoipupdate && /usr/bin/docker restart arapuca"
+      when: maxmind_license_key | length > 0
+
+    # -----------------------------------------------------------------------
+    # The honeypot itself
+    # -----------------------------------------------------------------------
+    - name: Create the deployment directory
+      ansible.builtin.file:
+        path: "{{ arapuca_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy the compose file
+      ansible.builtin.copy:
+        src: ../compose/docker-compose.yml
+        dest: "{{ arapuca_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: Copy the honeypot configuration
+      ansible.builtin.copy:
+        src: ../../config/
+        dest: "{{ arapuca_dir }}/config/"
+        mode: "0644"
+
+    - name: Write the environment file
+      ansible.builtin.copy:
+        dest: "{{ arapuca_dir }}/.env"
+        mode: "0600"
+        content: |
+          ARAPUCA_SENSOR_NAME={{ sensor_name }}
+          ARAPUCA_TAG=latest
+          VT_API_KEY={{ virustotal_api_key }}
+      no_log: true
+
+    - name: Pull the image
+      community.docker.docker_compose_v2_pull:
+        project_src: "{{ arapuca_dir }}"
+
+    - name: Start the honeypot
+      community.docker.docker_compose_v2:
+        project_src: "{{ arapuca_dir }}"
+        state: present
+
+    - name: Wait for the honeypot to answer on its container ports
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: "{{ item }}"
+        timeout: 60
+      loop:
+        - 22
+        - 80
+
+    - name: Install log rotation
+      ansible.builtin.copy:
+        src: ../compose/logrotate.conf
+        dest: /etc/logrotate.d/arapuca
+        mode: "0644"
+
+    # -----------------------------------------------------------------------
+    # The firewall, last
+    # -----------------------------------------------------------------------
+    - name: Allow the operator SSH port
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ operator_ssh_port }}"
+        ctstate: NEW
+        jump: ACCEPT
+        action: insert
+
+    - name: Persist the firewall rules
+      ansible.builtin.command: netfilter-persistent save
+      changed_when: true
+
+  handlers:
+    - name: Reload sshd
+      ansible.builtin.systemd:
+        name: ssh
+        state: reloaded
+
+    - name: Restart fail2ban
+      ansible.builtin.systemd:
+        name: fail2ban
+        state: restarted
+
+    - name: Restart newrelic-infra
+      ansible.builtin.systemd:
+        name: newrelic-infra
+        state: restarted

@@ -1,0 +1,12 @@
+# Managed by Ansible.
+#
+# Forwards the honeypot event log. Every line is a complete JSON object, so
+# the agent parses it and every field becomes queryable in NRQL without a
+# parsing rule.
+logs:
+  - name: arapuca-events
+    file: /var/lib/docker/volumes/arapuca_arapuca-logs/_data/events.jsonl
+    attributes:
+      logtype: arapuca
+      sensor: {{ sensor_name }}
+    pattern: ""

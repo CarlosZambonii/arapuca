@@ -1,0 +1,32 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is git ignored,
+# because it carries the real port and the real compartment.
+
+region              = "sa-saopaulo-1"
+compartment_ocid    = "ocid1.tenancy.oc1..REPLACE_ME"
+availability_domain = "ABCD:SA-SAOPAULO-1-AD-1"
+
+# Canonical Ubuntu 24.04 for the chosen shape. Find the current one with:
+#   oci compute image list --compartment-id <ocid> \
+#     --operating-system "Canonical Ubuntu" --operating-system-version "24.04" \
+#     --shape VM.Standard.E2.1.Micro --sort-by TIMECREATED
+image_ocid = "ocid1.image.oc1.sa-saopaulo-1.REPLACE_ME"
+
+# VM.Standard.E2.1.Micro is 1 OCPU and 1 GB, and is what is reliably
+# obtainable. A1 is better but frequently out of capacity.
+instance_shape = "VM.Standard.E2.1.Micro"
+
+# The public key only. The private key never leaves your machine.
+ssh_public_key = "ssh-ed25519 AAAA... arapuca-oci-admin"
+
+# Where the real sshd is moved to, before port 22 is ever reachable.
+# No default on purpose: this value is not committed.
+operator_ssh_port = 49222
+
+# Narrow this when you have a fixed address. 0.0.0.0/0 is accepted because
+# locking yourself out of the only management path is worse than the exposure
+# of a non standard port with password authentication disabled.
+operator_cidr = "0.0.0.0/0"
+
+# Leave false until Ansible reports the honeypot container is running.
+# Opening 22 before then would expose the real sshd.
+expose_honeypot_ports = false
