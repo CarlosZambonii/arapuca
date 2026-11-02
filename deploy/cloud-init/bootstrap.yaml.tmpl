@@ -110,7 +110,15 @@ bootcmd:
     UNIT
     systemctl enable arapuca-console-report.service || true
 
-    echo "$(date -Is) bootcmd: configuration written, reboot will apply it" >> /var/log/arapuca-bootstrap.log
+    # bootcmd runs on every boot, and everything above is idempotent, so the
+    # only thing worth distinguishing is the first pass (which is followed by
+    # the reboot that applies it) from later ones (which are no ops).
+    if [ -f /var/lib/arapuca/bootstrap-applied ]; then
+      echo "$(date -Is) bootcmd: configuration already applied, nothing to do" >> /var/log/arapuca-bootstrap.log
+    else
+      touch /var/lib/arapuca/bootstrap-applied
+      echo "$(date -Is) bootcmd: configuration written, the reboot below applies it" >> /var/log/arapuca-bootstrap.log
+    fi
 
 package_update: true
 package_upgrade: false
