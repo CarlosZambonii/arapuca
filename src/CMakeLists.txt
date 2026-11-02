@@ -14,6 +14,11 @@ add_library(arapuca_core
     enrich/geoip.cpp
     enrich/mitre_mapper.cpp
     enrich/session_classifier.cpp
+    ssh/auth_policy.cpp
+    ssh/command_line.cpp
+    ssh/command_registry.cpp
+    ssh/line_editor.cpp
+    ssh/shell.cpp
     ssh/vfs.cpp
     util/redaction.cpp)
 
