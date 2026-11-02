@@ -28,6 +28,22 @@ option(ARAPUCA_ENABLE_ASAN    "Build with AddressSanitizer"               OFF)
 option(ARAPUCA_ENABLE_UBSAN   "Build with UndefinedBehaviorSanitizer"     OFF)
 option(ARAPUCA_ENABLE_TSAN    "Build with ThreadSanitizer"                OFF)
 option(ARAPUCA_WERROR         "Treat compiler warnings as errors"         ON)
+option(ARAPUCA_CLANG_TIDY     "Run clang-tidy on Arapuca targets only"    OFF)
+
+# clang-tidy is applied per target rather than through CMAKE_CXX_CLANG_TIDY,
+# which would also analyse the fetched dependencies and report findings in
+# third party code that cannot be fixed here.
+if(ARAPUCA_CLANG_TIDY)
+    find_program(ARAPUCA_CLANG_TIDY_EXE NAMES clang-tidy REQUIRED)
+    set(ARAPUCA_TIDY_COMMAND "${ARAPUCA_CLANG_TIDY_EXE};--warnings-as-errors=*")
+    message(STATUS "clang-tidy: ${ARAPUCA_CLANG_TIDY_EXE}")
+endif()
+
+function(arapuca_apply_tidy target)
+    if(ARAPUCA_CLANG_TIDY)
+        set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY "${ARAPUCA_TIDY_COMMAND}")
+    endif()
+endfunction()
 
 include(CompilerWarnings)
 include(Sanitizers)

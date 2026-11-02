@@ -67,8 +67,13 @@ bool is_valid_sequence(std::string_view input, std::size_t pos, std::size_t len)
 void append_escape(std::string& out, unsigned char byte) {
     out.push_back('\\');
     out.push_back('x');
+    // Both indices are masked to four bits and kHex holds exactly sixteen
+    // entries, so the bound is a property of the expression. This runs once
+    // per escaped byte of attacker input, which is the hot path under a flood.
+    // NOLINTBEGIN(cppcoreguidelines-pro-bounds-constant-array-index)
     out.push_back(kHex[(byte >> 4U) & 0x0FU]);
     out.push_back(kHex[byte & 0x0FU]);
+    // NOLINTEND(cppcoreguidelines-pro-bounds-constant-array-index)
 }
 
 bool is_control(unsigned char byte) {

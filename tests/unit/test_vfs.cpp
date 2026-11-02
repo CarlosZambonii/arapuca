@@ -86,27 +86,27 @@ TEST(Vfs, RootIsADirectory) {
 
 TEST(VfsResolve, AbsolutePathIsNormalized) {
     const auto vfs = small();
-    EXPECT_EQ("/etc/ssh", vfs.resolve("/", "//etc///ssh//"));
-    EXPECT_EQ("/etc", vfs.resolve("/home", "/etc"));
+    EXPECT_EQ("/etc/ssh", Vfs::resolve("/", "//etc///ssh//"));
+    EXPECT_EQ("/etc", Vfs::resolve("/home", "/etc"));
 }
 
 TEST(VfsResolve, RelativePathUsesTheWorkingDirectory) {
     const auto vfs = small();
-    EXPECT_EQ("/etc/ssh", vfs.resolve("/etc", "ssh"));
-    EXPECT_EQ("/etc/ssh/sshd_config", vfs.resolve("/etc/ssh", "sshd_config"));
+    EXPECT_EQ("/etc/ssh", Vfs::resolve("/etc", "ssh"));
+    EXPECT_EQ("/etc/ssh/sshd_config", Vfs::resolve("/etc/ssh", "sshd_config"));
 }
 
 TEST(VfsResolve, DotIsIgnored) {
     const auto vfs = small();
-    EXPECT_EQ("/etc", vfs.resolve("/etc", "."));
-    EXPECT_EQ("/etc/ssh", vfs.resolve("/etc", "./ssh"));
-    EXPECT_EQ("/etc", vfs.resolve("/", "./etc/./"));
+    EXPECT_EQ("/etc", Vfs::resolve("/etc", "."));
+    EXPECT_EQ("/etc/ssh", Vfs::resolve("/etc", "./ssh"));
+    EXPECT_EQ("/etc", Vfs::resolve("/", "./etc/./"));
 }
 
 TEST(VfsResolve, DotDotGoesUp) {
     const auto vfs = small();
-    EXPECT_EQ("/", vfs.resolve("/etc", ".."));
-    EXPECT_EQ("/home", vfs.resolve("/etc/ssh", "../../home"));
+    EXPECT_EQ("/", Vfs::resolve("/etc", ".."));
+    EXPECT_EQ("/home", Vfs::resolve("/etc/ssh", "../../home"));
 }
 
 // The traversal every scanner tries. A real kernel treats /.. as /, and so
@@ -119,16 +119,16 @@ TEST(VfsResolve, CannotEscapeTheRoot) {
                                 "/..",
                                 "/../..",
                                 "a/../../../../etc/passwd"}) {
-        const auto resolved = vfs.resolve("/home/deploy", attempt);
-        ASSERT_TRUE(resolved.has_value()) << attempt;
-        EXPECT_EQ('/', resolved->front()) << attempt;
-        EXPECT_EQ(std::string::npos, resolved->find("..")) << attempt;
+        const std::string resolved = Vfs::resolve("/home/deploy", attempt).value_or(std::string{});
+        ASSERT_FALSE(resolved.empty()) << attempt;
+        EXPECT_EQ('/', resolved.front()) << attempt;
+        EXPECT_EQ(std::string::npos, resolved.find("..")) << attempt;
     }
-    EXPECT_EQ("/etc/passwd", vfs.resolve("/home/deploy", "../../../../etc/passwd"));
+    EXPECT_EQ("/etc/passwd", Vfs::resolve("/home/deploy", "../../../../etc/passwd"));
 }
 
 TEST(VfsResolve, EmptyInputMeansTheWorkingDirectory) {
-    EXPECT_EQ("/etc", small().resolve("/etc", ""));
+    EXPECT_EQ("/etc", Vfs::resolve("/etc", ""));
 }
 
 TEST(VfsResolve, DeepNestingIsRefusedNotTruncated) {
@@ -137,20 +137,20 @@ TEST(VfsResolve, DeepNestingIsRefusedNotTruncated) {
     for (std::size_t i = 0; i < Vfs::kMaxDepth + 10; ++i) {
         deep += "a/";
     }
-    EXPECT_FALSE(vfs.resolve("/", deep).has_value());
+    EXPECT_FALSE(Vfs::resolve("/", deep).has_value());
 }
 
 TEST(VfsResolve, OverlongPathIsRefused) {
     const auto vfs = small();
     const std::string huge(Vfs::kMaxPathLength + 1, 'a');
-    EXPECT_FALSE(vfs.resolve("/", huge).has_value());
+    EXPECT_FALSE(Vfs::resolve("/", huge).has_value());
 }
 
 TEST(VfsResolve, PathOfNothingButDotsIsSafe) {
     const auto vfs = small();
-    EXPECT_NO_THROW({ (void)vfs.resolve("/", "............"); });
-    EXPECT_NO_THROW({ (void)vfs.resolve("/", "./././././././."); });
-    EXPECT_EQ("/", vfs.resolve("/", "../../../../.."));
+    EXPECT_NO_THROW({ (void)Vfs::resolve("/", "............"); });
+    EXPECT_NO_THROW({ (void)Vfs::resolve("/", "./././././././."); });
+    EXPECT_EQ("/", Vfs::resolve("/", "../../../../.."));
 }
 
 // --- Session local mutation ----------------------------------------------
@@ -204,7 +204,7 @@ TEST(VfsMutate, CreationIsCapped) {
 TEST(VfsMutate, CopiesAreIndependent) {
     const auto original = small();
     Vfs first = Vfs::from_yaml("tmp:\n  type: dir\n");
-    Vfs second = Vfs::from_yaml("tmp:\n  type: dir\n");
+    const Vfs second = Vfs::from_yaml("tmp:\n  type: dir\n");
 
     EXPECT_TRUE(first.create_file("/tmp/only-in-first", "x"));
     EXPECT_TRUE(first.exists("/tmp/only-in-first"));

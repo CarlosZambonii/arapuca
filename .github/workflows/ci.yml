@@ -97,10 +97,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # The sanitizer presets use GCC, whose runtime ships with the compiler.
+      # Clang needs libclang-rt-<version>-dev as a separate package, and the
+      # sanitizers are equivalent, so clang is kept for the libFuzzer targets
+      # where it is actually required.
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }} clang
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }}
 
       - name: Configure
         run: cmake --preset asan

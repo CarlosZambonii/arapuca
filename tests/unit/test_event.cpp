@@ -5,6 +5,7 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <string>
 
 namespace {
@@ -61,7 +62,7 @@ TEST(EventSchema, DetailCannotShadowEnvelopeFields) {
 }
 
 TEST(EventSchema, SessionIdIsOmittedWhenEmpty) {
-    Event event = Event::make(EventType::HoneypotLifecycle, "arapuca-test");
+    const Event event = Event::make(EventType::HoneypotLifecycle, "arapuca-test");
     EXPECT_FALSE(event.to_json().contains("session_id"));
 }
 
@@ -94,7 +95,7 @@ TEST(EventSchema, MitreIsNestedAndOptional) {
 }
 
 TEST(EventTypes, WireNamesAreStable) {
-    const std::pair<EventType, std::string> expected[] = {
+    const std::array<std::pair<EventType, std::string>, 10> expected = {{
         {EventType::SshAuthAttempt, "ssh.auth_attempt"},
         {EventType::SshSessionStart, "ssh.session_start"},
         {EventType::SshCommand, "ssh.command"},
@@ -105,7 +106,7 @@ TEST(EventTypes, WireNamesAreStable) {
         {EventType::CaptureDownload, "capture.download"},
         {EventType::CaptureVtLookup, "capture.vt_lookup"},
         {EventType::HoneypotLifecycle, "honeypot.lifecycle"},
-    };
+    }};
     for (const auto& [type, name] : expected) {
         EXPECT_EQ(name, std::string(arapuca::core::to_string(type)));
     }
@@ -131,7 +132,7 @@ TEST(EventSerialization, IsExactlyOneLine) {
 
 TEST(EventSerialization, SurvivesInvalidUtf8WithoutThrowing) {
     Event event = sample();
-    event.detail["command"] = std::string("\xFF\xFE bad bytes", 13);
+    event.detail["command"] = std::string("\xFF\xFE bad bytes", 12);
     EXPECT_NO_THROW({ (void)event.to_jsonl(); });
 }
 

@@ -31,6 +31,16 @@ public:
     virtual void flush() = 0;
 };
 
+namespace detail {
+
+/// Closes a FILE* and reports a close failure, which can mean buffered events
+/// never reached the disk.
+struct FileCloser {
+    void operator()(std::FILE* file) const noexcept;
+};
+
+}  // namespace detail
+
 /// Appends one line per event to a file.
 class JsonlFileSink final : public EventSink {
 public:
@@ -40,6 +50,11 @@ public:
     JsonlFileSink(std::filesystem::path path,
                   std::size_t flush_every = 16,
                   std::chrono::milliseconds flush_interval = std::chrono::milliseconds{1000});
+
+    JsonlFileSink(const JsonlFileSink&) = delete;
+    JsonlFileSink& operator=(const JsonlFileSink&) = delete;
+    JsonlFileSink(JsonlFileSink&&) = delete;
+    JsonlFileSink& operator=(JsonlFileSink&&) = delete;
     ~JsonlFileSink() override;
 
     void write(const Event& event) override;
@@ -55,17 +70,23 @@ public:
 
     [[nodiscard]] std::uint64_t written() const;
 
+    /// Events whose line did not reach the file in full, usually a full disk.
+    /// Reported in the lifecycle event, because a silent gap in the log is
+    /// worse than a noisy one.
+    [[nodiscard]] std::uint64_t write_failures() const;
+
 private:
     void open_locked();
 
     mutable std::mutex mutex_;
     std::filesystem::path path_;
-    std::FILE* file_ = nullptr;
+    std::unique_ptr<std::FILE, detail::FileCloser> file_;
     std::size_t flush_every_;
     std::chrono::milliseconds flush_interval_;
     std::size_t since_flush_ = 0;
-    TimePoint last_flush_{};
+    TimePoint last_flush_;
     std::uint64_t written_ = 0;
+    std::uint64_t write_failures_ = 0;
 };
 
 }  // namespace arapuca::core

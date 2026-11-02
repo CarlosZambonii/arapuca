@@ -30,6 +30,10 @@ std::string new_id_at(TimePoint tp) {
 
     auto millis = static_cast<std::uint64_t>(to_unix_millis(tp));
     for (std::size_t i = kTimeChars; i > 0; --i) {
+        // The mask guarantees an index in [0, 31] and kAlphabet holds exactly
+        // 32 entries, so the bound is a property of the expression rather than
+        // something to re-check at runtime on a path taken per event.
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
         out[i - 1] = kAlphabet[millis & 0x1FU];
         millis >>= 5U;
     }
@@ -41,6 +45,7 @@ std::string new_id_at(TimePoint tp) {
             bits = rng()();
             available = 64;
         }
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
         out[kTimeChars + i] = kAlphabet[bits & 0x1FU];
         bits >>= 5U;
         available -= 5;

@@ -56,8 +56,11 @@ public:
     /// the limit). It never returns a path outside the virtual root: `..` at
     /// the root is absorbed, exactly as it is on a real system where
     /// /.. is /.
-    [[nodiscard]] std::optional<std::string> resolve(std::string_view cwd,
-                                                     std::string_view input) const;
+    /// Static because resolution is pure path arithmetic and never consults
+    /// the tree. Whether a resolved path exists is a separate question, asked
+    /// with exists() or find().
+    [[nodiscard]] static std::optional<std::string> resolve(std::string_view cwd,
+                                                            std::string_view input);
 
     [[nodiscard]] const VfsNode* find(std::string_view absolute_path) const;
     [[nodiscard]] bool exists(std::string_view absolute_path) const;

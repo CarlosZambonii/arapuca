@@ -3,6 +3,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <fstream>
 #include <sstream>
@@ -21,7 +22,7 @@ std::string lower(std::string_view input) {
 
 std::optional<core::EventType> parse_event_type(std::string_view name) {
     using core::EventType;
-    static const std::pair<std::string_view, EventType> kNames[] = {
+    static constexpr std::array<std::pair<std::string_view, EventType>, 10> kNames = {{
         {"ssh.auth_attempt", EventType::SshAuthAttempt},
         {"ssh.session_start", EventType::SshSessionStart},
         {"ssh.command", EventType::SshCommand},
@@ -32,7 +33,7 @@ std::optional<core::EventType> parse_event_type(std::string_view name) {
         {"capture.download", EventType::CaptureDownload},
         {"capture.vt_lookup", EventType::CaptureVtLookup},
         {"honeypot.lifecycle", EventType::HoneypotLifecycle},
-    };
+    }};
     for (const auto& [text, type] : kNames) {
         if (text == name) {
             return type;
@@ -76,7 +77,7 @@ bool MitreRule::matches(core::EventType type, std::string_view subject) const {
         case MatchKind::Contains:
             return haystack.find(needle) != std::string::npos;
         case MatchKind::Prefix:
-            return haystack.rfind(needle, 0) == 0;
+            return haystack.starts_with(needle);
         case MatchKind::Equals:
             return haystack == needle;
         case MatchKind::Regex:
@@ -93,6 +94,82 @@ bool MitreRule::matches(core::EventType type, std::string_view subject) const {
     }
     return false;
 }
+
+namespace {
+
+/// Build one rule, reporting every problem with the rule id so an operator can
+/// find it in a file of dozens.
+MitreRule parse_rule(const YAML::Node& node, std::size_t index) {
+    const std::string where = "rule " + std::to_string(index);
+    if (!node.IsMap()) {
+        throw MitreError(where + " must be a mapping");
+    }
+
+    MitreRule rule;
+    rule.id = node["id"] ? node["id"].as<std::string>() : ("rule-" + std::to_string(index));
+    const std::string context = where + " (" + rule.id + ")";
+
+    if (!node["technique_id"] || !node["technique"] || !node["pattern"]) {
+        throw MitreError(context + " needs technique_id, technique and pattern");
+    }
+    rule.technique_id = node["technique_id"].as<std::string>();
+    rule.technique = node["technique"].as<std::string>();
+    rule.tactic = node["tactic"] ? node["tactic"].as<std::string>() : std::string();
+    rule.pattern = node["pattern"].as<std::string>();
+
+    if (node["case_sensitive"]) {
+        rule.case_sensitive = node["case_sensitive"].as<bool>();
+    }
+
+    if (node["match"]) {
+        const auto name = node["match"].as<std::string>();
+        const auto kind = parse_match_kind(name);
+        if (!kind.has_value()) {
+            std::string message = context;
+            message += " has unknown match kind '";
+            message += name;
+            message += "', expected contains, prefix, equals or regex";
+            throw MitreError(message);
+        }
+        rule.kind = *kind;
+    }
+
+    if (const YAML::Node types = node["event_types"]) {
+        if (!types.IsSequence()) {
+            throw MitreError(context + " event_types must be a sequence");
+        }
+        for (const auto& entry : types) {
+            const auto name = entry.as<std::string>();
+            const auto type = parse_event_type(name);
+            if (!type.has_value()) {
+                std::string message = context;
+                message += " has unknown event type '";
+                message += name;
+                message += "'";
+                throw MitreError(message);
+            }
+            rule.event_types.push_back(*type);
+        }
+    }
+
+    if (rule.kind == MatchKind::Regex) {
+        try {
+            // Compiled once at load, never per event. A broken expression is a
+            // startup failure, which is the right time to find out.
+            auto flags = std::regex::ECMAScript | std::regex::optimize;
+            if (!rule.case_sensitive) {
+                flags |= std::regex::icase;
+            }
+            rule.compiled.emplace(rule.pattern, flags);
+        } catch (const std::regex_error& error) {
+            throw MitreError(context + " has an invalid regex: " + error.what());
+        }
+    }
+
+    return rule;
+}
+
+}  // namespace
 
 MitreMapper MitreMapper::from_yaml(const std::string& yaml_text) {
     MitreMapper mapper;
@@ -113,77 +190,16 @@ MitreMapper MitreMapper::from_yaml(const std::string& yaml_text) {
         throw MitreError("MITRE rules must be a sequence under the key 'rules'");
     }
 
+    mapper.rules_.reserve(rules.size());
     for (std::size_t index = 0; index < rules.size(); ++index) {
-        const YAML::Node node = rules[index];
-        const std::string where = "rule " + std::to_string(index);
-        if (!node.IsMap()) {
-            throw MitreError(where + " must be a mapping");
-        }
-
-        MitreRule rule;
-        rule.id = node["id"] ? node["id"].as<std::string>() : ("rule-" + std::to_string(index));
-
-        if (!node["technique_id"] || !node["technique"] || !node["pattern"]) {
-            throw MitreError(where + " (" + rule.id +
-                             ") needs technique_id, technique and pattern");
-        }
-        rule.technique_id = node["technique_id"].as<std::string>();
-        rule.technique = node["technique"].as<std::string>();
-        rule.tactic = node["tactic"] ? node["tactic"].as<std::string>() : std::string();
-        rule.pattern = node["pattern"].as<std::string>();
-
-        if (node["case_sensitive"]) {
-            rule.case_sensitive = node["case_sensitive"].as<bool>();
-        }
-
-        if (node["match"]) {
-            const auto kind = parse_match_kind(node["match"].as<std::string>());
-            if (!kind.has_value()) {
-                throw MitreError(where + " (" + rule.id + ") has unknown match kind '" +
-                                 node["match"].as<std::string>() +
-                                 "', expected contains, prefix, equals or regex");
-            }
-            rule.kind = *kind;
-        }
-
-        if (const YAML::Node types = node["event_types"]) {
-            if (!types.IsSequence()) {
-                throw MitreError(where + " (" + rule.id + ") event_types must be a sequence");
-            }
-            for (const auto& entry : types) {
-                const std::string name = entry.as<std::string>();
-                const auto type = parse_event_type(name);
-                if (!type.has_value()) {
-                    throw MitreError(where + " (" + rule.id + ") has unknown event type '" + name +
-                                     "'");
-                }
-                rule.event_types.push_back(*type);
-            }
-        }
-
-        if (rule.kind == MatchKind::Regex) {
-            try {
-                // Compiled once at load, never per event. A broken expression
-                // is a startup failure, which is the right time to find out.
-                auto flags = std::regex::ECMAScript | std::regex::optimize;
-                if (!rule.case_sensitive) {
-                    flags |= std::regex::icase;
-                }
-                rule.compiled.emplace(rule.pattern, flags);
-            } catch (const std::regex_error& error) {
-                throw MitreError(where + " (" + rule.id +
-                                 ") has an invalid regex: " + error.what());
-            }
-        }
-
-        mapper.rules_.push_back(std::move(rule));
+        mapper.rules_.push_back(parse_rule(rules[index], index));
     }
 
     return mapper;
 }
 
 MitreMapper MitreMapper::from_file(const std::filesystem::path& path) {
-    std::ifstream input(path);
+    const std::ifstream input(path);
     if (!input) {
         throw MitreError("cannot open MITRE rules file: " + path.string());
     }

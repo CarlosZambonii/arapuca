@@ -15,6 +15,9 @@
 #include <string>
 #include <string_view>
 
+// Forward declaration of the libmaxminddb handle, so this header does not drag
+// the C library into every translation unit that records an event.
+// NOLINTNEXTLINE(readability-identifier-naming)
 struct MMDB_s;
 
 namespace arapuca::enrich {

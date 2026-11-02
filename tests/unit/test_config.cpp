@@ -10,6 +10,46 @@
 
 namespace {
 
+/// Sets an environment variable for the duration of a test and restores the
+/// previous state afterwards.
+///
+/// setenv and unsetenv are flagged as thread unsafe, and they are: they race
+/// with a concurrent getenv. GoogleTest runs these cases on one thread, and
+/// nothing under test spawns one, so the race cannot occur here.
+class ScopedEnv {
+public:
+    ScopedEnv(const char* name, const char* value) : name_(name) {
+        const char* previous = std::getenv(name);  // NOLINT(concurrency-mt-unsafe)
+        if (previous != nullptr) {
+            had_previous_ = true;
+            previous_ = previous;
+        }
+        if (value != nullptr) {
+            ::setenv(name, value, 1);  // NOLINT(concurrency-mt-unsafe)
+        } else {
+            ::unsetenv(name);  // NOLINT(concurrency-mt-unsafe)
+        }
+    }
+
+    ScopedEnv(const ScopedEnv&) = delete;
+    ScopedEnv& operator=(const ScopedEnv&) = delete;
+    ScopedEnv(ScopedEnv&&) = delete;
+    ScopedEnv& operator=(ScopedEnv&&) = delete;
+
+    ~ScopedEnv() {
+        if (had_previous_) {
+            ::setenv(name_, previous_.c_str(), 1);  // NOLINT(concurrency-mt-unsafe)
+        } else {
+            ::unsetenv(name_);  // NOLINT(concurrency-mt-unsafe)
+        }
+    }
+
+private:
+    const char* name_;
+    std::string previous_;
+    bool had_previous_ = false;
+};
+
 using arapuca::core::Config;
 using arapuca::core::ConfigError;
 using arapuca::core::LogLevel;
@@ -113,16 +153,15 @@ TEST(ConfigParse, ApiKeyInTheFileIsRefusedNotIgnored) {
 }
 
 TEST(ConfigEnvironment, VirusTotalKeyComesFromTheEnvironment) {
-    ::setenv("VT_API_KEY", "deadbeef", 1);
+    const ScopedEnv key("VT_API_KEY", "deadbeef");
     Config config = Config::parse("");
     config.apply_environment();
     EXPECT_EQ("deadbeef", config.virustotal_api_key);
     EXPECT_TRUE(config.capture.virustotal_enabled);
-    ::unsetenv("VT_API_KEY");
 }
 
 TEST(ConfigEnvironment, MissingKeyDisablesVirusTotalInsteadOfFailing) {
-    ::unsetenv("VT_API_KEY");
+    const ScopedEnv key("VT_API_KEY", nullptr);
     Config config = Config::parse("capture:\n  virustotal:\n    enabled: true\n");
     config.apply_environment();
     EXPECT_TRUE(config.virustotal_api_key.empty());
@@ -130,11 +169,10 @@ TEST(ConfigEnvironment, MissingKeyDisablesVirusTotalInsteadOfFailing) {
 }
 
 TEST(ConfigEnvironment, SensorNameCanBeOverridden) {
-    ::setenv("ARAPUCA_SENSOR_NAME", "arapuca-from-env", 1);
+    const ScopedEnv name("ARAPUCA_SENSOR_NAME", "arapuca-from-env");
     Config config = Config::parse("sensor_name: from-file\n");
     config.apply_environment();
     EXPECT_EQ("arapuca-from-env", config.sensor_name);
-    ::unsetenv("ARAPUCA_SENSOR_NAME");
 }
 
 // A configuration file may ask for stricter limits and gets them. It may not

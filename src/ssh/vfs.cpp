@@ -10,6 +10,9 @@
 namespace arapuca::ssh {
 namespace {
 
+// Recursion is how a tree is built. The depth argument bounds it, and the
+// bound is checked on the first line.
+// NOLINTNEXTLINE(misc-no-recursion)
 void build_tree(const YAML::Node& node, VfsNode& target, std::size_t depth) {
     if (depth > Vfs::kMaxDepth) {
         throw VfsError("filesystem description nests deeper than the allowed limit");
@@ -50,7 +53,7 @@ void build_tree(const YAML::Node& node, VfsNode& target, std::size_t depth) {
             throw VfsError("children must be a mapping of name to entry");
         }
         for (const auto& child : children) {
-            const std::string name = child.first.as<std::string>();
+            const auto name = child.first.as<std::string>();
             if (name.empty() || name == "." || name == ".." ||
                 name.find('/') != std::string::npos) {
                 throw VfsError("invalid entry name '" + name + "'");
@@ -115,7 +118,7 @@ Vfs Vfs::from_yaml(const std::string& yaml_text) {
         vfs.root_.is_directory = true;
     } else {
         for (const auto& child : tree) {
-            const std::string name = child.first.as<std::string>();
+            const auto name = child.first.as<std::string>();
             if (name.empty() || name.find('/') != std::string::npos) {
                 throw VfsError("invalid top level entry name '" + name + "'");
             }
@@ -127,7 +130,7 @@ Vfs Vfs::from_yaml(const std::string& yaml_text) {
 }
 
 Vfs Vfs::from_file(const std::filesystem::path& path) {
-    std::ifstream input(path);
+    const std::ifstream input(path);
     if (!input) {
         throw VfsError("cannot open filesystem description: " + path.string());
     }
@@ -136,7 +139,7 @@ Vfs Vfs::from_file(const std::filesystem::path& path) {
     return from_yaml(buffer.str());
 }
 
-std::optional<std::string> Vfs::resolve(std::string_view cwd, std::string_view input) const {
+std::optional<std::string> Vfs::resolve(std::string_view cwd, std::string_view input) {
     if (input.empty()) {
         // A bare `cd` means home, but that decision belongs to the shell. Here
         // an empty path simply resolves to the current directory.
@@ -286,7 +289,7 @@ bool Vfs::create_directory(std::string_view absolute_path) {
     if (parent == nullptr || leaf.empty()) {
         return false;
     }
-    if (parent->children.count(leaf) != 0) {
+    if (parent->children.contains(leaf)) {
         return false;
     }
 
@@ -308,6 +311,7 @@ bool Vfs::remove(std::string_view absolute_path) {
 
 std::size_t Vfs::node_count() const {
     std::size_t count = 0;
+    // NOLINTNEXTLINE(misc-no-recursion)
     const auto walk = [&count](const VfsNode& node, auto&& self) -> void {
         ++count;
         for (const auto& [name, child] : node.children) {

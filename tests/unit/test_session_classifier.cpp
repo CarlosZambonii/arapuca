@@ -6,7 +6,6 @@
 
 namespace {
 
-using arapuca::enrich::Classification;
 using arapuca::enrich::classify_session;
 using arapuca::enrich::coefficient_of_variation;
 using arapuca::enrich::median;

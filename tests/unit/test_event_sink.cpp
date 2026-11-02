@@ -37,7 +37,7 @@ protected:
         return event;
     }
 
-    std::vector<std::string> read_lines() const {
+    [[nodiscard]] std::vector<std::string> read_lines() const {
         std::vector<std::string> lines;
         std::ifstream input(path_);
         std::string line;
@@ -136,7 +136,7 @@ TEST_F(SinkTest, FlushesAutomaticallyAfterTheConfiguredCount) {
 
 TEST_F(SinkTest, ThrowsWhenThePathCannotBeOpened) {
     const auto bad = std::filesystem::path("/proc/arapuca-cannot-exist/events.jsonl");
-    EXPECT_THROW({ JsonlFileSink sink(bad); }, std::runtime_error);
+    EXPECT_THROW({ const JsonlFileSink sink(bad); }, std::runtime_error);
 }
 
 }  // namespace

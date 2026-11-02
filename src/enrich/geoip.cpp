@@ -10,6 +10,12 @@
 namespace arapuca::enrich {
 namespace {
 
+// libmaxminddb is a C library. Its result type is a union and its accessor is
+// variadic, and neither can be avoided from this side of the interface. The
+// suppressions are scoped to the three helpers that touch the C API, so the
+// checks stay active for the rest of the file.
+// NOLINTBEGIN(cppcoreguidelines-pro-type-union-access,cppcoreguidelines-pro-type-vararg)
+
 MMDB_s* open_database(const std::filesystem::path& path, std::string& status, const char* label) {
     if (path.empty()) {
         return nullptr;
@@ -54,6 +60,8 @@ MMDB_entry_data_s get(MMDB_entry_s& entry, Keys... keys) {
     }
     return data;
 }
+
+// NOLINTEND(cppcoreguidelines-pro-type-union-access,cppcoreguidelines-pro-type-vararg)
 
 }  // namespace
 
@@ -130,6 +138,7 @@ std::optional<core::Geo> GeoIp::lookup(std::string_view ip) const {
             geo.country = utf8_string(get(result.entry, "country", "names", "en"));
             geo.city = utf8_string(get(result.entry, "city", "names", "en"));
 
+            // NOLINTBEGIN(cppcoreguidelines-pro-type-union-access)
             const auto latitude = get(result.entry, "location", "latitude");
             if (latitude.has_data && latitude.type == MMDB_DATA_TYPE_DOUBLE) {
                 geo.latitude = latitude.double_value;
@@ -138,6 +147,7 @@ std::optional<core::Geo> GeoIp::lookup(std::string_view ip) const {
             if (longitude.has_data && longitude.type == MMDB_DATA_TYPE_DOUBLE) {
                 geo.longitude = longitude.double_value;
             }
+            // NOLINTEND(cppcoreguidelines-pro-type-union-access)
         }
     }
 
@@ -149,7 +159,9 @@ std::optional<core::Geo> GeoIp::lookup(std::string_view ip) const {
 
         if (gai_error == 0 && mmdb_error == MMDB_SUCCESS && result.found_entry) {
             const auto number = get(result.entry, "autonomous_system_number");
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
             if (number.has_data && number.type == MMDB_DATA_TYPE_UINT32) {
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
                 geo.asn = number.uint32;
                 found_anything = true;
             }

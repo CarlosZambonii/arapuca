@@ -1,6 +1,10 @@
 {
   "version": 3,
-  "cmakeMinimumRequired": { "major": 3, "minor": 22, "patch": 0 },
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
   "configurePresets": [
     {
       "name": "base",
@@ -44,8 +48,8 @@
     },
     {
       "name": "asan",
-      "inherits": "clang",
-      "displayName": "AddressSanitizer and UndefinedBehaviorSanitizer",
+      "inherits": "dev",
+      "displayName": "AddressSanitizer and UndefinedBehaviorSanitizer (GCC)",
       "cacheVariables": {
         "ARAPUCA_ENABLE_ASAN": "ON",
         "ARAPUCA_ENABLE_UBSAN": "ON"
@@ -53,9 +57,11 @@
     },
     {
       "name": "tsan",
-      "inherits": "clang",
-      "displayName": "ThreadSanitizer",
-      "cacheVariables": { "ARAPUCA_ENABLE_TSAN": "ON" }
+      "inherits": "dev",
+      "displayName": "ThreadSanitizer (GCC)",
+      "cacheVariables": {
+        "ARAPUCA_ENABLE_TSAN": "ON"
+      }
     },
     {
       "name": "fuzz",
@@ -72,43 +78,81 @@
       "inherits": "clang",
       "displayName": "clang-tidy run",
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--warnings-as-errors=*"
+        "ARAPUCA_CLANG_TIDY": "ON"
       }
     }
   ],
   "buildPresets": [
-    { "name": "dev", "configurePreset": "dev" },
-    { "name": "release", "configurePreset": "release" },
-    { "name": "clang", "configurePreset": "clang" },
-    { "name": "asan", "configurePreset": "asan" },
-    { "name": "tsan", "configurePreset": "tsan" },
-    { "name": "fuzz", "configurePreset": "fuzz" },
-    { "name": "tidy", "configurePreset": "tidy" }
+    {
+      "name": "dev",
+      "configurePreset": "dev"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "clang",
+      "configurePreset": "clang"
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan"
+    },
+    {
+      "name": "tsan",
+      "configurePreset": "tsan"
+    },
+    {
+      "name": "fuzz",
+      "configurePreset": "fuzz"
+    },
+    {
+      "name": "tidy",
+      "configurePreset": "tidy"
+    }
   ],
   "testPresets": [
     {
       "name": "dev",
       "configurePreset": "dev",
-      "output": { "outputOnFailure": true },
-      "execution": { "noTestsAction": "error", "stopOnFailure": false }
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
     },
     {
       "name": "release",
       "configurePreset": "release",
-      "output": { "outputOnFailure": true },
-      "execution": { "noTestsAction": "error" }
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
     },
     {
       "name": "clang",
       "configurePreset": "clang",
-      "output": { "outputOnFailure": true },
-      "execution": { "noTestsAction": "error" }
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
     },
     {
       "name": "asan",
       "configurePreset": "asan",
-      "output": { "outputOnFailure": true },
-      "execution": { "noTestsAction": "error" }
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
     }
   ]
 }

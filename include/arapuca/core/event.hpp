@@ -59,7 +59,7 @@ struct Mitre {
 /// producer carry its own payload without a class per event type.
 struct Event {
     EventType type = EventType::HoneypotLifecycle;
-    TimePoint timestamp{};
+    TimePoint timestamp;
     std::string event_id;
     std::string session_id;
     std::string sensor;

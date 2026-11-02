@@ -70,7 +70,7 @@ TEST(GeoIp, CorruptDatabaseIsReportedAndDisabled) {
 
 TEST(GeoIp, MoveTransfersOwnership) {
     GeoIp first = GeoIp::open("", "");
-    GeoIp second = std::move(first);
+    const GeoIp second = std::move(first);
     EXPECT_FALSE(second.enabled());
     EXPECT_NO_THROW({ (void)second.lookup("1.1.1.1"); });
 }

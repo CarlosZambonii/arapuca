@@ -46,13 +46,13 @@ inline constexpr std::size_t kMaxHttpHeaders = 64;
 inline constexpr std::size_t kMaxHttpBodyRecorded = 8192;
 
 /// Request body bytes read off the wire at all.
-inline constexpr std::size_t kMaxHttpBodyRead = 1024 * 1024;
+inline constexpr std::size_t kMaxHttpBodyRead = std::size_t{1024} * 1024;
 
 // --- Capture ---------------------------------------------------------------
 
 /// Largest sample downloaded. The transfer is aborted the moment this is
 /// exceeded, it is not read and then discarded.
-inline constexpr std::size_t kMaxSampleBytes = 32 * 1024 * 1024;
+inline constexpr std::size_t kMaxSampleBytes = std::size_t{32} * 1024 * 1024;
 
 /// Longest URL followed by the capture engine.
 inline constexpr std::size_t kMaxCaptureUrl = 2048;

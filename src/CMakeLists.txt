@@ -36,6 +36,8 @@ target_link_libraries(arapuca_core
         arapuca::hardening
         arapuca::sanitizers)
 
+arapuca_apply_tidy(arapuca_core)
+
 set_target_properties(arapuca_core PROPERTIES
     OUTPUT_NAME arapuca
     VERSION ${PROJECT_VERSION})
@@ -51,5 +53,7 @@ target_link_libraries(arapucad
         arapuca::warnings
         arapuca::hardening
         arapuca::sanitizers)
+
+arapuca_apply_tidy(arapucad)
 
 install(TARGETS arapucad RUNTIME DESTINATION bin)

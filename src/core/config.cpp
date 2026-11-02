@@ -60,6 +60,10 @@ void read_port(const YAML::Node& node, const char* key, std::uint16_t& target) {
 }
 
 std::string env(const char* name) {
+    // getenv races with setenv. The configuration is loaded once at startup,
+    // before any service thread exists, and nothing in this process ever calls
+    // setenv, so there is no race to lose.
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     const char* value = std::getenv(name);
     return value != nullptr ? std::string(value) : std::string();
 }
@@ -100,7 +104,7 @@ Config Config::parse(const std::string& yaml_text) {
         read_path(events, "path", config.events.path);
         read(events, "flush_every", config.events.flush_every);
         read(events, "bus_capacity", config.events.bus_capacity);
-        std::size_t interval_ms = static_cast<std::size_t>(config.events.flush_interval.count());
+        auto interval_ms = static_cast<std::size_t>(config.events.flush_interval.count());
         read(events, "flush_interval_ms", interval_ms);
         config.events.flush_interval = std::chrono::milliseconds(static_cast<long>(interval_ms));
     }
@@ -114,7 +118,7 @@ Config Config::parse(const std::string& yaml_text) {
         read_path(ssh, "filesystem_file", config.ssh.filesystem_file);
         read(ssh, "max_sessions", config.ssh.max_sessions);
         read(ssh, "max_sessions_per_ip", config.ssh.max_sessions_per_ip);
-        std::size_t timeout = static_cast<std::size_t>(config.ssh.session_timeout.count());
+        auto timeout = static_cast<std::size_t>(config.ssh.session_timeout.count());
         read(ssh, "session_timeout_seconds", timeout);
         config.ssh.session_timeout = std::chrono::seconds(static_cast<long>(timeout));
     }
@@ -230,7 +234,7 @@ std::vector<std::string> Config::validate_and_clamp() {
 }
 
 Config Config::load(const std::filesystem::path& path) {
-    std::ifstream input(path);
+    const std::ifstream input(path);
     if (!input) {
         throw ConfigError("cannot open configuration file: " + path.string());
     }

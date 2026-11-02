@@ -1,7 +1,6 @@
 #include <arapuca/core/clock.hpp>
 
 #include <array>
-#include <cstdio>
 #include <ctime>
 
 namespace arapuca::core {
@@ -25,11 +24,16 @@ std::string to_rfc3339_millis(TimePoint tp) {
         return "1970-01-01T00:00:00.000Z";
     }
 
-    std::array<char, 8> fraction{};
-    std::snprintf(fraction.data(), fraction.size(), ".%03dZ", static_cast<int>(millis.count()));
-
+    // The fractional part is written by hand rather than with snprintf. This
+    // runs for every event, and avoiding a variadic call removes both the cost
+    // and the question of whether anyone checked its return value.
+    const auto fraction = static_cast<unsigned>(millis.count());
     std::string out(buffer.data(), date_len);
-    out.append(fraction.data());
+    out.push_back('.');
+    out.push_back(static_cast<char>('0' + ((fraction / 100) % 10)));
+    out.push_back(static_cast<char>('0' + ((fraction / 10) % 10)));
+    out.push_back(static_cast<char>('0' + (fraction % 10)));
+    out.push_back('Z');
     return out;
 }
 

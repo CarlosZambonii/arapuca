@@ -105,15 +105,15 @@ TEST(EventBus, ClosedBusStillDrainsWhatIsQueued) {
 }
 
 TEST(EventBus, ManyProducersOneConsumerLoseNothing) {
-    constexpr int kProducers = 8;
-    constexpr int kPerProducer = 500;
+    constexpr std::size_t kProducers = 8;
+    constexpr std::size_t kPerProducer = 500;
     EventBus bus(kProducers * kPerProducer);
 
     std::vector<std::thread> producers;
     producers.reserve(kProducers);
-    for (int i = 0; i < kProducers; ++i) {
+    for (std::size_t i = 0; i < kProducers; ++i) {
         producers.emplace_back([&bus] {
-            for (int n = 0; n < kPerProducer; ++n) {
+            for (std::size_t n = 0; n < kPerProducer; ++n) {
                 (void)bus.publish(make_event());
             }
         });
@@ -125,7 +125,7 @@ TEST(EventBus, ManyProducersOneConsumerLoseNothing) {
     std::vector<Event> out;
     while (bus.consume(out, 128, 10ms) > 0) {
     }
-    EXPECT_EQ(static_cast<std::size_t>(kProducers * kPerProducer), out.size());
+    EXPECT_EQ(kProducers * kPerProducer, out.size());
     EXPECT_EQ(0U, bus.dropped());
 }
 

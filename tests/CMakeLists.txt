@@ -29,6 +29,8 @@ target_compile_definitions(arapuca_unit_tests
     PRIVATE ARAPUCA_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
             ARAPUCA_CONFIG_DIR="${PROJECT_SOURCE_DIR}/config")
 
+arapuca_apply_tidy(arapuca_unit_tests)
+
 gtest_discover_tests(arapuca_unit_tests
     PROPERTIES LABELS unit
     DISCOVERY_TIMEOUT 30)

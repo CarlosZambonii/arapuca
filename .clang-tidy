@@ -3,6 +3,17 @@
 # The security oriented checks are the point: this process reads hostile input
 # from the public internet, so bounds, casts and resource handling are checked
 # harder than style.
+# cppcoreguidelines-owning-memory is disabled because it is written against
+# the Guidelines Support Library and reports every C API handle that is not a
+# gsl::owner<>. This project does not depend on the GSL, and expresses the same
+# ownership with std::unique_ptr and a custom deleter, which the check cannot
+# see. The C handles it would flag are FILE* from fopen and MMDB_s from
+# libmaxminddb, and both are owned by a unique_ptr or a RAII wrapper.
+#
+# misc-include-cleaner is disabled on purpose. It demands a direct include for
+# every symbol used, including everything pulled in transitively by the
+# standard library, which produces dozens of findings per file and buries the
+# checks that matter here.
 Checks: >
   -*,
   bugprone-*,
@@ -19,9 +30,12 @@ Checks: >
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -misc-non-private-member-variables-in-classes,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
-  -readability-identifier-length
+  -readability-identifier-length,
+  -misc-include-cleaner,
+  -cppcoreguidelines-owning-memory
 
 WarningsAsErrors: >
   bugprone-*,
@@ -51,7 +65,25 @@ CheckOptions:
     value: _
   - key: readability-identifier-naming.NamespaceCase
     value: lower_case
-  - key: readability-identifier-naming.ConstantCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: k
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: k
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: k
+  - key: readability-identifier-naming.ClassConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.ClassConstantPrefix
+    value: k
+  - key: readability-identifier-naming.LocalConstantCase
     value: lower_case
   - key: readability-function-cognitive-complexity.Threshold
     value: 30
