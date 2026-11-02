@@ -1,0 +1,4 @@
+# Pinned exactly. These scripts run on a schedule, commit to the repository,
+# and nobody watches them, so a surprise from a floating version would go
+# unnoticed until the feed quietly stopped updating.
+requests==2.32.3
