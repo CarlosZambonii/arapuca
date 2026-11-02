@@ -3,7 +3,14 @@
 # The executable is a thin shell around this library on purpose.
 # ---------------------------------------------------------------------------
 add_library(arapuca_core
-    core/version.cpp)
+    core/clock.cpp
+    core/event.cpp
+    core/event_bus.cpp
+    core/event_sink.cpp
+    core/ids.cpp
+    core/logging.cpp
+    core/version.cpp
+    util/redaction.cpp)
 
 add_library(arapuca::core ALIAS arapuca_core)
 
