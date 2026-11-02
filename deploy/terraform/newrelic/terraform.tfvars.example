@@ -1,0 +1,15 @@
+# Copy to terraform.tfvars and fill in. The API key comes from the
+# environment instead:
+#
+#   export NEW_RELIC_API_KEY=...
+#   terraform apply -var "api_key=$NEW_RELIC_API_KEY"
+
+account_id = 1234567
+region     = "US"
+
+# Must match sensor_name in config/arapuca.yaml, or every query returns
+# nothing and the dashboards look broken rather than empty.
+sensor_name = "arapuca"
+
+# Empty leaves the alert conditions in place without notifications.
+alert_email = ""
