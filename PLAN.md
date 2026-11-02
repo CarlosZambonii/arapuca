@@ -1,6 +1,9 @@
 # Arapuca, Implementation Plan
 
-> Status: **waiting for approval**. No code is written until this document is approved.
+> Status: **implemented**. This document is kept as written, as the plan the
+> project was approved against, with a record at the end of what the build
+> actually taught us. A plan that was quietly edited to match the outcome is
+> worth nothing to the next person.
 
 Arapuca is a medium interaction SSH and HTTP honeypot written in C++20. It runs on a public
 VPS (Oracle Cloud Ampere A1, Always Free tier), records every interaction as structured JSON
@@ -485,3 +488,74 @@ Phases 1 to 5 are the core of the project. Phases 6 to 10 are deployment and pre
 * No em dash anywhere in the repository text. Commas, colons and parentheses instead.
 * `.gitignore` covers `.env`, `*.tfvars`, `*.tfstate*`, `*.mmdb`, `quarantine/`, `build/`,
   `inventory/hosts.yml`, and any file that could carry the real VPS address.
+
+
+---
+
+## 15. What the build changed
+
+Kept as a record. Every item below cost real time, and the reasoning is worth
+more than the plan that preceded it.
+
+### The shape of the deployment
+
+**Ampere A1 was not obtainable.** The plan assumed 4 OCPUs and 24 GB. The
+tenancy's limit turned out to be 2 and 12, and even that failed with
+`Out of host capacity`, which is a capacity problem in the region rather than
+an account one. The deployment targets `VM.Standard.E2.1.Micro`, 1 OCPU and
+1 GB, which is what is reliably obtainable. The container limits and the swap
+file in cloud-init exist because of that.
+
+**Four instances were destroyed before one worked**, and all four failures
+were the same underlying thing: restarting an SSH unit from inside cloud-init.
+`ssh.socket` is ordered after `cloud-init.service`, so a synchronous
+`systemctl restart` deadlocks the boot. The instance still answers TCP,
+because the kernel and network came up first, but has no sshd, no snapd and
+no cloud agent, which makes it completely unmanageable. `--no-block` avoided
+the hang without fixing the outcome. What works is writing configuration and
+rebooting, which is what the template does now. `docs/DEPLOYMENT.md` carries
+the full account, including the two out of band diagnostic channels that
+found it.
+
+### Dependencies
+
+vcpkg was dropped in favour of distro packages plus pinned `FetchContent` for
+header only libraries, which took a clean build from roughly thirty minutes to
+two. The sanitizer presets moved from clang to GCC, because GCC ships its
+sanitizer runtime with the compiler while clang needs a separate package that
+is easy to be missing. Clang stays where it is actually required, which is the
+libFuzzer targets.
+
+`minizip-ng` became plain `minizip` from the zlib contrib tree: libzip writes
+AES but only reads ZipCrypto, and an AES zip is not openable by a large part
+of the analysis tooling.
+
+### Things the plan did not anticipate
+
+**A sensor silence alert.** The plan listed three alert conditions, all about
+attacks. A honeypot that silently stopped collecting is the one failure that
+costs data instead of producing it, so a fourth condition fires when nothing
+has been reported for an hour.
+
+**A corpus replay mode for the fuzz targets.** libFuzzer needs clang and its
+runtime. Building each target as a plain replay binary as well means the
+committed corpus and every recorded crash are exercised by an ordinary build,
+so a defect found once stays found even where libFuzzer is unavailable.
+
+**A development configuration.** `config/arapuca.dev.yaml` keeps everything
+writable inside the checkout. The production file writes to `/var/log/arapuca`
+and fails on a developer machine, which is correct behaviour and a bad first
+experience.
+
+### Defects the gates caught
+
+* clang-tidy found a string literal constructed with a hand counted length
+  that read one byte past its end. The test passed anyway.
+* Running the container found a `std::thread` destroyed while joinable, which
+  turned a readable startup error into `terminate called without an active
+  exception`. Loading now happens before any thread exists.
+* Running the container also found that relative paths in the configuration
+  meant different things depending on the working directory, and nothing at
+  all inside the image.
+
+None of the three would have been found by reading the code.
