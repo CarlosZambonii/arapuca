@@ -1,0 +1,69 @@
+name: Native dependency check
+
+# Dependabot cannot read CMake FetchContent declarations, so this job compares
+# the pinned tags in cmake/Dependencies.cmake against the latest upstream
+# release and opens an issue when one falls behind. Bumps stay manual and
+# reviewed, which is the point: a C++ dependency bump has to pass CI on both
+# architectures before it lands.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Compare pinned tags with upstream
+        id: compare
+        run: |
+          set -euo pipefail
+          declare -A repos=(
+            [JSON]="nlohmann/json"
+            [SPDLOG]="gabime/spdlog"
+            [HTTPLIB]="yhirose/cpp-httplib"
+            [GTEST]="google/googletest"
+          )
+          outdated=""
+          for key in "${!repos[@]}"; do
+            repo="${repos[$key]}"
+            pinned=$(grep -oP "set\(ARAPUCA_${key}_TAG\s+\"\K[^\"]+" cmake/Dependencies.cmake)
+            latest=$(git ls-remote --tags --refs "https://github.com/${repo}" \
+              | sed 's#.*refs/tags/##' \
+              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+              | sort -V | tail -1)
+            echo "${repo}: pinned ${pinned}, latest ${latest}"
+            if [ "$pinned" != "$latest" ]; then
+              hash=$(git ls-remote --tags --refs "https://github.com/${repo}" \
+                | grep -F "refs/tags/${latest}" | cut -f1)
+              outdated="${outdated}- \`${repo}\`: pinned \`${pinned}\`, upstream \`${latest}\` (\`${hash}\`)"$'\n'
+            fi
+          done
+          {
+            echo "outdated<<OUTDATED_EOF"
+            echo "${outdated}"
+            echo "OUTDATED_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        if: steps.compare.outputs.outdated != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTDATED: ${{ steps.compare.outputs.outdated }}
+        run: |
+          set -euo pipefail
+          title="chore(deps): fetched C++ dependencies are behind upstream"
+          body=$(printf 'The following pinned dependencies in `cmake/Dependencies.cmake` are behind upstream:\n\n%s\nUpdate both the tag and the commit hash, then confirm CI is green on x86_64 and arm64.\n' "$OUTDATED")
+          existing=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label dependencies
+          fi

@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Ubuntu 24.04 (noble) is the single supported base, on every runner, in the
+  # container and on the VPS. It ships libssh 0.10.6, which is the minimum this
+  # project builds against.
+  APT_PACKAGES: >-
+    build-essential
+    cmake
+    ninja-build
+    pkg-config
+    libssl-dev
+    libcurl4-openssl-dev
+    libssh-dev
+    libyaml-cpp-dev
+    libmaxminddb-dev
+    libminizip-dev
+
+jobs:
+  static-checks:
+    name: Static checks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends clang-format
+
+      - name: Safety invariant S1, no process execution primitives
+        run: ./scripts/check_no_exec.sh
+
+      - name: Text conventions, no em dash and no committed public address
+        run: ./scripts/check_text_rules.sh
+
+      - name: Formatting
+        run: |
+          mapfile -t files < <(find src include tests -type f \( -name '*.cpp' -o -name '*.hpp' \))
+          if [ ${#files[@]} -gt 0 ]; then
+            clang-format --dry-run --Werror "${files[@]}"
+          fi
+
+  build-and-test:
+    name: Build ${{ matrix.arch }} ${{ matrix.compiler }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: x86_64, runner: ubuntu-24.04,     compiler: gcc,   preset: release }
+          - { arch: x86_64, runner: ubuntu-24.04,     compiler: clang, preset: clang }
+          - { arch: arm64,  runner: ubuntu-24.04-arm, compiler: gcc,   preset: release }
+          - { arch: arm64,  runner: ubuntu-24.04-arm, compiler: clang, preset: clang }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }}
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            sudo apt-get install -y --no-install-recommends clang
+          fi
+
+      - name: Confirm the libssh version is the supported one
+        run: |
+          version=$(pkg-config --modversion libssh)
+          echo "libssh ${version}"
+          # Hard floor. Ubuntu 22.04 and libssh 0.9.x are out of scope by design.
+          dpkg --compare-versions "$version" ge 0.10.6 || {
+            echo "libssh ${version} is below the supported 0.10.6"; exit 1; }
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}
+
+  sanitizers:
+    name: ASan and UBSan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }} clang
+
+      - name: Configure
+        run: cmake --preset asan
+
+      - name: Build
+        run: cmake --build --preset asan
+
+      - name: Test under sanitizers
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:strict_string_checks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: ctest --preset asan
+
+  clang-tidy:
+    name: clang-tidy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }} clang clang-tidy
+
+      - name: Configure
+        run: cmake --preset tidy
+
+      - name: Build with clang-tidy enabled
+        run: cmake --build --preset tidy

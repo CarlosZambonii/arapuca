@@ -1,0 +1,22 @@
+// Generated from version.hpp.in by CMake. Do not edit the generated file.
+#pragma once
+
+#include <string>
+#include <string_view>
+
+namespace arapuca {
+
+inline constexpr std::string_view kProjectName = "@PROJECT_NAME@";
+inline constexpr std::string_view kVersion = "@PROJECT_VERSION@";
+inline constexpr int kVersionMajor = @PROJECT_VERSION_MAJOR@;
+inline constexpr int kVersionMinor = @PROJECT_VERSION_MINOR@;
+inline constexpr int kVersionPatch = @PROJECT_VERSION_PATCH@;
+
+/// Version of the JSON event schema emitted by this build.
+/// Bumped only on a breaking change to the event envelope.
+inline constexpr int kEventSchemaVersion = 1;
+
+/// Human readable build banner, for the startup log and the --version flag.
+[[nodiscard]] std::string build_banner();
+
+}  // namespace arapuca

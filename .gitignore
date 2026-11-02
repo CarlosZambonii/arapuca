@@ -1,0 +1,52 @@
+# Build output
+build/
+build-*/
+cmake-build-*/
+install/
+compile_commands.json
+.cache/
+
+# Secrets and local environment, never commit
+.env
+.env.local
+*.pem
+*.key
+!deploy/**/*.pub
+secrets.yaml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# Ansible, may contain the real VPS address
+deploy/ansible/inventory/hosts.yml
+deploy/ansible/inventory/*.ini
+!deploy/ansible/inventory/hosts.yml.example
+*.retry
+
+# Runtime data, never commit attacker payloads
+quarantine/
+var/
+logs/
+*.jsonl
+*.mmdb
+
+# OCI CLI artifacts
+oci_api_key*.pem
+oci_cli_rc
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Python tooling
+__pycache__/
+.venv/
+*.pyc
