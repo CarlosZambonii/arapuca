@@ -233,6 +233,28 @@ std::vector<std::string> Config::validate_and_clamp() {
     return clamped;
 }
 
+void Config::resolve_paths_against(const std::filesystem::path& base) {
+    if (base.empty()) {
+        return;
+    }
+    const auto fix = [&base](std::filesystem::path& target) {
+        if (!target.empty() && target.is_relative()) {
+            target = base / target;
+        }
+    };
+
+    fix(events.path);
+    fix(ssh.host_key);
+    fix(ssh.credentials_file);
+    fix(ssh.filesystem_file);
+    fix(http.decoy_dir);
+    fix(capture.quarantine_dir);
+    fix(geo.city_db);
+    fix(geo.asn_db);
+    fix(mitre.rules_file);
+    fix(logging.file);
+}
+
 Config Config::load(const std::filesystem::path& path) {
     const std::ifstream input(path);
     if (!input) {
@@ -243,6 +265,7 @@ Config Config::load(const std::filesystem::path& path) {
     buffer << input.rdbuf();
 
     Config config = parse(buffer.str());
+    config.resolve_paths_against(std::filesystem::absolute(path).parent_path());
     config.apply_environment();
     (void)config.validate_and_clamp();
     return config;

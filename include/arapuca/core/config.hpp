@@ -100,6 +100,12 @@ struct Config {
     /// Overlay the environment. Called by load(), and separately by tests.
     void apply_environment();
 
+    /// Resolve every relative path against `base`, which is the directory the
+    /// configuration file came from. Without this, `config/mitre.yaml` means
+    /// something different depending on the working directory, and in a
+    /// container it means nothing at all.
+    void resolve_paths_against(const std::filesystem::path& base);
+
     /// Clamp every limit to the ceiling in limits.hpp and reject nonsense.
     /// Throws ConfigError when a value cannot be made safe, for example a
     /// zero port. Returns the list of values that were clamped, so startup

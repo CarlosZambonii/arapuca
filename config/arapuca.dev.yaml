@@ -1,0 +1,51 @@
+# Local development configuration.
+#
+# Everything writable lives under ./var in the checkout, so running the
+# honeypot needs no privileges, no directories under /var and no cleanup
+# beyond deleting that one folder. The ports are high and unprivileged.
+#
+#   cmake --build --preset dev
+#   ./build/dev/src/arapucad --config config/arapuca.dev.yaml
+#
+# Then, from another terminal:
+#
+#   ssh -p 2222 root@127.0.0.1          # password 123456
+#   curl http://127.0.0.1:8080/.env
+#   tail -f var/events.jsonl | jq .
+#
+# config/arapuca.yaml is the production one and writes to /var/log/arapuca.
+
+sensor_name: arapuca-dev
+
+events:
+  path: ../var/events.jsonl
+  flush_every: 1
+
+ssh:
+  port: 2222
+  host_key: ../var/ssh_host_ed25519_key
+  credentials_file: credentials.yaml
+  filesystem_file: filesystem.yaml
+  session_timeout_seconds: 120
+
+http:
+  port: 8080
+  decoy_dir: http
+
+capture:
+  quarantine_dir: ../var/quarantine
+  # Smaller than production, so a mistake during development cannot fill a
+  # laptop disk.
+  quarantine_max_total_bytes: 134217728
+  quarantine_max_files: 100
+
+geo:
+  # Absent on a development machine, and absence is a supported state.
+  city_db: ../var/geoip/GeoLite2-City.mmdb
+  asn_db: ../var/geoip/GeoLite2-ASN.mmdb
+
+mitre:
+  rules_file: mitre.yaml
+
+logging:
+  level: debug

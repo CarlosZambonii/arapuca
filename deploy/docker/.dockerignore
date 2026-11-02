@@ -1,0 +1,13 @@
+build/
+build-*/
+.git/
+.github/
+deploy/terraform/
+deploy/ansible/
+iocs/
+reports/
+docs/
+*.md
+.env
+*.tfvars
+*.mmdb

@@ -1,0 +1,83 @@
+# Arapuca configuration.
+#
+# Every key is optional: the defaults in the C++ code are a working honeypot,
+# and a file that sets nothing is valid. Values here can only make the limits
+# stricter, never looser, because each one is clamped to the compile time
+# ceiling in include/arapuca/core/limits.hpp at startup.
+#
+# Secrets never appear in this file. They come from the environment, which is
+# why this file can live in a public repository:
+#
+#   VT_API_KEY              VirusTotal, enables hash lookups when present
+#   ARAPUCA_SENSOR_NAME     overrides sensor_name below
+#
+# A VirusTotal key written here is refused at startup rather than ignored:
+# silently dropping a key an operator believed was in use is the worse failure.
+#
+# Relative paths below are resolved against the directory this file lives in,
+# so `config/mitre.yaml` works from a checkout and `/etc/arapuca/mitre.yaml`
+# resolves the same way inside the container. Paths that point at runtime
+# state are absolute, because that state lives in volumes rather than beside
+# the configuration.
+
+sensor_name: arapuca
+
+events:
+  path: /var/log/arapuca/events.jsonl
+  # Eager on purpose. Losing the last events before a crash costs more here
+  # than write throughput does.
+  flush_every: 16
+  flush_interval_ms: 1000
+  bus_capacity: 8192
+
+ssh:
+  enabled: true
+  # The container listens high and the host maps 22 onto it, so the process
+  # never needs a privileged port and never runs as root.
+  port: 2222
+  # What an attacker sees. A honeypot advertising libssh would be fingerprinted
+  # before the brute force even started.
+  banner: "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.4"
+  host_key: /var/lib/arapuca/state/ssh_host_ed25519_key
+  credentials_file: credentials.yaml
+  filesystem_file: filesystem.yaml
+  max_sessions: 256
+  max_sessions_per_ip: 8
+  session_timeout_seconds: 300
+
+http:
+  enabled: true
+  port: 8080
+  decoy_dir: http
+  server_header: "Apache/2.4.52 (Ubuntu)"
+  max_body_recorded: 8192
+
+capture:
+  enabled: true
+  quarantine_dir: /var/lib/arapuca/quarantine
+  # Not a security boundary. It stops antivirus on an analyst's machine from
+  # deleting the sample on sight, and stops an accidental double click.
+  zip_password: infected
+  max_sample_bytes: 33554432
+  # Retention is a safety control: an attacker downloading in a loop must not
+  # be able to fill the disk and take the honeypot down.
+  quarantine_max_total_bytes: 2147483648
+  quarantine_max_files: 5000
+  virustotal:
+    enabled: true
+    # The free tier allowances. Exceeding either gets the key throttled.
+    requests_per_minute: 4
+    requests_per_day: 500
+
+geo:
+  # Not committed, and not redistributable. Downloaded at deploy time with a
+  # MaxMind account key. Absent, enrichment is skipped and nothing else breaks.
+  city_db: /var/lib/arapuca/geoip/GeoLite2-City.mmdb
+  asn_db: /var/lib/arapuca/geoip/GeoLite2-ASN.mmdb
+
+mitre:
+  rules_file: mitre.yaml
+
+logging:
+  # The operator log, which is a different thing from the event log.
+  level: info

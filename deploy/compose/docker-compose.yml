@@ -1,0 +1,80 @@
+# Arapuca honeypot stack.
+#
+# The hardening here is not decoration. This container is the one thing on the
+# machine that attackers reach on purpose, so every capability it does not
+# need is removed, and the few paths it must write are the only writable ones.
+
+services:
+  arapuca:
+    image: ghcr.io/${GITHUB_REPOSITORY:-arapuca/arapuca}:${ARAPUCA_TAG:-latest}
+    container_name: arapuca
+    restart: unless-stopped
+
+    # The host owns the privileged ports and maps them onto the high ports the
+    # unprivileged process listens on. Nothing inside the container is root
+    # and nothing needs CAP_NET_BIND_SERVICE.
+    ports:
+      - "22:2222"
+      - "80:8080"
+
+    user: "10001:10001"
+
+    # Everything except the declared volumes is immutable at runtime.
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
+
+    volumes:
+      # Captured samples. noexec is the belt to the braces of writing every
+      # sample mode 0400: even if a file were made executable, this mount
+      # would refuse to run it.
+      - type: volume
+        source: arapuca-quarantine
+        target: /var/lib/arapuca/quarantine
+        volume:
+          nocopy: true
+      - arapuca-state:/var/lib/arapuca/state
+      - arapuca-logs:/var/log/arapuca
+      # Read only: the configuration is part of the image and the deployment,
+      # not something the running container can rewrite.
+      - ../../config:/etc/arapuca:ro
+
+    environment:
+      - ARAPUCA_SENSOR_NAME=${ARAPUCA_SENSOR_NAME:-arapuca}
+      # Absent, VirusTotal enrichment is simply disabled. Never written into
+      # the compose file or the image.
+      - VT_API_KEY=${VT_API_KEY:-}
+
+    security_opt:
+      # A setuid binary inside the container cannot gain anything.
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+
+    # 1 GB of RAM on the host, so the container gets a hard share of it and an
+    # attack burst cannot starve the New Relic agent or sshd.
+    mem_limit: 400m
+    memswap_limit: 600m
+    cpus: 0.8
+    pids_limit: 256
+
+    # Writing to the event log is the honeypot's whole purpose, so a process
+    # that cannot write is a dead process even if it still answers.
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/arapucad", "--version"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  arapuca-quarantine:
+  arapuca-state:
+  arapuca-logs:
