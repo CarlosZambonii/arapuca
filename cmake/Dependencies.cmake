@@ -32,6 +32,7 @@ find_package(libssh 0.10.6 REQUIRED)
 # libmaxminddb ships no CMake config package, so it comes in through pkg-config.
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(MAXMINDDB REQUIRED IMPORTED_TARGET libmaxminddb)
+pkg_check_modules(MINIZIP REQUIRED IMPORTED_TARGET minizip)
 
 # ---------------------------------------------------------------------------
 # Fetched header only libraries, pinned by tag and commit hash

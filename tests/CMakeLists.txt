@@ -2,7 +2,9 @@
 # gtest_discover_tests, so a new TEST() shows up in `ctest` without edits here.
 
 add_executable(arapuca_unit_tests
+    unit/test_address_policy.cpp
     unit/test_auth_policy.cpp
+    unit/test_capture.cpp
     unit/test_clock.cpp
     unit/test_command_line.cpp
     unit/test_config.cpp
@@ -10,6 +12,7 @@ add_executable(arapuca_unit_tests
     unit/test_event_bus.cpp
     unit/test_event_sink.cpp
     unit/test_geoip.cpp
+    unit/test_http_request.cpp
     unit/test_ids.cpp
     unit/test_line_editor.cpp
     unit/test_logging.cpp
@@ -46,6 +49,7 @@ gtest_discover_tests(arapuca_unit_tests
 # actually produces.
 # ---------------------------------------------------------------------------
 add_executable(arapuca_integration_tests
+    integration/test_http_server.cpp
     integration/test_ssh_server.cpp)
 
 target_link_libraries(arapuca_integration_tests
@@ -55,6 +59,7 @@ target_link_libraries(arapuca_integration_tests
         arapuca::hardening
         arapuca::sanitizers
         ssh
+        httplib::httplib
         GTest::gtest_main)
 
 target_compile_definitions(arapuca_integration_tests

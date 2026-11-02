@@ -3,6 +3,12 @@
 # The executable is a thin shell around this library on purpose.
 # ---------------------------------------------------------------------------
 add_library(arapuca_core
+    capture/address_policy.cpp
+    capture/capture_engine.cpp
+    capture/downloader.cpp
+    capture/hashing.cpp
+    capture/quarantine.cpp
+    capture/virustotal.cpp
     core/clock.cpp
     core/config.cpp
     core/event.cpp
@@ -12,6 +18,9 @@ add_library(arapuca_core
     core/logging.cpp
     core/version.cpp
     enrich/geoip.cpp
+    http/decoys.cpp
+    http/http_service.cpp
+    http/request_record.cpp
     enrich/mitre_mapper.cpp
     enrich/session_classifier.cpp
     ssh/auth_policy.cpp
@@ -34,8 +43,12 @@ target_link_libraries(arapuca_core
     PUBLIC
         nlohmann_json::nlohmann_json
         spdlog::spdlog
+        httplib::httplib
         yaml-cpp::yaml-cpp
         PkgConfig::MAXMINDDB
+        CURL::libcurl
+        PkgConfig::MINIZIP
+        OpenSSL::Crypto
         ssh
         Threads::Threads
     PRIVATE
