@@ -14,6 +14,7 @@ add_library(arapuca_core
     enrich/geoip.cpp
     enrich/mitre_mapper.cpp
     enrich/session_classifier.cpp
+    ssh/vfs.cpp
     util/redaction.cpp)
 
 add_library(arapuca::core ALIAS arapuca_core)

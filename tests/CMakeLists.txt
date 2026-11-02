@@ -12,6 +12,7 @@ add_executable(arapuca_unit_tests
     unit/test_logging.cpp
     unit/test_mitre_mapper.cpp
     unit/test_session_classifier.cpp
+    unit/test_vfs.cpp
     unit/test_redaction.cpp
     unit/test_version.cpp)
 

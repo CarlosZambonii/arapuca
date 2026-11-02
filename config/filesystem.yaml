@@ -1,0 +1,248 @@
+# The fake filesystem the fake shell walks.
+#
+# Nothing here touches the real filesystem. `cat /etc/shadow` reads the string
+# below out of a map, and no syscall is involved.
+#
+# The goal is plausibility, not completeness. It should look like a small,
+# slightly neglected Ubuntu server that someone uses for something: a few real
+# looking users, a web application, some credentials worth stealing. An
+# attacker who finds a machine that is too clean, or too obviously a trap,
+# leaves early and tells us nothing.
+#
+# Every credential below is fabricated and invalid.
+
+root:
+  bin:
+    type: dir
+  boot:
+    type: dir
+  dev:
+    type: dir
+  etc:
+    type: dir
+    children:
+      hostname:
+        type: file
+        content: "srv-web-03\n"
+      hosts:
+        type: file
+        content: |
+          127.0.0.1 localhost
+          127.0.1.1 srv-web-03
+          10.0.3.14 db-internal
+          ::1 ip6-localhost ip6-loopback
+      passwd:
+        type: file
+        content: |
+          root:x:0:0:root:/root:/bin/bash
+          daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+          bin:x:2:2:bin:/bin:/usr/sbin/nologin
+          sys:x:3:3:sys:/dev:/usr/sbin/nologin
+          sync:x:4:65534:sync:/bin:/bin/sync
+          www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+          sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+          postgres:x:106:113:PostgreSQL administrator:/var/lib/postgresql:/bin/bash
+          deploy:x:1000:1000:deploy,,,:/home/deploy:/bin/bash
+          mdias:x:1001:1001:Marcos Dias,,,:/home/mdias:/bin/bash
+      shadow:
+        type: file
+        mode: "-rw-r-----"
+        group: shadow
+        content: |
+          root:$6$fZ8kQ2mR$0xK7vN3pLqW9cX1bT4yH6jU8sA2dF5gE7hI9kM0nP2qR4tV6wY8zB1cD3eF5gH7i:19845:0:99999:7:::
+          daemon:*:19845:0:99999:7:::
+          www-data:*:19845:0:99999:7:::
+          deploy:$6$mN4pQ7rS$9yL2xK5vB8nC1dF4gH7jM0pR3tW6zA9cE2fI5kN8qT1uX4yB7eH0jL3mP6sV9w:19901:0:99999:7:::
+          mdias:$6$tR8vW1yZ$3cF6iL9oR2uX5aD8gJ1mP4sV7yB0eH3kN6qT9wZ2cF5iL8oR1uX4aD7gJ0mP3s:19912:0:99999:7:::
+      "os-release":
+        type: file
+        content: |
+          PRETTY_NAME="Ubuntu 22.04.3 LTS"
+          NAME="Ubuntu"
+          VERSION_ID="22.04"
+          VERSION="22.04.3 LTS (Jammy Jellyfish)"
+          ID=ubuntu
+          ID_LIKE=debian
+      crontab:
+        type: file
+        content: |
+          17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+          25 6    * * *   root    test -x /usr/sbin/anacron || run-parts --report /etc/cron.daily
+          */10 *  * * *   deploy  /opt/app/scripts/sync.sh >> /var/log/sync.log 2>&1
+      resolv.conf:
+        type: file
+        content: |
+          nameserver 127.0.0.53
+          options edns0 trust-ad
+      ssh:
+        type: dir
+        children:
+          sshd_config:
+            type: file
+            content: |
+              Port 22
+              PermitRootLogin yes
+              PasswordAuthentication yes
+              X11Forwarding yes
+              UsePAM yes
+  home:
+    type: dir
+    children:
+      deploy:
+        type: dir
+        owner: deploy
+        group: deploy
+        children:
+          ".bashrc":
+            type: file
+            owner: deploy
+            group: deploy
+            content: |
+              # ~/.bashrc
+              export PATH=$PATH:/opt/app/bin
+              alias ll='ls -alF'
+          ".bash_history":
+            type: file
+            owner: deploy
+            group: deploy
+            mode: "-rw-------"
+            content: |
+              cd /opt/app
+              git pull
+              docker compose restart web
+              psql -h db-internal -U appuser appdb
+              sudo systemctl status nginx
+              exit
+          "notes.txt":
+            type: file
+            owner: deploy
+            group: deploy
+            content: |
+              reminder: rotate the db password before the audit
+              staging box is 10.0.3.22, same key
+      mdias:
+        type: dir
+        owner: mdias
+        group: mdias
+        children:
+          ".ssh":
+            type: dir
+            owner: mdias
+            group: mdias
+            mode: "drwx------"
+            children:
+              authorized_keys:
+                type: file
+                owner: mdias
+                group: mdias
+                mode: "-rw-------"
+                content: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPlaceholderKeyNotRealDoNotUse mdias@laptop\n"
+  lib:
+    type: dir
+  opt:
+    type: dir
+    children:
+      app:
+        type: dir
+        owner: deploy
+        group: deploy
+        children:
+          ".env":
+            type: file
+            owner: deploy
+            group: deploy
+            mode: "-rw-------"
+            content: |
+              APP_ENV=production
+              APP_KEY=base64:7Qx2VrNkDpLmS9fTgHjYwZ4cAeB6uI8oK1nM3bV5xC0=
+              DB_HOST=db-internal
+              DB_DATABASE=appdb
+              DB_USERNAME=appuser
+              DB_PASSWORD=Pr0d-Db-9fK2mQ7x
+              REDIS_PASSWORD=r3d1s-S3cr3t-88
+              MAIL_PASSWORD=smtp-Xk92LmQp
+          docker-compose.yml:
+            type: file
+            owner: deploy
+            group: deploy
+            content: |
+              services:
+                web:
+                  image: registry.internal/app:1.8.2
+                  ports: ["127.0.0.1:8000:8000"]
+                  env_file: .env
+  proc:
+    type: dir
+    children:
+      cpuinfo:
+        type: file
+        content: |
+          processor	: 0
+          vendor_id	: GenuineIntel
+          cpu family	: 6
+          model		: 85
+          model name	: Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz
+          cpu MHz		: 2500.000
+          cache size	: 36608 KB
+      meminfo:
+        type: file
+        content: |
+          MemTotal:        4030400 kB
+          MemFree:          812344 kB
+          MemAvailable:    2914208 kB
+          SwapTotal:             0 kB
+  root:
+    type: dir
+    mode: "drwx------"
+    children:
+      ".bash_history":
+        type: file
+        mode: "-rw-------"
+        content: |
+          apt update && apt upgrade -y
+          ufw allow 22
+          systemctl restart sshd
+          exit
+  run:
+    type: dir
+  sbin:
+    type: dir
+  srv:
+    type: dir
+  tmp:
+    type: dir
+    mode: "drwxrwxrwt"
+  usr:
+    type: dir
+    children:
+      bin:
+        type: dir
+      lib:
+        type: dir
+      local:
+        type: dir
+      sbin:
+        type: dir
+      share:
+        type: dir
+  var:
+    type: dir
+    children:
+      log:
+        type: dir
+        children:
+          auth.log:
+            type: file
+            mode: "-rw-r-----"
+            content: |
+              Nov  2 03:11:07 srv-web-03 sshd[41122]: Accepted publickey for deploy from 10.0.3.9 port 51234 ssh2
+              Nov  2 06:25:01 srv-web-03 CRON[41880]: pam_unix(cron:session): session opened for user deploy
+          syslog:
+            type: file
+            mode: "-rw-r-----"
+            content: |
+              Nov  2 06:25:01 srv-web-03 CRON[41881]: (deploy) CMD (/opt/app/scripts/sync.sh)
+      www:
+        type: dir
+        owner: www-data
+        group: www-data
