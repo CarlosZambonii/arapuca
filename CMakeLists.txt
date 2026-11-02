@@ -71,6 +71,7 @@ add_subdirectory(src)
 if(ARAPUCA_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+    add_subdirectory(tests/fuzz)
 endif()
 
 message(STATUS "")
