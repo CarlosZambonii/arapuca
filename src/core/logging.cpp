@@ -24,6 +24,7 @@ std::mutex& logger_mutex() {
 }
 
 spdlog::level::level_enum to_spdlog(LogLevel level) {
+    // clang-format off
     switch (level) {
         case LogLevel::Trace: return spdlog::level::trace;
         case LogLevel::Debug: return spdlog::level::debug;
@@ -32,6 +33,7 @@ spdlog::level::level_enum to_spdlog(LogLevel level) {
         case LogLevel::Error: return spdlog::level::err;
         case LogLevel::Off:   return spdlog::level::off;
     }
+    // clang-format on
     return spdlog::level::info;
 }
 
@@ -65,6 +67,7 @@ LogLevel parse_log_level(std::string_view name) {
 }
 
 std::string_view to_string(LogLevel level) {
+    // clang-format off
     switch (level) {
         case LogLevel::Trace: return "trace";
         case LogLevel::Debug: return "debug";
@@ -73,6 +76,7 @@ std::string_view to_string(LogLevel level) {
         case LogLevel::Error: return "error";
         case LogLevel::Off:   return "off";
     }
+    // clang-format on
     return "info";
 }
 

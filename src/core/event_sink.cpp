@@ -6,7 +6,8 @@
 
 namespace arapuca::core {
 
-JsonlFileSink::JsonlFileSink(std::filesystem::path path, std::size_t flush_every,
+JsonlFileSink::JsonlFileSink(std::filesystem::path path,
+                             std::size_t flush_every,
                              std::chrono::milliseconds flush_interval)
     : path_(std::move(path)),
       flush_every_(flush_every == 0 ? 1 : flush_every),

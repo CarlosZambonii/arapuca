@@ -8,9 +8,9 @@
 
 namespace {
 
-using arapuca::core::LogLevel;
 using arapuca::core::init_logging;
 using arapuca::core::log;
+using arapuca::core::LogLevel;
 using arapuca::core::parse_log_level;
 
 TEST(LogLevelParsing, KnownNames) {
@@ -37,8 +37,12 @@ TEST(LogLevelParsing, UnknownFallsBackToInfoNotOff) {
 }
 
 TEST(LogLevelParsing, RoundTripsThroughToString) {
-    for (const auto level : {LogLevel::Trace, LogLevel::Debug, LogLevel::Info,
-                             LogLevel::Warn, LogLevel::Error, LogLevel::Off}) {
+    for (const auto level : {LogLevel::Trace,
+                             LogLevel::Debug,
+                             LogLevel::Info,
+                             LogLevel::Warn,
+                             LogLevel::Error,
+                             LogLevel::Off}) {
         EXPECT_EQ(level, parse_log_level(arapuca::core::to_string(level)));
     }
 }

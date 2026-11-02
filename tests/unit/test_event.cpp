@@ -1,10 +1,9 @@
 #include <arapuca/core/event.hpp>
-
 #include <arapuca/version.hpp>
 
-#include <gtest/gtest.h>
-
 #include <nlohmann/json.hpp>
+
+#include <gtest/gtest.h>
 
 #include <string>
 
@@ -116,8 +115,7 @@ TEST(EventTypes, ServiceBucketsAreCorrect) {
     EXPECT_EQ("ssh", std::string(arapuca::core::service_of(EventType::SshCommand)));
     EXPECT_EQ("http", std::string(arapuca::core::service_of(EventType::HttpRequest)));
     EXPECT_EQ("capture", std::string(arapuca::core::service_of(EventType::CaptureDownload)));
-    EXPECT_EQ("honeypot",
-              std::string(arapuca::core::service_of(EventType::HoneypotLifecycle)));
+    EXPECT_EQ("honeypot", std::string(arapuca::core::service_of(EventType::HoneypotLifecycle)));
 }
 
 // One event is one line, with no exceptions, or the log stops being readable

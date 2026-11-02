@@ -1,0 +1,145 @@
+#cloud-config
+# Arapuca first boot bootstrap.
+#
+# Safety invariant S6: the real sshd is moved off port 22 BEFORE port 22 is ever
+# reachable. The security list opens only the operator port, so a real sshd is
+# never exposed on 22.
+#
+# Ordering matters, and it is the reason the relocation lives in bootcmd rather
+# than runcmd. cloud-init runs bootcmd in the init stage, before any package is
+# installed, while runcmd only runs in the final stage, after package install.
+# A package install that stalls (iptables-persistent asks debconf whether to
+# save existing rules, and that question blocks a non interactive boot) would
+# otherwise leave the box with sshd still on 22 and no way in on the new port.
+# Relocating first means SSH access survives any later failure.
+#
+# __REAL_SSH_PORT__ is substituted at apply time. The literal port is not
+# committed, because this repository is public.
+#
+# Recovery: if the relocation itself fails, the instance is unreachable. Open
+# port 22 in the security list temporarily, from the operator address only, or
+# use the Oracle Cloud Agent run command plugin, which needs no open port at
+# all. Both paths are in docs/DEPLOYMENT.md.
+
+# Answer the debconf questions up front so the package install can never block.
+debconf_selections:
+  iptables-persistent: |
+    iptables-persistent iptables-persistent/autosave_v4 boolean false
+    iptables-persistent iptables-persistent/autosave_v6 boolean false
+
+ssh_pwauth: false
+
+# The Always Free micro shape has 1 GB of RAM, which is tight once Docker, the
+# New Relic agent and the honeypot are all resident. A swap file keeps the box
+# from being killed by the OOM reaper during an attack burst.
+swap:
+  filename: /swapfile
+  size: 2147483648
+  maxsize: 2147483648
+
+bootcmd:
+  # This block only WRITES configuration. It starts, stops and restarts
+  # nothing, which is the whole design.
+  #
+  # Three attempts were needed to get here, and each failure is worth
+  # recording because they are all the same underlying problem:
+  #
+  #   1. A synchronous `systemctl restart ssh.socket` from inside cloud-init
+  #      deadlocks. ssh.socket is ordered after cloud-init.service, so systemd
+  #      waits for cloud-init while cloud-init waits for systemd. The boot
+  #      hangs, and with it sshd, snapd and the Oracle Cloud Agent, leaving an
+  #      instance that answers TCP but cannot be managed at all.
+  #   2. The same call with --no-block avoids the hang, but the queued start
+  #      job still interacts with socket activation in ways that are hard to
+  #      reason about, and the port did not end up where it was asked to.
+  #   3. What works is not restarting anything. Write the configuration, turn
+  #      socket activation off, enable the plain service, and reboot. The
+  #      second boot starts sshd from the final configuration with no ordering
+  #      question to get wrong.
+  #
+  # A reboot costs about forty seconds, once, at provisioning time.
+  - |
+    set -x
+    PORT=__REAL_SSH_PORT__
+    mkdir -p /var/lib/arapuca /etc/ssh/sshd_config.d
+
+    # 1. sshd configuration: the relocated port, key authentication only.
+    cat > /etc/ssh/sshd_config.d/99-arapuca.conf <<CONF
+    Port ${PORT}
+    PasswordAuthentication no
+    KbdInteractiveAuthentication no
+    PermitRootLogin no
+    PermitEmptyPasswords no
+    MaxAuthTries 3
+    LoginGraceTime 30
+    X11Forwarding no
+    AllowAgentForwarding no
+    ClientAliveInterval 300
+    ClientAliveCountMax 2
+    CONF
+
+    # 2. Turn off socket activation and use the plain service. Both of these
+    #    only rewrite symlinks, they queue no job, so neither can deadlock.
+    #    Disabling the socket is also what closes port 22: safety invariant S6
+    #    says a real sshd is never reachable there.
+    systemctl disable ssh.socket || true
+    systemctl unmask ssh.service || true
+    systemctl enable ssh.service || true
+
+    # 3. Open the new port. Harmless when the chain is empty.
+    iptables -I INPUT 1 -p tcp --dport "${PORT}" -m conntrack --ctstate NEW -j ACCEPT || true
+
+    # 4. A report on every boot, written to the serial console. The console is
+    #    readable through the OCI console history with no open port at all,
+    #    which is the only diagnostic channel left when the management port is
+    #    the thing that is broken. That is not hypothetical here, it is how
+    #    this file got debugged.
+    cat > /etc/systemd/system/arapuca-console-report.service <<UNIT
+    [Unit]
+    Description=Report Arapuca listening sockets to the serial console
+    After=network-online.target ssh.service
+    Wants=network-online.target
+
+    [Service]
+    Type=oneshot
+    RemainAfterExit=yes
+    ExecStart=/bin/sh -c 'echo "arapuca-report: $(date -Is)" > /dev/console; ss -tlnp 2>/dev/null | grep -E ":22 |:${PORT} " > /dev/console 2>&1 || echo "arapuca-report: nothing on 22 or ${PORT}" > /dev/console; systemctl is-active ssh.service > /dev/console 2>&1'
+
+    [Install]
+    WantedBy=multi-user.target
+    UNIT
+    systemctl enable arapuca-console-report.service || true
+
+    echo "$(date -Is) bootcmd: configuration written, reboot will apply it" >> /var/log/arapuca-bootstrap.log
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - iptables-persistent
+  - ca-certificates
+  - curl
+  - gnupg
+  - unattended-upgrades
+
+write_files:
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+runcmd:
+  # Persist the firewall rule now that the package exists.
+  - [ sh, -c, "netfilter-persistent save || true" ]
+  - [ sh, -c, "date -Is >> /var/log/arapuca-bootstrap.log" ]
+
+# Apply everything on a clean boot rather than by restarting services
+# underneath a running cloud-init. See the long note in bootcmd.
+power_state:
+  mode: reboot
+  condition: true
+  delay: now
+  message: "Arapuca bootstrap complete, rebooting to apply the SSH configuration"
+
+final_message: "Arapuca bootstrap finished after $UPTIME seconds"

@@ -19,7 +19,8 @@ bool EventBus::publish(Event event) {
     return true;
 }
 
-std::size_t EventBus::consume(std::vector<Event>& out, std::size_t max_events,
+std::size_t EventBus::consume(std::vector<Event>& out,
+                              std::size_t max_events,
                               std::chrono::milliseconds timeout) {
     std::unique_lock<std::mutex> lock(mutex_);
     if (queue_.empty() && !closed_) {

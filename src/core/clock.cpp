@@ -26,8 +26,7 @@ std::string to_rfc3339_millis(TimePoint tp) {
     }
 
     std::array<char, 8> fraction{};
-    std::snprintf(fraction.data(), fraction.size(), ".%03dZ",
-                  static_cast<int>(millis.count()));
+    std::snprintf(fraction.data(), fraction.size(), ".%03dZ", static_cast<int>(millis.count()));
 
     std::string out(buffer.data(), date_len);
     out.append(fraction.data());
@@ -35,8 +34,7 @@ std::string to_rfc3339_millis(TimePoint tp) {
 }
 
 std::int64_t to_unix_millis(TimePoint tp) {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch())
-        .count();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
 }
 
 }  // namespace arapuca::core

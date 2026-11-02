@@ -1,5 +1,4 @@
 #include <arapuca/core/event.hpp>
-
 #include <arapuca/core/ids.hpp>
 #include <arapuca/version.hpp>
 
@@ -8,6 +7,7 @@
 namespace arapuca::core {
 
 std::string_view to_string(EventType type) {
+    // clang-format off
     switch (type) {
         case EventType::SshAuthAttempt:    return "ssh.auth_attempt";
         case EventType::SshSessionStart:   return "ssh.session_start";
@@ -20,6 +20,7 @@ std::string_view to_string(EventType type) {
         case EventType::CaptureVtLookup:   return "capture.vt_lookup";
         case EventType::HoneypotLifecycle: return "honeypot.lifecycle";
     }
+    // clang-format on
     return "unknown";
 }
 

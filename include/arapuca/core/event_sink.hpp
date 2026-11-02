@@ -37,7 +37,8 @@ public:
     /// `flush_every` events, or every `flush_interval`, whichever comes first.
     /// A honeypot values not losing the last events before a crash more than
     /// it values write throughput, so the defaults are deliberately eager.
-    JsonlFileSink(std::filesystem::path path, std::size_t flush_every = 16,
+    JsonlFileSink(std::filesystem::path path,
+                  std::size_t flush_every = 16,
                   std::chrono::milliseconds flush_interval = std::chrono::milliseconds{1000});
     ~JsonlFileSink() override;
 
@@ -48,7 +49,10 @@ public:
     /// old file aside.
     void reopen();
 
-    [[nodiscard]] const std::filesystem::path& path() const { return path_; }
+    [[nodiscard]] const std::filesystem::path& path() const {
+        return path_;
+    }
+
     [[nodiscard]] std::uint64_t written() const;
 
 private:

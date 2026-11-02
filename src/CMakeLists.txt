@@ -4,12 +4,16 @@
 # ---------------------------------------------------------------------------
 add_library(arapuca_core
     core/clock.cpp
+    core/config.cpp
     core/event.cpp
     core/event_bus.cpp
     core/event_sink.cpp
     core/ids.cpp
     core/logging.cpp
     core/version.cpp
+    enrich/geoip.cpp
+    enrich/mitre_mapper.cpp
+    enrich/session_classifier.cpp
     util/redaction.cpp)
 
 add_library(arapuca::core ALIAS arapuca_core)
@@ -23,6 +27,8 @@ target_link_libraries(arapuca_core
     PUBLIC
         nlohmann_json::nlohmann_json
         spdlog::spdlog
+        yaml-cpp::yaml-cpp
+        PkgConfig::MAXMINDDB
         Threads::Threads
     PRIVATE
         arapuca::warnings

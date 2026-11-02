@@ -1,8 +1,8 @@
 #include <arapuca/util/redaction.hpp>
 
-#include <gtest/gtest.h>
-
 #include <nlohmann/json.hpp>
+
+#include <gtest/gtest.h>
 
 #include <string>
 

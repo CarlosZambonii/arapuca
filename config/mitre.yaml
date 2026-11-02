@@ -1,0 +1,180 @@
+# MITRE ATT&CK mapping rules for Arapuca.
+#
+# First match wins, so order is priority: put the specific rules above the
+# general ones. Matching is case insensitive unless a rule says otherwise.
+#
+# match kinds:
+#   contains  (default)  the pattern appears anywhere in the subject
+#   prefix               the subject starts with the pattern
+#   equals               the subject is exactly the pattern
+#   regex                ECMAScript regular expression
+#
+# The subject depends on the event: the command line for ssh.command, the
+# request path for http.request, the username for an auth attempt.
+#
+# Prefer contains and prefix over regex. These rules run on the session thread
+# for every single command an attacker types.
+
+rules:
+  # --- Credential access ---------------------------------------------------
+  - id: ssh-brute-force
+    technique_id: T1110
+    technique: Brute Force
+    tactic: Credential Access
+    event_types: [ssh.auth_attempt]
+    match: regex
+    pattern: ".*"
+
+  - id: http-brute-force
+    technique_id: T1110
+    technique: Brute Force
+    tactic: Credential Access
+    event_types: [http.login_attempt]
+    match: regex
+    pattern: ".*"
+
+  - id: read-shadow
+    technique_id: T1003.008
+    technique: "OS Credential Dumping: /etc/passwd and /etc/shadow"
+    tactic: Credential Access
+    event_types: [ssh.command]
+    pattern: "/etc/shadow"
+
+  - id: read-passwd
+    technique_id: T1003.008
+    technique: "OS Credential Dumping: /etc/passwd and /etc/shadow"
+    tactic: Credential Access
+    event_types: [ssh.command]
+    pattern: "/etc/passwd"
+
+  - id: ssh-private-keys
+    technique_id: T1552.004
+    technique: Private Keys
+    tactic: Credential Access
+    event_types: [ssh.command]
+    match: regex
+    pattern: "(\\.ssh/|id_rsa|id_ed25519|authorized_keys)"
+
+  - id: credentials-in-files
+    technique_id: T1552.001
+    technique: Credentials In Files
+    tactic: Credential Access
+    event_types: [http.request]
+    match: regex
+    pattern: "(\\.env|\\.git/config|config\\.php|wp-config|backup\\.sql|credentials|\\.aws/)"
+
+  # --- Ingress tool transfer -----------------------------------------------
+  - id: ingress-tool-transfer
+    technique_id: T1105
+    technique: Ingress Tool Transfer
+    tactic: Command and Control
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(wget|curl|tftp|ftpget|scp|rsync)\\b"
+
+  - id: capture-download
+    technique_id: T1105
+    technique: Ingress Tool Transfer
+    tactic: Command and Control
+    event_types: [capture.download]
+    match: regex
+    pattern: ".*"
+
+  # --- Discovery -----------------------------------------------------------
+  - id: system-information-discovery
+    technique_id: T1082
+    technique: System Information Discovery
+    tactic: Discovery
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(uname|lscpu|lsb_release|hostnamectl|/proc/cpuinfo|/proc/meminfo|dmidecode|free|df)\\b"
+
+  - id: account-discovery
+    technique_id: T1087.001
+    technique: "Account Discovery: Local Account"
+    tactic: Discovery
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(whoami|\\bid\\b|groups|lastlog|\\bw\\b|users)\\b"
+
+  - id: network-service-discovery
+    technique_id: T1046
+    technique: Network Service Discovery
+    tactic: Discovery
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(nmap|masscan|netstat|ss -|ifconfig|ip a|arp\\b)"
+
+  - id: process-discovery
+    technique_id: T1057
+    technique: Process Discovery
+    tactic: Discovery
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(ps |ps$|top|htop|pgrep)"
+
+  # --- Execution and persistence -------------------------------------------
+  - id: unix-shell
+    technique_id: T1059.004
+    technique: "Command and Scripting Interpreter: Unix Shell"
+    tactic: Execution
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(bash -c|sh -c|/bin/sh|/bin/bash|eval |chmod \\+x)"
+
+  - id: cron-persistence
+    technique_id: T1053.003
+    technique: "Scheduled Task: Cron"
+    tactic: Persistence
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(crontab|/etc/cron|systemd-run|\\.timer\\b)"
+
+  - id: account-manipulation
+    technique_id: T1098.004
+    technique: "Account Manipulation: SSH Authorized Keys"
+    tactic: Persistence
+    event_types: [ssh.command]
+    pattern: "authorized_keys"
+
+  - id: remote-services-ssh
+    technique_id: T1021.004
+    technique: "Remote Services: SSH"
+    tactic: Lateral Movement
+    event_types: [ssh.channel_denied]
+    match: regex
+    pattern: ".*"
+
+  # --- Defense evasion -----------------------------------------------------
+  - id: clear-command-history
+    technique_id: T1070.003
+    technique: Clear Command History
+    tactic: Defense Evasion
+    event_types: [ssh.command]
+    match: regex
+    pattern: "(history -c|\\.bash_history|HISTFILE|unset HISTFILE)"
+
+  - id: file-deletion
+    technique_id: T1070.004
+    technique: File Deletion
+    tactic: Defense Evasion
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(rm -rf|shred |wipe )"
+
+  - id: impair-defenses
+    technique_id: T1562.001
+    technique: "Impair Defenses: Disable or Modify Tools"
+    tactic: Defense Evasion
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(iptables -F|ufw disable|setenforce 0|systemctl stop (firewalld|ufw))"
+
+  # --- Impact ---------------------------------------------------------------
+  - id: resource-hijacking
+    technique_id: T1496
+    technique: Resource Hijacking
+    tactic: Impact
+    event_types: [ssh.command]
+    match: regex
+    pattern: "\\b(xmrig|minerd|stratum\\+tcp|cpuminer|nicehash)\\b"

@@ -1,8 +1,8 @@
 #include <arapuca/core/event_sink.hpp>
 
-#include <gtest/gtest.h>
-
 #include <nlohmann/json.hpp>
+
+#include <gtest/gtest.h>
 
 #include <filesystem>
 #include <fstream>
@@ -18,10 +18,10 @@ using arapuca::core::JsonlFileSink;
 class SinkTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        dir_ = std::filesystem::temp_directory_path() /
-               ("arapuca-sink-" + std::to_string(::testing::UnitTest::GetInstance()
-                                                     ->random_seed()) +
-                "-" + ::testing::UnitTest::GetInstance()->current_test_info()->name());
+        dir_ =
+            std::filesystem::temp_directory_path() /
+            ("arapuca-sink-" + std::to_string(::testing::UnitTest::GetInstance()->random_seed()) +
+             "-" + ::testing::UnitTest::GetInstance()->current_test_info()->name());
         std::filesystem::remove_all(dir_);
         path_ = dir_ / "events.jsonl";
     }
@@ -122,8 +122,7 @@ TEST_F(SinkTest, ReopenFollowsTheRotatedPath) {
 
     const auto lines = read_lines();
     ASSERT_EQ(1U, lines.size());
-    EXPECT_EQ("after rotation",
-              nlohmann::json::parse(lines[0]).at("command").get<std::string>());
+    EXPECT_EQ("after rotation", nlohmann::json::parse(lines[0]).at("command").get<std::string>());
 }
 
 TEST_F(SinkTest, FlushesAutomaticallyAfterTheConfiguredCount) {

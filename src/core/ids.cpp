@@ -9,13 +9,12 @@ namespace {
 
 // Crockford base32: no I, L, O or U, so an identifier read off a dashboard
 // cannot be mistyped into a different valid one.
-constexpr std::array<char, 32> kAlphabet = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                                            'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q',
-                                            'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'};
+constexpr std::array<char, 32> kAlphabet = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+                                            'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N',
+                                            'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'};
 
-constexpr std::size_t kTimeChars = 10;   // 48 bit millisecond timestamp
-constexpr std::size_t kRandomChars = 16; // 80 bits of randomness
+constexpr std::size_t kTimeChars = 10;    // 48 bit millisecond timestamp
+constexpr std::size_t kRandomChars = 16;  // 80 bits of randomness
 
 std::mt19937_64& rng() {
     // One generator per thread: sessions run on their own threads and a shared

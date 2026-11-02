@@ -36,7 +36,8 @@ public:
 
     /// Wait for up to `timeout` and move at most `max_events` into `out`.
     /// Returns the number moved. Returns 0 when the bus is closed and empty.
-    std::size_t consume(std::vector<Event>& out, std::size_t max_events,
+    std::size_t consume(std::vector<Event>& out,
+                        std::size_t max_events,
                         std::chrono::milliseconds timeout);
 
     /// Wake every waiter and refuse further publishes. Idempotent.
@@ -44,7 +45,10 @@ public:
 
     [[nodiscard]] bool closed() const;
     [[nodiscard]] std::size_t size() const;
-    [[nodiscard]] std::size_t capacity() const { return capacity_; }
+
+    [[nodiscard]] std::size_t capacity() const {
+        return capacity_;
+    }
 
     /// Events refused since start. Reported in the lifecycle event.
     [[nodiscard]] std::uint64_t dropped() const;

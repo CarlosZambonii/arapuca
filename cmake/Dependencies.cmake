@@ -26,6 +26,11 @@ set(FETCHCONTENT_QUIET OFF)
 find_package(Threads REQUIRED)
 find_package(OpenSSL 3.0 REQUIRED)
 find_package(CURL 8.0 REQUIRED)
+find_package(yaml-cpp 0.8 REQUIRED)
+
+# libmaxminddb ships no CMake config package, so it comes in through pkg-config.
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(MAXMINDDB REQUIRED IMPORTED_TARGET libmaxminddb)
 
 # ---------------------------------------------------------------------------
 # Fetched header only libraries, pinned by tag and commit hash

@@ -1,6 +1,5 @@
-#include <arapuca/util/redaction.hpp>
-
 #include <arapuca/core/limits.hpp>
+#include <arapuca/util/redaction.hpp>
 
 #include <array>
 #include <cstdint>
@@ -8,8 +7,8 @@
 namespace arapuca::util {
 namespace {
 
-constexpr std::array<char, 16> kHex = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                       '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+constexpr std::array<char, 16> kHex = {
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 /// Length of the UTF-8 sequence a lead byte announces, or 0 if it is not a
 /// valid lead byte.
@@ -36,9 +35,7 @@ bool is_valid_sequence(std::string_view input, std::size_t pos, std::size_t len)
     if (pos + len > input.size()) {
         return false;
     }
-    const auto byte_at = [&](std::size_t i) {
-        return static_cast<unsigned char>(input[pos + i]);
-    };
+    const auto byte_at = [&](std::size_t i) { return static_cast<unsigned char>(input[pos + i]); };
 
     for (std::size_t i = 1; i < len; ++i) {
         if ((byte_at(i) & 0xC0U) != 0x80U) {
@@ -55,8 +52,8 @@ bool is_valid_sequence(std::string_view input, std::size_t pos, std::size_t len)
             code_point = ((lead & 0x1FU) << 6) | (byte_at(1) & 0x3FU);
             return code_point >= 0x80U;
         case 3:
-            code_point = ((lead & 0x0FU) << 12) | ((byte_at(1) & 0x3FU) << 6) |
-                         (byte_at(2) & 0x3FU);
+            code_point =
+                ((lead & 0x0FU) << 12) | ((byte_at(1) & 0x3FU) << 6) | (byte_at(2) & 0x3FU);
             return code_point >= 0x800U && (code_point < 0xD800U || code_point > 0xDFFFU);
         case 4:
             code_point = ((lead & 0x07U) << 18) | ((byte_at(1) & 0x3FU) << 12) |
