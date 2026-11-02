@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arapuca, live honeypot</title>
+<meta name="description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arapuca, live honeypot">
+<meta property="og:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* Layout: a console readout. One column of bands on a dark ground, with the
+   world map as the only full width element and everything else in a 12 column
+   grid that collapses to one column on a phone. */
+:root {
+  color-scheme: dark;
+
+  /* Deep blue-black ground, sodium amber for attack volume, a cold cyan for
+     the honeypot's own defensive numbers. Neutrals carry a blue bias so they
+     sit with the ground rather than on top of it. */
+  --ground: #0b0f17;
+  --surface: #121823;
+  --surface-high: #1a2230;
+  --line: #243041;
+  --ink: #e8edf5;
+  --ink-dim: #93a1b8;
+  --ink-faint: #5e6e86;
+  --amber: #f2a33c;
+  --amber-deep: #b4651a;
+  --cyan: #4fd2c2;
+  --red: #e5634d;
+
+  --font-display: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --gutter: max(18px, env(safe-area-inset-left, 0px));
+  --gutter-right: max(18px, env(safe-area-inset-right, 0px));
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  /* A faint scanline wash. Enough to read as an instrument, not enough to
+     interfere with the text. */
+  background-image:
+    radial-gradient(900px 500px at 15% -10%, rgba(242, 163, 60, 0.07), transparent 70%),
+    radial-gradient(700px 400px at 95% 0%, rgba(79, 210, 194, 0.05), transparent 70%);
+  background-attachment: fixed;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter-right);
+}
+
+/* ---------- header ---------- */
+
+.masthead { padding-block: 40px 28px; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+}
+
+.pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 0 0 rgba(79, 210, 194, 0.6);
+  animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(79, 210, 194, 0.5); }
+  70%  { box-shadow: 0 0 0 9px rgba(79, 210, 194, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 210, 194, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 7vw, 4.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+h1 .quiet { color: var(--ink-faint); font-weight: 600; }
+
+.lede {
+  max-width: 62ch;
+  font-size: 1.07rem;
+  color: var(--ink-dim);
+  margin: 0;
+}
+.lede strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- invitation ---------- */
+
+.invite {
+  margin-block: 30px 8px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 20px;
+}
+.invite h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 6px;
+  letter-spacing: 0.01em;
+}
+.invite p { margin: 0 0 16px; color: var(--ink-dim); font-size: 0.93rem; max-width: 70ch; }
+
+.cmd-list { display: flex; flex-direction: column; gap: 8px; }
+
+.cmd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+.cmd code {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+.cmd code .prompt { color: var(--amber); user-select: none; }
+.cmd code .arg { color: var(--cyan); }
+
+.copy {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: var(--surface-high);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.copy:hover, .copy:focus-visible { color: var(--amber); border-color: var(--amber-deep); }
+.copy[data-done="1"] { color: var(--cyan); border-color: var(--cyan); }
+
+.fineprint {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin: 14px 0 0;
+  max-width: 72ch;
+}
+
+/* ---------- stats ---------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  margin-block: 34px;
+  overflow: hidden;
+}
+.stat { background: var(--surface); padding: 16px 18px; min-width: 0; }
+.stat .n {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--amber);
+  display: block;
+}
+.stat.cool .n { color: var(--cyan); }
+.stat .k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 5px;
+  display: block;
+}
+
+/* ---------- sections ---------- */
+
+section { margin-block: 46px; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 9px;
+  margin-bottom: 20px;
+}
+.section-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin: 0;
+  letter-spacing: 0.005em;
+}
+.section-head .note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------- map ---------- */
+
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+@media (max-width: 820px) { .map-layout { grid-template-columns: 1fr; } }
+
+.map-frame {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 8px;
+  min-width: 0;
+  position: relative;
+}
+#map { display: block; width: 100%; height: auto; }
+/* :not(.hit) matters. In SVG a CSS fill rule beats the fill presentation
+   attribute, so styling .land directly would paint over the colour computed
+   for every country that has traffic, and the map would draw grey with the
+   right values sitting unused in the DOM. */
+#map .land { stroke: var(--ground); stroke-width: 0.4; }
+#map .land:not(.hit) { fill: var(--surface-high); }
+#map .land.hit { cursor: pointer; }
+#map .land.hit:hover { stroke: var(--ink); stroke-width: 0.8; }
+#map .sphere { fill: #0d1420; stroke: var(--line); stroke-width: 0.6; }
+
+.tip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--ground);
+  border: 1px solid var(--amber-deep);
+  border-radius: 3px;
+  padding: 7px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+  z-index: 3;
+  transform: translate(-50%, -115%);
+}
+.tip .c { color: var(--amber); }
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 8px 4px 2px;
+}
+.ramp { height: 7px; flex: 1; border-radius: 2px; min-width: 60px; }
+
+/* ---------- lists ---------- */
+
+.rank { display: flex; flex-direction: column; gap: 1px; }
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  background: var(--surface);
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+.row .bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: rgba(242, 163, 60, 0.13);
+  z-index: 0;
+}
+.row.cool .bar { background: rgba(79, 210, 194, 0.11); }
+.row .label, .row .value { position: relative; z-index: 1; min-width: 0; }
+.row .label {
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row .value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+.col h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+/* ---------- techniques ---------- */
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+}
+.tech {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.tech .id {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--amber);
+  letter-spacing: 0.03em;
+}
+.tech .nm { font-size: 0.88rem; color: var(--ink); margin-top: 2px; }
+.tech .ct {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin-top: 6px;
+}
+
+/* ---------- feed ---------- */
+
+.feed { display: flex; flex-direction: column; gap: 1px; }
+.ev {
+  display: grid;
+  grid-template-columns: 76px 108px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  background: var(--surface);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  min-width: 0;
+}
+@media (max-width: 620px) {
+  .ev { grid-template-columns: 1fr; gap: 2px; padding-block: 10px; }
+}
+.ev .t { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.ev .who { color: var(--cyan); overflow: hidden; text-overflow: ellipsis; }
+.ev .what { color: var(--ink-dim); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ev .what b { color: var(--ink); font-weight: 500; }
+.ev .what .pw { color: var(--amber); }
+
+/* ---------- empty ---------- */
+
+.empty {
+  border: 1px dashed var(--line);
+  border-radius: 3px;
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--ink-dim);
+  background: var(--surface);
+}
+.empty strong { color: var(--ink); display: block; margin-bottom: 6px; font-weight: 600; }
+.empty span { font-size: 0.9rem; }
+
+/* ---------- footer ---------- */
+
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 56px;
+  padding-block: 26px 48px;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+footer a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--line); }
+footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(--amber-deep); }
+.foot-rows { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-bottom: 16px; }
+.disclaimer { max-width: 74ch; line-height: 1.65; }
+
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span></p>
+    <h1>Arapuca<span class="quiet">, a honeypot you are invited to attack</span></h1>
+    <p class="lede">
+      A fake SSH and HTTP server sitting on a public address, accepting weak
+      passwords on purpose and recording everything that happens next.
+      <strong>Nothing you send is ever executed.</strong> The shell is
+      fabricated, the filesystem is in memory, and the credentials you will
+      find in it open nothing.
+    </p>
+
+    <div class="invite">
+      <h2>Try to get in</h2>
+      <p>
+        It answers on the standard ports. Guess a weak password, look around,
+        and watch your country light up on the map below once the next export
+        runs. Your address appears with the last octet masked.
+      </p>
+      <div class="cmd-list" id="commands"></div>
+      <p class="fineprint">
+        Attacking this host is invited. Attacking anything else from it is not:
+        no channel reaches anything real, port forwarding and SFTP are refused,
+        and a download request aimed at a private range or at the cloud
+        metadata service is dropped before it connects.
+      </p>
+    </div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <div class="section-head">
+      <h2>Where it comes from</h2>
+      <span class="note" id="window-note">last 30 days</span>
+    </div>
+    <div class="map-layout">
+      <div>
+        <div class="map-frame">
+          <svg id="map" role="img" aria-label="World map of attack origins"></svg>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="legend">
+          <span>fewer</span>
+          <div class="ramp" id="ramp"></div>
+          <span>more</span>
+        </div>
+      </div>
+      <div>
+        <div class="col"><h3>Top countries</h3><div class="rank" id="countries"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>What they try</h2>
+      <span class="note">credentials and commands</span>
+    </div>
+    <div class="cols">
+      <div class="col"><h3>Passwords</h3><div class="rank" id="passwords"></div></div>
+      <div class="col"><h3>Usernames</h3><div class="rank" id="usernames"></div></div>
+      <div class="col"><h3>Commands typed</h3><div class="rank" id="commands-rank"></div></div>
+    </div>
+  </section>
+
+  <section id="tech-section">
+    <div class="section-head">
+      <h2>MITRE ATT&amp;CK</h2>
+      <span class="note">mapped from rules in yaml</span>
+    </div>
+    <div class="tech-grid" id="techniques"></div>
+  </section>
+
+  <section id="feed-section">
+    <div class="section-head">
+      <h2>Recent attempts</h2>
+      <span class="note">addresses masked</span>
+    </div>
+    <div class="feed" id="feed"></div>
+  </section>
+
+  <footer>
+    <div class="foot-rows">
+      <span>Source and full write up: <a href="https://github.com/carlosz/arapuca">github.com/carlosz/arapuca</a></span>
+      <span id="generated">data pending</span>
+    </div>
+    <p class="disclaimer">
+      Everything on this page was recorded by the sensor itself. Source
+      addresses are shown with the host part masked: addresses get reused, and
+      carrier grade NAT means one address can stand for thousands of people.
+      Passwords are shown in full because they are what is being sprayed at
+      the internet rather than anybody's secret. Captured samples are held
+      encrypted and read only, and are never published or uploaded anywhere.
+    </p>
+  </footer>
+
+</div>
+
+<!-- Bundled rather than loaded from a CDN. The map is the point of this page,
+     and a third party having a bad minute should not leave an empty rectangle
+     where the map was. It also lets the Content Security Policy stay at
+     script-src 'self'. Provenance and refresh instructions: web/data/README.md
+     and web/vendor/README.md. Only d3-geo is used, not the full d3 bundle,
+     which keeps this at 60 KB rather than 280 KB. -->
+<script src="vendor/d3-array.min.js"></script>
+<script src="vendor/d3-geo.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var WORLD = "data/world-110m.json";
+  var state = { data: null, world: null };
+
+  function el(id) { return document.getElementById(id); }
+  function num(value) { return (value || 0).toLocaleString("en-US"); }
+
+  function text(node, value) { node.textContent = value; return node; }
+
+  /* ---------- the invitation ---------- */
+
+  function renderCommands(target) {
+    // Before the first export the address is unknown. A placeholder that
+    // reads as a template is clearer than prose inside a shell command.
+    var host = target || "<host>";
+    var lines = [
+      { parts: ["ssh ", "root@" + host], hint: "try 123456, admin, root" },
+      { parts: ["curl ", "http://" + host + "/.env"], hint: "a decoy file" },
+      { parts: ["curl -d ", "'user=admin&pass=admin' http://" + host + "/admin"], hint: "the fake panel" }
+    ];
+
+    var holder = el("commands");
+    holder.textContent = "";
+
+    lines.forEach(function (line) {
+      var row = document.createElement("div");
+      row.className = "cmd";
+
+      var code = document.createElement("code");
+      var prompt = document.createElement("span");
+      prompt.className = "prompt";
+      prompt.textContent = "$ ";
+      code.appendChild(prompt);
+      code.appendChild(document.createTextNode(line.parts[0]));
+      var arg = document.createElement("span");
+      arg.className = "arg";
+      arg.textContent = line.parts[1];
+      code.appendChild(arg);
+      row.appendChild(code);
+
+      var button = document.createElement("button");
+      button.className = "copy";
+      button.type = "button";
+      button.textContent = "copy";
+      button.addEventListener("click", function () {
+        var full = line.parts.join("");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(full).then(function () {
+            button.textContent = "copied";
+            button.dataset.done = "1";
+            setTimeout(function () {
+              button.textContent = "copy";
+              delete button.dataset.done;
+            }, 1600);
+          }, function () { selectText(code); });
+        } else {
+          selectText(code);
+        }
+      });
+      row.appendChild(button);
+      holder.appendChild(row);
+    });
+  }
+
+  function selectText(node) {
+    var range = document.createRange();
+    range.selectNodeContents(node);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  /* ---------- counters ---------- */
+
+  function renderStats(totals) {
+    // Four, not five. Five tiles leave one alone in a row at phone width,
+    // and session count is the least interesting of them to a visitor.
+    var items = [
+      { n: totals.events, k: "attacks recorded", cool: false },
+      { n: totals.attackers, k: "unique addresses", cool: false },
+      { n: totals.countries, k: "countries", cool: false },
+      { n: totals.samples, k: "samples captured", cool: true }
+    ];
+
+    var holder = el("stats");
+    holder.textContent = "";
+    items.forEach(function (item) {
+      var box = document.createElement("div");
+      box.className = "stat" + (item.cool ? " cool" : "");
+      var n = document.createElement("span");
+      n.className = "n";
+      n.textContent = num(item.n);
+      var k = document.createElement("span");
+      k.className = "k";
+      k.textContent = item.k;
+      box.appendChild(n);
+      box.appendChild(k);
+      holder.appendChild(box);
+    });
+  }
+
+  /* ---------- ranked lists ---------- */
+
+  function renderRank(id, rows, cool) {
+    var holder = el(id);
+    holder.textContent = "";
+
+    if (!rows || !rows.length) {
+      var none = document.createElement("div");
+      none.className = "row";
+      none.appendChild(text(document.createElement("span"), "nothing yet")).className = "label";
+      holder.appendChild(none);
+      return;
+    }
+
+    var top = rows.reduce(function (max, row) { return Math.max(max, row.value); }, 0) || 1;
+
+    rows.forEach(function (row) {
+      var line = document.createElement("div");
+      line.className = "row" + (cool ? " cool" : "");
+
+      var bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.width = Math.max(2, (row.value / top) * 100) + "%";
+      line.appendChild(bar);
+
+      var label = document.createElement("span");
+      label.className = "label";
+      label.textContent = row.label;
+      label.title = row.label;
+      line.appendChild(label);
+
+      var value = document.createElement("span");
+      value.className = "value";
+      value.textContent = num(row.value);
+      line.appendChild(value);
+
+      holder.appendChild(line);
+    });
+  }
+
+  /* ---------- the map ---------- */
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function svgEl(name, attrs) {
+    var node = document.createElementNS(SVG_NS, name);
+    Object.keys(attrs || {}).forEach(function (key) {
+      if (attrs[key] !== null && attrs[key] !== undefined) {
+        node.setAttribute(key, attrs[key]);
+      }
+    });
+    return node;
+  }
+
+  function sizeMap(svg) {
+    var frame = document.querySelector(".map-frame");
+    var width = Math.max(280, frame.clientWidth - 16);
+    var height = Math.round(width * 0.52);
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    return { width: width, height: height, frame: frame };
+  }
+
+  function mapUnavailable() {
+    var svg = el("map");
+    svg.textContent = "";
+    var box = sizeMap(svg);
+    var label = svgEl("text", {
+      x: box.width / 2, y: box.height / 2, "text-anchor": "middle",
+      fill: "#5e6e86", "font-family": "IBM Plex Mono, monospace", "font-size": 12
+    });
+    label.textContent = "map geometry could not be loaded";
+    svg.appendChild(label);
+  }
+
+  /* Two hex colours, mixed in sRGB. A dependency on a whole scale package
+     would cost more than the eight lines it replaces. */
+  function mixer(from, to) {
+    function parse(hex) {
+      return [
+        parseInt(hex.slice(1, 3), 16),
+        parseInt(hex.slice(3, 5), 16),
+        parseInt(hex.slice(5, 7), 16)
+      ];
+    }
+    var a = parse(from), b = parse(to);
+    return function (t) {
+      var k = Math.max(0, Math.min(1, t));
+      return "rgb(" +
+        Math.round(a[0] + (b[0] - a[0]) * k) + "," +
+        Math.round(a[1] + (b[1] - a[1]) * k) + "," +
+        Math.round(a[2] + (b[2] - a[2]) * k) + ")";
+    };
+  }
+
+  function renderMap() {
+    var svg = el("map");
+    if (!window.d3 || !d3.geoNaturalEarth1 || !window.topojson || !state.world) {
+      mapUnavailable();
+      return;
+    }
+
+    var byId = {};
+    var top = 1;
+    if (state.data) {
+      state.data.countries.forEach(function (country) {
+        if (!country.id) { return; }
+        byId[String(Number(country.id))] = country;
+        top = Math.max(top, country.attacks);
+      });
+    }
+
+    svg.textContent = "";
+    var box = sizeMap(svg);
+
+    var countries = topojson.feature(state.world, state.world.objects.countries);
+    var projection = d3.geoNaturalEarth1().fitSize([box.width, box.height], { type: "Sphere" });
+    var path = d3.geoPath(projection);
+
+    // Square root, not linear: one country usually produces most of the
+    // traffic, and a linear ramp would leave every other country the same
+    // shade as a country with no traffic at all.
+    var shade = mixer("#1d2838", "#f2a33c");
+    function colour(attacks) { return shade(Math.sqrt(attacks / top)); }
+
+    svg.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
+
+    var group = svgEl("g", {});
+    var tip = el("tip");
+
+    countries.features.forEach(function (feature) {
+      var hit = byId[String(Number(feature.id))];
+      var shape = svgEl("path", {
+        d: path(feature),
+        class: "land" + (hit ? " hit" : ""),
+        fill: hit ? colour(hit.attacks) : null
+      });
+
+      if (hit) {
+        shape.addEventListener("mousemove", function (event) {
+          tip.textContent = "";
+          var name = document.createElement("div");
+          name.textContent = hit.name;
+          var count = document.createElement("div");
+          count.className = "c";
+          count.textContent = num(hit.attacks) + " attacks, " + num(hit.attackers) + " addresses";
+          tip.appendChild(name);
+          tip.appendChild(count);
+          var bounds = box.frame.getBoundingClientRect();
+          tip.style.left = (event.clientX - bounds.left) + "px";
+          tip.style.top = (event.clientY - bounds.top) + "px";
+          tip.hidden = false;
+        });
+        shape.addEventListener("mouseleave", function () { tip.hidden = true; });
+      }
+      group.appendChild(shape);
+    });
+    svg.appendChild(group);
+
+    el("ramp").style.background = "linear-gradient(to right, " +
+      colour(0) + ", " + colour(top * 0.35) + ", " + colour(top) + ")";
+  }
+
+  /* ---------- techniques and feed ---------- */
+
+  function renderTechniques(rows) {
+    var holder = el("techniques");
+    holder.textContent = "";
+    if (!rows || !rows.length) {
+      el("tech-section").hidden = true;
+      return;
+    }
+    rows.forEach(function (row) {
+      var card = document.createElement("div");
+      card.className = "tech";
+      var id = document.createElement("div");
+      id.className = "id";
+      id.textContent = row.id;
+      var name = document.createElement("div");
+      name.className = "nm";
+      name.textContent = row.name;
+      var count = document.createElement("div");
+      count.className = "ct";
+      count.textContent = num(row.events) + " events";
+      card.appendChild(id);
+      card.appendChild(name);
+      card.appendChild(count);
+      holder.appendChild(card);
+    });
+  }
+
+  function describe(event) {
+    var what = document.createElement("span");
+    what.className = "what";
+
+    if (event.kind === "ssh.command") {
+      what.appendChild(text(document.createElement("b"), "ran "));
+      what.appendChild(document.createTextNode(event.command || ""));
+    } else {
+      what.appendChild(text(document.createElement("b"), "tried "));
+      what.appendChild(document.createTextNode((event.username || "(empty)") + " / "));
+      var password = document.createElement("span");
+      password.className = "pw";
+      password.textContent = event.password || "(empty)";
+      what.appendChild(password);
+    }
+    return what;
+  }
+
+  function renderFeed(rows) {
+    var holder = el("feed");
+    holder.textContent = "";
+    if (!rows || !rows.length) {
+      el("feed-section").hidden = true;
+      return;
+    }
+    rows.forEach(function (event) {
+      var line = document.createElement("div");
+      line.className = "ev";
+
+      var when = document.createElement("span");
+      when.className = "t";
+      when.textContent = event.at ? event.at.slice(11, 19) : "";
+      line.appendChild(when);
+
+      var who = document.createElement("span");
+      who.className = "who";
+      who.textContent = event.ip + (event.country ? " " + event.country : "");
+      line.appendChild(who);
+
+      line.appendChild(describe(event));
+      holder.appendChild(line);
+    });
+  }
+
+  /* ---------- empty state ---------- */
+
+  function renderEmpty() {
+    ["countries", "passwords", "usernames", "commands-rank"].forEach(function (id) {
+      var holder = el(id);
+      holder.textContent = "";
+      var box = document.createElement("div");
+      box.className = "empty";
+      var title = document.createElement("strong");
+      title.textContent = "Nothing recorded yet";
+      var body = document.createElement("span");
+      body.textContent = "The sensor is collecting. Try one of the commands above.";
+      box.appendChild(title);
+      box.appendChild(body);
+      holder.appendChild(box);
+    });
+    el("tech-section").hidden = true;
+    el("feed-section").hidden = true;
+  }
+
+  /* ---------- boot ---------- */
+
+  function render() {
+    var data = state.data;
+    renderCommands(data.target);
+    renderStats(data.totals);
+    el("window-note").textContent = "last " + (data.window || "30 days");
+
+    if (data.generated_at) {
+      el("generated").textContent = "Updated " + data.generated_at.replace("T", " ").replace("Z", " UTC");
+    }
+    el("status").textContent = data.totals.events > 0 ? "live sensor" : "sensor online, collecting";
+
+    if (!data.totals.events) {
+      renderEmpty();
+      renderMap();
+      return;
+    }
+
+    renderRank("countries", data.countries.slice(0, 12).map(function (country) {
+      return { label: country.name, value: country.attacks };
+    }));
+    renderRank("passwords", data.passwords);
+    renderRank("usernames", data.usernames);
+    renderRank("commands-rank", data.commands, true);
+    renderTechniques(data.techniques);
+    renderFeed(data.recent);
+    renderMap();
+  }
+
+  function boot() {
+    // Both fetches are awaited together and the page is drawn once. An
+    // earlier version rendered from whichever arrived first and let the other
+    // trigger a redraw, which raced: the map drew before the figures existed
+    // and was never recoloured. One render with everything in hand has no
+    // ordering to get wrong.
+    function load(url, options) {
+      return fetch(url, options).then(function (response) {
+        if (!response.ok) { throw new Error(url + " " + response.status); }
+        return response.json();
+      });
+    }
+
+    Promise.allSettled([
+      load("data/live.json", { cache: "no-store" }),
+      load(WORLD, {})
+    ]).then(function (settled) {
+      if (settled[0].status === "fulfilled") {
+        state.data = settled[0].value;
+      } else {
+        el("status").textContent = "data unavailable";
+        state.data = {
+          target: "", window: "30 days",
+          totals: { events: 0, attackers: 0, sessions: 0, samples: 0, countries: 0 },
+          countries: [], passwords: [], usernames: [], commands: [],
+          techniques: [], recent: []
+        };
+      }
+
+      state.world = settled[1].status === "fulfilled" ? settled[1].value : null;
+      render();
+    });
+
+    var timer;
+    window.addEventListener("resize", function () {
+      clearTimeout(timer);
+      timer = setTimeout(renderMap, 180);
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

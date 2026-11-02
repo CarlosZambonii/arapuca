@@ -1,0 +1,70 @@
+name: Live map data
+
+# Hourly. The page says "live sensor", so the data behind it should not be a
+# day old. The export is cheap: eight NRQL queries and a commit.
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-map
+  cancel-in-progress: false
+
+jobs:
+  export:
+    name: Export the public view
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r tools/requirements.txt
+
+      - name: Export
+        env:
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+          NEW_RELIC_REGION: ${{ vars.NEW_RELIC_REGION || 'US' }}
+        # The public address of the sensor is a repository variable rather than
+        # a committed value. Publishing it is a deliberate act, and the CI
+        # check that forbids a public address in the sources stays in force.
+        run: |
+          python tools/live_export.py \
+            --target "${{ vars.ARAPUCA_PUBLIC_HOST }}" \
+            --output web/data/live.json
+
+      - name: Commit, which triggers the Netlify deploy
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/data/live.json
+
+          # generated_at changes on every run, so a naive diff is never empty.
+          # Compare everything except that field, or the repository fills with
+          # twenty four identical commits a day.
+          if git diff --cached --quiet -- web/data/live.json; then
+            echo "no change"
+            exit 0
+          fi
+          previous=$(git show HEAD:web/data/live.json 2>/dev/null || echo '{}')
+          if [ "$(echo "$previous" | jq -S 'del(.generated_at)')" \
+             = "$(jq -S 'del(.generated_at)' web/data/live.json)" ]; then
+            echo "only the timestamp changed, skipping"
+            git reset -- web/data/live.json
+            exit 0
+          fi
+
+          attacks=$(jq -r '.totals.events' web/data/live.json)
+          countries=$(jq -r '.totals.countries' web/data/live.json)
+          git commit -m "chore(map): refresh live data" \
+                     -m "${attacks} attacks from ${countries} countries."
+          git push

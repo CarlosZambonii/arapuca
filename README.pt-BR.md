@@ -183,6 +183,22 @@ Um objeto JSON por linha, documentado campo a campo em
 | ![Dashboard de visão geral](docs/images/dashboard-overview.png) | ![Dashboard de sessões](docs/images/dashboard-sessions.png) |
 | _Visão geral: tráfego, geografia, credenciais, técnicas ATT&CK_ | _Sessões: transcrições, ritmo de digitação, classificação_ |
 
+### Mapa ao vivo
+
+A pasta [`web/`](web/) é uma página pública que mostra de onde vêm os ataques,
+publicada no Netlify. Ela existe para o honeypot poder ser compartilhado com
+quem não tem conta no New Relic, e para quem ler sobre ele poder tentar entrar
+e ver o próprio país aparecer.
+
+A chave do New Relic nunca chega ao navegador. Um job agendado roda o
+`tools/live_export.py`, commita o `web/data/live.json`, e o Netlify publica
+nesse push, então a chave vive só nos secrets do GitHub.
+
+O que a página publica é deliberadamente mais grosso que o feed de IoCs: os
+endereços de origem aparecem com a parte de host mascarada, porque o atacante
+precisa reconhecer a própria tentativa enquanto quem divide um endereço
+compartilhado não é nomeado.
+
 ### Feed de IoCs
 
 A pasta [`iocs/`](iocs/) é regerada diariamente e a [`reports/`](reports/)

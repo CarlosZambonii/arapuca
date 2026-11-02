@@ -185,6 +185,22 @@ One JSON object per line, documented field by field in
 | ![Overview dashboard](docs/images/dashboard-overview.png) | ![Sessions dashboard](docs/images/dashboard-sessions.png) |
 | _Overview: traffic, geography, credentials, ATT&CK techniques_ | _Sessions: transcripts, typing rhythm, classification_ |
 
+### Live map
+
+[`web/`](web/) is a public page showing where the attacks come from, deployed
+on Netlify. It exists so the honeypot can be shared with people who do not
+have a New Relic account, and so anyone reading about it can try to get in and
+watch their own country appear.
+
+The New Relic key never reaches a browser. A scheduled job runs
+`tools/live_export.py`, commits `web/data/live.json`, and Netlify deploys on
+that push, so the key lives only in GitHub secrets.
+
+What the page publishes is deliberately coarser than the IoC feed: source
+addresses are shown with the host part masked, because an attacker should
+recognise their own attempt while a bystander on a shared address is not
+named.
+
 ### IoC feed
 
 [`iocs/`](iocs/) is regenerated daily and [`reports/`](reports/) weekly, both
