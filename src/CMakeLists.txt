@@ -19,6 +19,7 @@ add_library(arapuca_core
     ssh/command_registry.cpp
     ssh/line_editor.cpp
     ssh/shell.cpp
+    ssh/ssh_service.cpp
     ssh/vfs.cpp
     util/redaction.cpp)
 
@@ -35,6 +36,7 @@ target_link_libraries(arapuca_core
         spdlog::spdlog
         yaml-cpp::yaml-cpp
         PkgConfig::MAXMINDDB
+        ssh
         Threads::Threads
     PRIVATE
         arapuca::warnings

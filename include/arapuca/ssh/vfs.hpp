@@ -22,6 +22,9 @@
 
 namespace arapuca::ssh {
 
+// A node holds a map of nodes, so its destructor is recursive by nature. The
+// depth is bounded at load time by kMaxDepth.
+// NOLINTNEXTLINE(misc-no-recursion)
 struct VfsNode {
     bool is_directory = false;
     /// File contents. Empty for directories.

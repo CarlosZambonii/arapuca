@@ -38,3 +38,30 @@ arapuca_apply_tidy(arapuca_unit_tests)
 gtest_discover_tests(arapuca_unit_tests
     PROPERTIES LABELS unit
     DISCOVERY_TIMEOUT 30)
+
+# ---------------------------------------------------------------------------
+# Integration tests. These start a real server and drive it with a real
+# client, so they catch the things a mock cannot: the channel policy as it
+# behaves on the wire, the banner an attacker sees, the events a session
+# actually produces.
+# ---------------------------------------------------------------------------
+add_executable(arapuca_integration_tests
+    integration/test_ssh_server.cpp)
+
+target_link_libraries(arapuca_integration_tests
+    PRIVATE
+        arapuca::core
+        arapuca::warnings
+        arapuca::hardening
+        arapuca::sanitizers
+        ssh
+        GTest::gtest_main)
+
+target_compile_definitions(arapuca_integration_tests
+    PRIVATE ARAPUCA_CONFIG_DIR="${PROJECT_SOURCE_DIR}/config")
+
+arapuca_apply_tidy(arapuca_integration_tests)
+
+gtest_discover_tests(arapuca_integration_tests
+    PROPERTIES LABELS integration
+    DISCOVERY_TIMEOUT 60)
