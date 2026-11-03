@@ -99,8 +99,7 @@ QUERIES = {
     f"AND geo.country_iso IS NOT NULL SINCE 30 days ago",
     # When the sensor first spoke. A wide window so a sensor up longer than
     # the map's 30 days is still dated from its real start, not clipped to it.
-    "first_event": f"SELECT min(timestamp) AS first FROM Log WHERE {SCOPE} "
-    f"SINCE 180 days ago",
+    "first_event": f"SELECT min(timestamp) AS first FROM Log WHERE {SCOPE} SINCE 180 days ago",
     # The busiest session, for the replay. A facet is ordered by its
     # aggregate descending, so LIMIT 1 is the one that typed the most.
     "top_session": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "

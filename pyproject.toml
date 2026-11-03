@@ -27,3 +27,11 @@ strict = true
 explicit_package_bases = true
 mypy_path = "tools"
 warn_unused_ignores = true
+# The tests monkeypatch and feed deliberately malformed rows; typing them to
+# strict would be noise. ruff still lints them.
+exclude = ["tools/tests/"]
+
+[tool.pytest.ini_options]
+# The scripts are programs, not a package; conftest.py puts tools/ on the path.
+testpaths = ["tools/tests"]
+addopts = "-q"

@@ -78,6 +78,9 @@ jobs:
       - name: Types
         run: mypy
 
+      - name: Tests
+        run: pytest
+
   build-and-test:
     name: Build ${{ matrix.arch }} ${{ matrix.compiler }}
     runs-on: ${{ matrix.runner }}

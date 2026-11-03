@@ -22,7 +22,7 @@ The Python in `tools/` has its own gate:
 
 ```bash
 pip install -r tools/requirements.txt -r tools/requirements-dev.txt
-ruff check . && ruff format --check . && mypy
+ruff check . && ruff format --check . && mypy && pytest
 ```
 
 ## Safety invariants
