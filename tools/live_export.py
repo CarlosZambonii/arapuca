@@ -22,11 +22,11 @@ import argparse
 import json
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
-from nerdgraph import run_nrql, settings_from_environment  # noqa: E402
+from nerdgraph import run_nrql, settings_from_environment
 
 SCOPE = "logtype = 'arapuca'"
 
@@ -60,8 +60,7 @@ _ISO_PACKED = (
 )
 
 ISO_NUMERIC = {
-    _ISO_PACKED[i : i + 2]: _ISO_PACKED[i + 2 : i + 5]
-    for i in range(0, len(_ISO_PACKED), 5)
+    _ISO_PACKED[i : i + 2]: _ISO_PACKED[i + 2 : i + 5] for i in range(0, len(_ISO_PACKED), 5)
 }
 
 QUERIES = {
@@ -125,9 +124,7 @@ def mask(address: str) -> str:
 def iso_timestamp(value: Any) -> str:
     try:
         return (
-            datetime.fromtimestamp(float(value) / 1000.0, tz=timezone.utc)
-            .isoformat()
-            .replace("+00:00", "Z")
+            datetime.fromtimestamp(float(value) / 1000.0, tz=UTC).isoformat().replace("+00:00", "Z")
         )
     except (TypeError, ValueError, OSError):
         return ""
@@ -139,7 +136,7 @@ def build(
     totals = (results["totals"] or [{}])[0]
     captures = (results["captures"] or [{}])[0]
 
-    countries = []
+    countries: list[dict[str, Any]] = []
     for row in results["countries"]:
         names = facet(row)
         if not names or not names[0] or names[0] == "None":
@@ -197,7 +194,7 @@ def build(
         )
     recent.sort(key=lambda item: item["at"], reverse=True)
 
-    origins = []
+    origins: list[dict[str, Any]] = []
     for row in results["origins"]:
         names = facet(row)
         if len(names) < 2:
@@ -221,13 +218,16 @@ def build(
     located = int((results["located"] or [{}])[0].get("located") or 0)
 
     daily = [
-        {"at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000), "count": int(row.get("count") or 0)}
+        {
+            "at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000),
+            "count": int(row.get("count") or 0),
+        }
         for row in results["daily"]
         if row.get("beginTimeSeconds")
     ]
 
     return {
-        "generated_at": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
+        "generated_at": datetime.now(tz=UTC).isoformat().replace("+00:00", "Z"),
         "window": "30 days",
         "target": target,
         "sensor_location": sensor,
@@ -284,8 +284,7 @@ def main() -> int:
     )
     arguments = parser.parse_args()
 
-    account_id, api_key, region = settings_from_environment()
-    api = {"account_id": account_id, "api_key": api_key, "region": region}
+    api = settings_from_environment()
 
     results = {name: run_nrql(query, **api) for name, query in QUERIES.items()}
 

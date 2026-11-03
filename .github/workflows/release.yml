@@ -1,0 +1,125 @@
+name: Release
+
+# A tag is the only thing anyone can pin to. Until now there were none: the
+# container published :latest and a commit sha, the version in CMakeLists had
+# never moved, and there was no document saying what changed between two
+# builds. This workflow turns a tag into a release, and refuses to do it if
+# the tag and the sources disagree about the version.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify the tag
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build pkg-config libssl-dev \
+            libcurl4-openssl-dev libssh-dev libyaml-cpp-dev libmaxminddb-dev \
+            libminizip-dev
+
+      # A tag that does not match the version in the sources produces a
+      # binary whose --version lies about which release it is.
+      - name: The tag, the project version and the changelog must agree
+        id: version
+        run: |
+          set -euo pipefail
+          tag="${{ inputs.tag || github.ref_name }}"
+          version="${tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+          declared=$(grep -oP '^\s*VERSION \K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt | head -1)
+          if [ "$declared" != "$version" ]; then
+            echo "tag ${tag} but CMakeLists declares ${declared}" >&2
+            exit 1
+          fi
+
+          if ! grep -q "^## \[${version}\]" CHANGELOG.md; then
+            echo "CHANGELOG.md has no section for ${version}" >&2
+            exit 1
+          fi
+
+      - name: Build and test
+        run: |
+          cmake --preset release
+          cmake --build --preset release
+          ctest --preset release
+
+      - name: The binary reports the version it claims to be
+        run: |
+          set -euo pipefail
+          reported=$(./build/release/src/arapucad --version)
+          echo "$reported"
+          echo "$reported" | grep -q "${{ steps.version.outputs.version }}"
+
+  publish:
+    name: Publish the release
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      # The notes are the changelog section for this version, not a list of
+      # commit subjects: the commits say what changed, the changelog says
+      # what it means for someone running it.
+      - name: Take the notes out of the changelog
+        run: |
+          set -euo pipefail
+          version="${{ needs.verify.outputs.version }}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { inside = 1; next }
+            inside && /^## \[/ { exit }
+            inside { print }
+          ' CHANGELOG.md > notes.md
+
+          {
+            echo
+            echo "## Container image"
+            echo
+            echo '```'
+            echo "docker pull ghcr.io/${GITHUB_REPOSITORY,,}:v${version}"
+            echo '```'
+            echo
+            echo "Built for linux/amd64 and linux/arm64, runs unprivileged on"
+            echo "a read only filesystem. See DEPLOYMENT.md before exposing it."
+          } >> notes.md
+
+          cat notes.md
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ inputs.tag || github.ref_name }}"
+          gh release create "$tag" \
+            --title "Arapuca ${tag}" \
+            --notes-file notes.md \
+            --verify-tag

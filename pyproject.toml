@@ -1,0 +1,29 @@
+# There is no Python package here. This file exists so ruff and mypy have one
+# place to read their settings from, for the scripts in tools/ that run on a
+# schedule against live data and had no checks at all before.
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["tools"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # import order
+    "B",        # bugbear
+    "UP",       # pyupgrade
+    "SIM",      # simplifications
+    "RUF",      # ruff's own
+]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["tools"]
+strict = true
+# tools/ is a directory of scripts, not a package, and each one adds its own
+# directory to sys.path to import nerdgraph.
+explicit_package_bases = true
+mypy_path = "tools"
+warn_unused_ignores = true

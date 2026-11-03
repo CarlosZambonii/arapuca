@@ -1,0 +1,76 @@
+name: CodeQL
+
+# Semantic analysis, which is a different thing from the compiler warnings and
+# clang-tidy that CI already runs: CodeQL follows data from a source to a sink
+# across translation units, which is exactly the shape of this codebase's risk,
+# attacker controlled bytes arriving on a socket and travelling inwards.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so a query pack published after the last commit still finds the
+    # code. A repository that only scans on push stops being scanned the day
+    # it stops changing.
+    - cron: "13 4 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyse:
+    name: Analyse ${{ matrix.language }}
+    runs-on: ubuntu-24.04
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: c-cpp
+            build-mode: manual
+          - language: python
+            build-mode: none
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        if: matrix.language == 'c-cpp'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build pkg-config libssl-dev \
+            libcurl4-openssl-dev libssh-dev libyaml-cpp-dev libmaxminddb-dev \
+            libminizip-dev
+
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # security-extended adds the queries that are worth triaging by hand
+          # on a target like this one, at the cost of a longer run.
+          queries: security-extended
+
+      # Debug, not release: CodeQL reads what the compiler saw, and an
+      # optimised build can inline away the very path a query is looking for.
+      - name: Build
+        if: matrix.language == 'c-cpp'
+        run: |
+          cmake --preset dev
+          cmake --build --preset dev
+
+      - name: Analyse
+        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
+        with:
+          category: "/language:${{ matrix.language }}"

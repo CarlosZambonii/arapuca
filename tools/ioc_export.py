@@ -22,11 +22,11 @@ import csv
 import json
 import pathlib
 import sys
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from typing import Any
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
-from nerdgraph import run_nrql, settings_from_environment  # noqa: E402
+from nerdgraph import ApiSettings, run_nrql, settings_from_environment
 
 IPS_QUERY = """
 SELECT count(*) AS events,
@@ -82,9 +82,7 @@ def as_timestamp(value: Any) -> str:
         return ""
     try:
         return (
-            datetime.fromtimestamp(float(value) / 1000.0, tz=timezone.utc)
-            .isoformat()
-            .replace("+00:00", "Z")
+            datetime.fromtimestamp(float(value) / 1000.0, tz=UTC).isoformat().replace("+00:00", "Z")
         )
     except (TypeError, ValueError, OSError):
         return ""
@@ -103,9 +101,9 @@ def write_json(path: pathlib.Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def collect_ips(window: str, **api: Any) -> list[dict[str, Any]]:
+def collect_ips(window: str, api: ApiSettings) -> list[dict[str, Any]]:
     rows = run_nrql(IPS_QUERY.format(window=window), **api)
-    out = []
+    out: list[dict[str, Any]] = []
     for row in rows:
         address = facet_of(row)
         if not address:
@@ -125,13 +123,11 @@ def collect_ips(window: str, **api: Any) -> list[dict[str, Any]]:
     return out
 
 
-def collect_hashes(window: str, **api: Any) -> list[dict[str, Any]]:
+def collect_hashes(window: str, api: ApiSettings) -> list[dict[str, Any]]:
     samples = run_nrql(HASHES_QUERY.format(window=window), **api)
-    verdicts = {
-        facet_of(row): row for row in run_nrql(VT_QUERY.format(window=window), **api)
-    }
+    verdicts = {facet_of(row): row for row in run_nrql(VT_QUERY.format(window=window), **api)}
 
-    out = []
+    out: list[dict[str, Any]] = []
     for row in samples:
         sha256 = facet_of(row)
         if not sha256:
@@ -164,25 +160,31 @@ def main() -> int:
     parser.add_argument("--output", default="iocs", help="directory to write into")
     arguments = parser.parse_args()
 
-    account_id, api_key, region = settings_from_environment()
-    api = {"account_id": account_id, "api_key": api_key, "region": region}
+    api = settings_from_environment()
 
-    ips = collect_ips(arguments.window, **api)
-    hashes = collect_hashes(arguments.window, **api)
+    ips = collect_ips(arguments.window, api)
+    hashes = collect_hashes(arguments.window, api)
 
     today = date.today().isoformat()
     directory = pathlib.Path(arguments.output)
 
     generated = {
-        "generated_at": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
+        "generated_at": datetime.now(tz=UTC).isoformat().replace("+00:00", "Z"),
         "window": arguments.window,
         "source": "arapuca honeypot, self observed",
     }
 
     ip_columns = ["ip", "events", "sessions", "first_seen", "last_seen", "country", "network"]
     hash_columns = [
-        "sha256", "md5", "size_bytes", "url", "captures", "first_seen",
-        "vt_detections", "vt_total_engines", "vt_label",
+        "sha256",
+        "md5",
+        "size_bytes",
+        "url",
+        "captures",
+        "first_seen",
+        "vt_detections",
+        "vt_total_engines",
+        "vt_label",
     ]
 
     write_csv(directory / f"ips-{today}.csv", ips, ip_columns)

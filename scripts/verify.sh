@@ -50,12 +50,26 @@ check cmake --preset release
 check cmake --build --preset release
 check ctest --preset release
 
-step "sanitizers"
+step "sanitizers, address and undefined behaviour"
 check cmake --preset asan
 check cmake --build --preset asan
 ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 \
 UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1 \
     check ctest --preset asan
+
+# The honeypot is threaded by nature: an accept loop per service, a capture
+# worker, a bounded bus and a sink shared between them. ASan cannot see a
+# data race, and this project had a preset for TSan that nothing ever ran.
+# setarch -R disables address space randomisation for the child. Without it
+# ThreadSanitizer aborts with "unexpected memory mapping" on any kernel built
+# with 32 bits of mmap entropy, which is every current Ubuntu, and it aborts
+# during the build: gtest_discover_tests runs the binary to enumerate the
+# tests. The alternative is sysctl vm.mmap_rnd_bits=28, which needs root.
+step "sanitizers, threads"
+check cmake --preset tsan
+check setarch -R cmake --build --preset tsan
+TSAN_OPTIONS=halt_on_error=1:second_deadlock_stack=1 \
+    check setarch -R ctest --preset tsan
 
 step "clang-tidy"
 check cmake --preset tidy

@@ -125,6 +125,16 @@ curl http://127.0.0.1:8080/.env
 tail -f var/events.jsonl | jq .
 ```
 
+Existe também um contêiner, construído para amd64 e arm64 e assinado com
+cosign na publicação. Verifique antes de rodar, porque a graça da coisa é
+justamente que ela fica onde atacantes alcançam:
+
+```bash
+cosign verify ghcr.io/carloszambonii/arapuca:latest \
+  --certificate-identity-regexp '^https://github.com/CarlosZambonii/arapuca/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 ## Fazendo o deploy
 
 ```bash
@@ -178,10 +188,28 @@ Um objeto JSON por linha, documentado campo a campo em
      representativa. Placeholders em vez de imagens inventadas: um dashboard
      com números fabricados representaria mal o que o projeto produz. -->
 
-| | |
-|---|---|
-| ![Dashboard de visão geral](docs/images/dashboard-overview.png) | ![Dashboard de sessões](docs/images/dashboard-sessions.png) |
-| _Visão geral: tráfego, geografia, credenciais, técnicas ATT&CK_ | _Sessões: transcrições, ritmo de digitação, classificação_ |
+Dois dashboards e uma política de alertas com oito condições, definidos em
+[`deploy/terraform/newrelic/`](deploy/terraform/newrelic/) e criados por
+`terraform apply`, nunca na mão pelo console.
+
+**Arapuca, overview**: eventos e atacantes únicos em 24 horas, logins que
+funcionaram, amostras capturadas, ataques por hora e por serviço, sessões
+separadas entre bot e humano, países e redes de origem, as senhas e os
+usuários tentados e os pares que deram certo, comandos digitados, técnicas e
+táticas ATT&CK, caminhos pedidos por HTTP, arquivos isca levados, amostras
+capturadas com o veredito do VirusTotal, downloads recusados pela política de
+endereços e pedidos de canal recusados.
+
+**Arapuca, sessions**: as sessões mais longas, as que o classificador lê como
+humanas, a transcrição dos comandos da mais recente para a mais antiga, o
+ritmo de digitação como intervalo mediano entre comandos, comandos nunca
+vistos antes, e a saúde do próprio honeypot.
+
+As capturas de tela estão ausentes de propósito, em vez de inventadas: um
+dashboard com números fabricados representaria mal o que o projeto produz, que
+é justamente o que uma peça de portfólio não pode fazer. Elas vão para
+[`docs/images/`](docs/images/README.md) quando o sensor tiver coletado uma
+semana representativa.
 
 ### Mapa ao vivo
 
@@ -189,6 +217,11 @@ A página está em inglês e português, com um seletor no cabeçalho. Na
 primeira visita ela segue o idioma do navegador e depois lembra a escolha.
 Os nomes dos países vêm do `Intl.DisplayNames` do próprio navegador, então
 leem naturalmente nos dois idiomas sem enviar tabela nenhuma.
+
+O mapa tem zoom: a roda do mouse, um gesto de pinça ou o controle no canto
+aproximam o mapa, não a página, o arrasto move, e o teclado funciona quando
+ele está em foco. A prévia do link é `web/og.png`, gerada a partir de
+[`web/card.html`](web/card.html) por `scripts/render_social_card.sh`.
 
 A pasta [`web/`](web/) é uma página pública que mostra de onde vêm os ataques,
 publicada no Netlify. Ela existe para o honeypot poder ser compartilhado com
@@ -234,6 +267,7 @@ Para rodar localmente tudo que o CI roda:
 ```bash
 ./scripts/verify.sh          # formatação, os dois tipos de build, sanitizers, clang-tidy
 ./scripts/verify.sh quick    # formatação, build debug e testes
+./scripts/coverage.sh        # cobertura de linha e de ramo, com relatório HTML
 ```
 
 O build release não é opcional. O GCC habilita análises sob otimização que
@@ -241,14 +275,34 @@ não consegue fazer com `-O0`, e um aviso que só aparece em release chegou ao
 CI uma vez porque o portão local só construía o preset de debug.
 
 Toda mudança passa por: GCC e Clang em x86_64 e arm64, AddressSanitizer e
-UndefinedBehaviorSanitizer com detecção de vazamento, clang-tidy com zero
-achados e perfil voltado a segurança, clang-format, oito alvos libFuzzer por
-sessenta segundos cada, uma checagem de que nenhuma primitiva de criação de
-processo existe, e uma checagem de que nenhum endereço público foi commitado.
+UndefinedBehaviorSanitizer com detecção de vazamento, ThreadSanitizer,
+clang-tidy com zero achados e perfil voltado a segurança, clang-format,
+CodeQL com as consultas de segurança estendidas, oito alvos libFuzzer por
+sessenta segundos cada, cobertura contra um piso, `ruff` e `mypy --strict`
+no Python de `tools/`, um scan Trivy na imagem do contêiner, uma checagem de
+que nenhuma primitiva de criação de processo existe, e uma checagem de que
+nenhum endereço público foi commitado.
+
+O ThreadSanitizer está aí porque o daemon é multithread de ponta a ponta: um
+laço de accept por serviço, um worker de captura, um barramento limitado e um
+sink compartilhado entre eles. O AddressSanitizer não enxerga corrida de dados
+entre nenhum desses.
+
+De madrugada, cada alvo de fuzzing roda dez minutos contra um corpus que se
+acumula entre execuções, que é um exercício diferente do teste de sessenta
+segundos no pull request: um pega regressão, o outro acha coisa nova.
 
 Os testes de integração usam um cliente SSH real e um cliente HTTP real contra
 servidores reais, porque uma política de canal pode estar certa no teste
 unitário e errada no fio.
+
+## Contribuindo e reportando
+
+O [`CONTRIBUTING.md`](CONTRIBUTING.md) tem os portões e as convenções. O
+[`SECURITY.md`](SECURITY.md) diz o que conta como vulnerabilidade aqui, que é
+mais estreito do que parece: entrar com uma senha fraca é o convite, não um
+achado. O [`CHANGELOG.md`](CHANGELOG.md) registra o que mudou entre as
+versões.
 
 ## Aviso legal e ético
 

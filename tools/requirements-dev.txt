@@ -1,0 +1,5 @@
+# Checks for the Python in tools/, pinned for the same reason the runtime
+# requirements are: these scripts run unattended on a schedule.
+ruff==0.14.2
+mypy==1.18.2
+types-requests==2.32.4.20250913

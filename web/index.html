@@ -6,10 +6,30 @@
 <title>Arapuca, live honeypot</title>
 <meta name="description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
 
+<link rel="canonical" href="https://arapuca.netlify.app/">
+
+<!-- The link preview. og:image has to be an absolute URL and a file that
+     exists before the page is opened: a scraper fetches once and does not run
+     the JavaScript that draws the map, so the picture is web/og.png, rendered
+     from card.html by scripts/render_social_card.sh and committed. Without
+     it, summary_large_image reserves a large empty rectangle and the whole
+     invitation reads as a dead link. -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Arapuca">
+<meta property="og:locale" content="en">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:url" content="https://arapuca.netlify.app/">
 <meta property="og:title" content="Arapuca, live honeypot">
 <meta property="og:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
+<meta property="og:image" content="https://arapuca.netlify.app/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Arapuca, a medium interaction SSH and HTTP honeypot. A world map with attack lines converging on the sensor in Brazil.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arapuca, live honeypot">
+<meta name="twitter:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
+<meta name="twitter:image" content="https://arapuca.netlify.app/og.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,7 +317,67 @@ section { margin-block: 46px; }
   min-width: 0;
   position: relative;
 }
-#map { display: block; width: 100%; height: auto; }
+#map { display: block; width: 100%; height: auto; cursor: grab; }
+
+/* The map zooms, the page does not. touch-action: pan-y leaves one finger to
+   the page and refuses the browser's own pinch on this element, so a pinch
+   reaches the handler instead of magnifying the whole document. Once the
+   visitor has deliberately zoomed in, every gesture belongs to the map:
+   .zoomed takes the one finger drag as a pan, and reset hands it back. */
+#map { touch-action: pan-y; }
+#map.zoomed { touch-action: none; }
+#map.grabbing { cursor: grabbing; }
+#map:focus-visible { outline: 1px solid var(--amber); outline-offset: 2px; }
+
+/* Stroke widths are screen units, not map units. Without this every border
+   and every attack line would thicken with the magnification until the
+   coastline was a smear. */
+#map .land, #map .sphere, #map .origin, #map .arc, #map .home-ring {
+  vector-effect: non-scaling-stroke;
+}
+
+.map-zoom {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.map-zoom button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--ground);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+.map-zoom button:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+.map-zoom button:disabled { opacity: 0.3; cursor: default; }
+
+.map-hint {
+  position: absolute;
+  left: 14px;
+  bottom: 11px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  /* The hint sits over the ocean, which is dark but not uniformly so. The
+     chip keeps it legible wherever the map has been dragged to. */
+  background: rgba(11, 15, 23, 0.72);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+@media (max-width: 560px) { .map-hint { display: none; } }
 /* :not(.hit) matters. In SVG a CSS fill rule beats the fill presentation
    attribute, so styling .land directly would paint over the colour computed
    for every country that has traffic, and the map would draw grey with the
@@ -546,7 +626,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     <div class="map-layout">
       <div>
         <div class="map-frame">
-          <svg id="map" role="img" aria-label="World map of attack origins"></svg>
+          <svg id="map" role="img" tabindex="0"
+               aria-label="World map of attack origins. Scroll or pinch to zoom, drag to pan."></svg>
+          <div class="map-zoom">
+            <button type="button" id="zoom-in" aria-label="Zoom in" data-i18n-label="zoomIn">+</button>
+            <button type="button" id="zoom-out" aria-label="Zoom out" data-i18n-label="zoomOut">−</button>
+            <button type="button" id="zoom-reset" aria-label="Reset the view" data-i18n-label="zoomReset" disabled>⟲</button>
+          </div>
+          <div class="map-hint" data-i18n="mapHint">scroll or pinch to zoom, drag to pan</div>
           <div class="tip" id="tip" hidden></div>
         </div>
         <div class="legend">
@@ -708,6 +795,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       attacksAddresses: " ataques, ",
       addresses: " endere\u00e7os",
       mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
+      mapHint: "role ou pince para aproximar, arraste para mover",
+      zoomIn: "Aproximar",
+      zoomOut: "Afastar",
+      zoomReset: "Voltar \u00e0 vis\u00e3o inicial",
       topCities: "Cidades de origem",
       sensorHere: "O sensor fica aqui",
       attacksReceived: " ataques recebidos",
@@ -749,6 +840,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     attacksAddresses: " attacks, ",
     addresses: " addresses",
     mapUnavailable: "map geometry could not be loaded",
+    mapHint: "scroll or pinch to zoom, drag to pan",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    zoomReset: "Reset the view",
     topCities: "Top cities",
     sensorHere: "The sensor lives here",
     attacksReceived: " attacks received",
@@ -782,6 +877,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       if (!node.dataset.enHtml) { node.dataset.enHtml = node.innerHTML; }
       var value = (STRINGS[lang] || {})[node.dataset.i18nHtml];
       node.innerHTML = value || node.dataset.enHtml;
+    });
+
+    /* A control with no text of its own carries its name in aria-label, and
+       a label left in English is unreadable to a Portuguese screen reader. */
+    document.querySelectorAll("[data-i18n-label]").forEach(function (node) {
+      if (!node.dataset.enLabel) { node.dataset.enLabel = node.getAttribute("aria-label") || ""; }
+      var value = (STRINGS[lang] || {})[node.dataset.i18nLabel] || node.dataset.enLabel;
+      node.setAttribute("aria-label", value);
+      node.setAttribute("title", value);
     });
 
     document.querySelectorAll(".lang-btn").forEach(function (button) {
@@ -989,6 +1093,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   function mapUnavailable() {
     var svg = el("map");
     svg.textContent = "";
+    viewport = null;
+    zoomables = [];
     var box = sizeMap(svg);
     var label = svgEl("text", {
       x: box.width / 2, y: box.height / 2, "text-anchor": "middle",
@@ -1047,6 +1153,229 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     return path({ type: "LineString", coordinates: points });
   }
 
+  /* ---------- zooming the map, not the page ---------- */
+
+  /* Everything the map draws goes into one group, and the group is given a
+     transform. The alternative, reprojecting 170 country outlines on every
+     wheel tick, is correct and drops frames; a transform is one attribute
+     write. What a transform gets wrong is scale: strokes are handled in the
+     stylesheet with non-scaling-stroke, and the handful of nodes whose size
+     is a radius rather than a stroke are counter scaled here, so a city dot
+     stays a dot instead of swelling into a blob at twelve times. */
+
+  var MAX_ZOOM = 14;
+  var view = { k: 1, x: 0, y: 0 };
+  var viewport = null;
+  var zoomables = [];
+  var mapBox = { width: 0, height: 0 };
+
+  function clampView() {
+    view.k = Math.max(1, Math.min(MAX_ZOOM, view.k));
+    if (view.k === 1) { view.x = 0; view.y = 0; return; }
+    // Translation is bounded so the sphere can never be dragged off the
+    // frame and left showing an empty rectangle.
+    view.x = Math.min(0, Math.max(mapBox.width * (1 - view.k), view.x));
+    view.y = Math.min(0, Math.max(mapBox.height * (1 - view.k), view.y));
+  }
+
+  function applyView() {
+    if (!viewport) { return; }
+    clampView();
+    viewport.setAttribute("transform",
+      "translate(" + view.x.toFixed(2) + "," + view.y.toFixed(2) + ") scale(" + view.k.toFixed(4) + ")");
+
+    var inverse = 1 / view.k;
+    zoomables.forEach(function (item) {
+      if (item.r !== undefined) {
+        item.node.setAttribute("r", (item.r * inverse).toFixed(2));
+      } else {
+        item.node.setAttribute("transform",
+          "translate(" + item.cx.toFixed(2) + "," + item.cy.toFixed(2) + ") " +
+          "scale(" + inverse.toFixed(4) + ") " +
+          "translate(" + (-item.cx).toFixed(2) + "," + (-item.cy).toFixed(2) + ")");
+      }
+    });
+
+    var zoomed = view.k > 1.001;
+    var svg = el("map");
+    if (svg) { svg.classList.toggle("zoomed", zoomed); }
+    var reset = el("zoom-reset");
+    if (reset) { reset.disabled = !zoomed; }
+  }
+
+  /* A point in the coordinates the map is drawn in, from a pointer event.
+     The element is laid out at whatever width the column gives it, so the
+     viewBox and the client rectangle are not the same ruler. */
+  function mapPoint(svg, clientX, clientY) {
+    var rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) { return null; }
+    return {
+      x: (clientX - rect.left) * (mapBox.width / rect.width),
+      y: (clientY - rect.top) * (mapBox.height / rect.height)
+    };
+  }
+
+  function zoomAbout(factor, x, y) {
+    var next = Math.max(1, Math.min(MAX_ZOOM, view.k * factor));
+    if (next === view.k) { return; }
+    // Keep whatever is under (x, y) under (x, y).
+    view.x = x - (x - view.x) * (next / view.k);
+    view.y = y - (y - view.y) * (next / view.k);
+    view.k = next;
+    applyView();
+  }
+
+  function zoomCentre(factor) {
+    zoomAbout(factor, mapBox.width / 2, mapBox.height / 2);
+  }
+
+  function resetView() {
+    view.k = 1;
+    view.x = 0;
+    view.y = 0;
+    applyView();
+  }
+
+  function panBy(dx, dy) {
+    if (view.k <= 1) { return; }
+    view.x += dx;
+    view.y += dy;
+    applyView();
+  }
+
+  function bindMapGestures() {
+    var svg = el("map");
+    if (!svg || svg.dataset.gestures === "1") { return; }
+    svg.dataset.gestures = "1";
+
+    // Not passive: the point of the exercise is to take the wheel away from
+    // the page, so the handler has to be allowed to prevent the default.
+    svg.addEventListener("wheel", function (event) {
+      event.preventDefault();
+      var at = mapPoint(svg, event.clientX, event.clientY);
+      if (!at) { return; }
+      // deltaMode 1 is lines and 2 is pages. Left unnormalised, one notch of
+      // a Firefox wheel moves many times further than the same notch in
+      // Chrome.
+      var unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? 100 : 1);
+      zoomAbout(Math.exp(-event.deltaY * unit * 0.002), at.x, at.y);
+      hideTip();
+    }, { passive: false });
+
+    svg.addEventListener("dblclick", function (event) {
+      var at = mapPoint(svg, event.clientX, event.clientY);
+      if (at) { zoomAbout(1.8, at.x, at.y); }
+    });
+
+    // Pointer events rather than mouse plus touch, so one code path covers a
+    // mouse, a trackpad, a pen and two fingers.
+    var active = {};
+    var count = 0;
+    var dragging = false;
+    var pinch = null;
+
+    function ids() { return Object.keys(active); }
+
+    function midpoint() {
+      var keys = ids();
+      var a = active[keys[0]], b = active[keys[1]];
+      return {
+        x: (a.x + b.x) / 2,
+        y: (a.y + b.y) / 2,
+        distance: Math.hypot(a.x - b.x, a.y - b.y)
+      };
+    }
+
+    svg.addEventListener("pointerdown", function (event) {
+      // One finger belongs to the page until the visitor has zoomed in. Two
+      // fingers are always ours, and a mouse is always ours.
+      if (event.pointerType === "touch" && count === 0 && view.k <= 1) {
+        active[event.pointerId] = mapPoint(svg, event.clientX, event.clientY);
+        count += 1;
+        return;
+      }
+      var at = mapPoint(svg, event.clientX, event.clientY);
+      if (!at) { return; }
+      active[event.pointerId] = at;
+      count += 1;
+      hideTip();
+
+      if (count === 2) {
+        dragging = false;
+        pinch = midpoint();
+        svg.classList.remove("grabbing");
+      } else if (count === 1) {
+        dragging = true;
+        svg.classList.add("grabbing");
+        try { svg.setPointerCapture(event.pointerId); } catch (error) { /* detached */ }
+      }
+    });
+
+    svg.addEventListener("pointermove", function (event) {
+      var tracked = active[event.pointerId];
+      if (!tracked) { return; }
+      var at = mapPoint(svg, event.clientX, event.clientY);
+      if (!at) { return; }
+
+      if (count >= 2 && pinch) {
+        active[event.pointerId] = at;
+        var now = midpoint();
+        if (pinch.distance > 0 && now.distance > 0) {
+          zoomAbout(now.distance / pinch.distance, now.x, now.y);
+          panBy(now.x - pinch.x, now.y - pinch.y);
+        }
+        pinch = now;
+        return;
+      }
+
+      if (dragging) {
+        panBy(at.x - tracked.x, at.y - tracked.y);
+        // The pointer is read again after the pan: the transform moved the
+        // map under it, and reusing the stale point would accelerate away.
+        active[event.pointerId] = mapPoint(svg, event.clientX, event.clientY) || at;
+      } else {
+        active[event.pointerId] = at;
+      }
+    });
+
+    function release(event) {
+      if (!active[event.pointerId]) { return; }
+      delete active[event.pointerId];
+      count = Math.max(0, count - 1);
+      if (count < 2) { pinch = null; }
+      if (count === 0) {
+        dragging = false;
+        svg.classList.remove("grabbing");
+      }
+      try { svg.releasePointerCapture(event.pointerId); } catch (error) { /* already gone */ }
+    }
+    svg.addEventListener("pointerup", release);
+    svg.addEventListener("pointercancel", release);
+    svg.addEventListener("pointerleave", release);
+
+    // Keyboard, because a map that only answers to a mouse is a map half the
+    // visitors cannot use.
+    svg.addEventListener("keydown", function (event) {
+      var step = 40;
+      var handled = true;
+      switch (event.key) {
+        case "ArrowLeft": panBy(step, 0); break;
+        case "ArrowRight": panBy(-step, 0); break;
+        case "ArrowUp": panBy(0, step); break;
+        case "ArrowDown": panBy(0, -step); break;
+        case "+": case "=": zoomCentre(1.4); break;
+        case "-": case "_": zoomCentre(1 / 1.4); break;
+        case "0": resetView(); break;
+        default: handled = false;
+      }
+      if (handled) { event.preventDefault(); }
+    });
+
+    el("zoom-in").addEventListener("click", function () { zoomCentre(1.6); });
+    el("zoom-out").addEventListener("click", function () { zoomCentre(1 / 1.6); });
+    el("zoom-reset").addEventListener("click", resetView);
+  }
+
   function renderMap() {
     var svg = el("map");
     if (!window.d3 || !d3.geoNaturalEarth1 || !window.topojson || !state.world) {
@@ -1071,6 +1400,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
     svg.textContent = "";
     var box = sizeMap(svg);
+    mapBox = { width: box.width, height: box.height };
+    zoomables = [];
+    viewport = svgEl("g", { class: "viewport" });
+    svg.appendChild(viewport);
 
     var countries = topojson.feature(state.world, state.world.objects.countries);
     var projection = d3.geoNaturalEarth1().fitSize([box.width, box.height], { type: "Sphere" });
@@ -1093,7 +1426,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var originWeight = ramp(topOrigin);
     function colour(attacks) { return shade(countryWeight(attacks)); }
 
-    svg.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
+    viewport.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
 
     // --- countries, as context under the lines ---------------------------
     var land = svgEl("g", {});
@@ -1115,11 +1448,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       }
       land.appendChild(shape);
     });
-    svg.appendChild(land);
+    viewport.appendChild(land);
 
     if (!sensor || !origins.length) {
       el("ramp").style.background = "linear-gradient(to right, " +
         shade(0) + ", " + shade(0.5) + ", " + shade(1) + ")";
+      applyView();
       return;
     }
 
@@ -1149,7 +1483,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         weight: weight
       });
     });
-    svg.appendChild(arcs);
+    viewport.appendChild(arcs);
 
     // --- origin cities ----------------------------------------------------
     var dots = svgEl("g", {});
@@ -1157,12 +1491,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       var xy = projection([origin.lon, origin.lat]);
       if (!xy) { return; }
       var weight = originWeight(origin.attacks);
+      var radius = 2.2 + weight * 4.3;
       var dot = svgEl("circle", {
         class: "origin",
         cx: xy[0], cy: xy[1],
-        r: (2.2 + weight * 4.3).toFixed(2),
+        r: radius.toFixed(2),
         "fill-opacity": (0.62 + weight * 0.38).toFixed(2)
       });
+      zoomables.push({ node: dot, r: radius });
       var lines = [
         origin.city + ", " + countryName(origin),
         num(origin.attacks) + t("attacksAddresses") + num(origin.attackers) + t("addresses")
@@ -1171,7 +1507,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       dot.addEventListener("mouseleave", hideTip);
       dots.appendChild(dot);
     });
-    svg.appendChild(dots);
+    viewport.appendChild(dots);
 
     // --- the sensor -------------------------------------------------------
     if (homeXY) {
@@ -1204,7 +1540,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       house.addEventListener("mousemove", function (event) { showTip(box.frame, event, homeLines); });
       house.addEventListener("mouseleave", hideTip);
       marker.appendChild(house);
-      svg.appendChild(marker);
+      viewport.appendChild(marker);
+      zoomables.push({ node: marker, cx: x, cy: y });
     }
 
     // --- pulses travelling in -------------------------------------------
@@ -1212,11 +1549,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     if (!reduced && drawn.length) {
       var pulses = svgEl("g", {});
       var nodes = drawn.map(function (arc) {
-        var dot = svgEl("circle", { class: "pulse-dot", r: (1 + arc.weight * 1.8).toFixed(2), cx: -10, cy: -10 });
+        var pulseRadius = 1 + arc.weight * 1.8;
+        var dot = svgEl("circle", { class: "pulse-dot", r: pulseRadius.toFixed(2), cx: -10, cy: -10 });
+        zoomables.push({ node: dot, r: pulseRadius });
         pulses.appendChild(dot);
         return dot;
       });
-      svg.appendChild(pulses);
+      viewport.appendChild(pulses);
 
       var started = null;
       var travel = 5200; // milliseconds for one trip, slow enough to follow
@@ -1240,6 +1579,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
     el("ramp").style.background = "linear-gradient(to right, " +
       shade(0) + ", " + shade(0.5) + ", " + shade(1) + ")";
+
+    // A redraw must not throw the visitor back out to the whole world: the
+    // data reloads on a schedule and the window resizes while they read.
+    applyView();
   }
 
   /* ---------- techniques and feed ---------- */
@@ -1396,6 +1739,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       button.addEventListener("click", function () { applyLanguage(button.dataset.lang); });
     });
     applyLanguage(initialLanguage());
+    bindMapGestures();
 
     // Both fetches are awaited together and the page is drawn once. An
     // earlier version rendered from whichever arrived first and let the other

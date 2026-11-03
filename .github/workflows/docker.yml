@@ -16,6 +16,8 @@ on:
 permissions:
   contents: read
   packages: write
+  security-events: write
+  id-token: write
 
 concurrency:
   group: docker-${{ github.ref }}
@@ -96,10 +98,62 @@ jobs:
           docker rm arapuca-ci
           docker volume rm ci-logs ci-state ci-quarantine
 
+      # A honeypot is a machine volunteered to the internet. Shipping it with
+      # a known vulnerable library in the base image is the one way this
+      # project could become the incident it is meant to observe.
+      - name: Scan the image for known vulnerabilities
+        if: matrix.platform == 'linux/amd64'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: arapuca:ci
+          format: sarif
+          output: trivy.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+
+      # Uploaded before the gate below, so the findings are readable in the
+      # security tab even on the run that fails.
+      - name: Upload the findings
+        if: matrix.platform == 'linux/amd64'
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
+        with:
+          sarif_file: trivy.sarif
+          category: trivy-container
+
+      - name: Fail on a fixable critical or high
+        if: matrix.platform == 'linux/amd64'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: arapuca:ci
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Write the software bill of materials
+        if: matrix.platform == 'linux/amd64'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: arapuca:ci
+          format: cyclonedx
+          output: arapuca-sbom.cdx.json
+          scanners: license
+
+      - name: Upload the bill of materials
+        if: matrix.platform == 'linux/amd64'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom
+          path: arapuca-sbom.cdx.json
+          retention-days: 90
+
   publish:
     name: Publish multi-arch image
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -119,19 +173,53 @@ jobs:
 
       # A container registry rejects an uppercase repository name, and
       # github.repository keeps whatever case the owner's login has.
-      - name: Work out the lowercase image name
+      - name: Work out the lowercase image name and the tags
         id: image
-        run: echo "name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        run: |
+          set -euo pipefail
+          name="${GITHUB_REPOSITORY,,}"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+
+          # A build of main is :latest and its commit. A release tag is also
+          # its own version, which is the only tag anyone can pin to and still
+          # know what they are running.
+          {
+            echo "tags<<EOF"
+            echo "ghcr.io/${name}:latest"
+            echo "ghcr.io/${name}:${GITHUB_SHA}"
+            if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+              echo "ghcr.io/${name}:${GITHUB_REF_NAME}"
+              echo "ghcr.io/${name}:${GITHUB_REF_NAME#v}"
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Build and push
+        id: push
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: deploy/docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ steps.image.outputs.name }}:latest
-            ghcr.io/${{ steps.image.outputs.name }}:${{ github.sha }}
+          tags: ${{ steps.image.outputs.tags }}
           cache-from: type=gha,scope=publish
           cache-to: type=gha,mode=max,scope=publish
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      # Keyless, against the transparency log: the signature is tied to this
+      # workflow in this repository, with no private key to keep or to leak.
+      # Anyone pulling the image can check where it was built, which for a
+      # honeypot image is worth more than for most: running the wrong one
+      # means running an unknown binary on a host that invites attackers.
+      #
+      #   cosign verify ghcr.io/<owner>/arapuca:latest \
+      #     --certificate-identity-regexp '^https://github.com/<owner>/arapuca/' \
+      #     --certificate-oidc-issuer https://token.actions.githubusercontent.com
+      - name: Sign the image
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+          IMAGE: ghcr.io/${{ steps.image.outputs.name }}
+        run: cosign sign --yes "${IMAGE}@${DIGEST}"

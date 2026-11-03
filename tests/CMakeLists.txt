@@ -29,6 +29,7 @@ target_link_libraries(arapuca_unit_tests
         arapuca::warnings
         arapuca::hardening
         arapuca::sanitizers
+        arapuca::coverage
         GTest::gtest_main
         GTest::gmock)
 
@@ -58,6 +59,7 @@ target_link_libraries(arapuca_integration_tests
         arapuca::warnings
         arapuca::hardening
         arapuca::sanitizers
+        arapuca::coverage
         ssh
         httplib::httplib
         GTest::gtest_main)

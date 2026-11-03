@@ -15,17 +15,17 @@ import argparse
 import pathlib
 import sys
 from collections import OrderedDict
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from typing import Any
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
-from nerdgraph import run_nrql, settings_from_environment  # noqa: E402
+from nerdgraph import run_nrql, settings_from_environment
 
 SCOPE = "logtype = 'arapuca'"
 WINDOW = "SINCE 7 days ago"
 PREVIOUS = "SINCE 14 days ago UNTIL 7 days ago"
 
-QUERIES: "OrderedDict[str, str]" = OrderedDict(
+QUERIES: OrderedDict[str, str] = OrderedDict(
     totals=f"SELECT count(*) AS events, uniqueCount(src_ip) AS attackers, "
     f"uniqueCount(session_id) AS sessions FROM Log WHERE {SCOPE} {{window}}",
     by_service=f"SELECT count(*) FROM Log WHERE {SCOPE} FACET service {{window}}",
@@ -108,7 +108,7 @@ def build(results: dict[str, Any], previous: dict[str, Any], week: str) -> str:
     parts = [
         f"# Arapuca weekly report, {week}",
         "",
-        f"_Generated {datetime.now(tz=timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} "
+        f"_Generated {datetime.now(tz=UTC).strftime('%Y-%m-%d %H:%M UTC')} "
         "from the sensor's own telemetry._",
         "",
         "## Summary",
@@ -248,10 +248,11 @@ def main() -> int:
     parser.add_argument("--output", default="reports", help="directory to write into")
     arguments = parser.parse_args()
 
-    account_id, api_key, region = settings_from_environment()
-    api = {"account_id": account_id, "api_key": api_key, "region": region}
+    api = settings_from_environment()
 
-    results = {name: run_nrql(query.format(window=WINDOW), **api) for name, query in QUERIES.items()}
+    results = {
+        name: run_nrql(query.format(window=WINDOW), **api) for name, query in QUERIES.items()
+    }
     previous = {"totals": run_nrql(QUERIES["totals"].format(window=PREVIOUS), **api)}
 
     today = date.today()

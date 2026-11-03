@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Arapuca social card</title>
+
+<!-- The source of web/og.png, the picture LinkedIn, Slack and WhatsApp show
+     when the page is shared. It is rendered to a file by
+     scripts/render_social_card.sh and the file is committed, so the preview
+     does not depend on a scraper being able to run JavaScript. It is drawn
+     from the same geometry and the same live.json as the page itself rather
+     than mocked up, so what the card shows is a real export. -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+<style>
+:root {
+  --ground: #0b0f17;
+  --surface-high: #1a2230;
+  --line: #243041;
+  --ink: #e8edf5;
+  --ink-dim: #93a1b8;
+  --amber: #f2a33c;
+  --cyan: #4fd2c2;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  position: relative;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+}
+
+/* The map sits off to the right and runs off the edge: a card is a crop of
+   something larger, not a diagram with margins. */
+#map-holder { position: absolute; top: 18px; right: -110px; width: 860px; height: 594px; }
+#map { display: block; width: 100%; height: 100%; }
+#map .sphere { fill: #0d1420; stroke: #243041; stroke-width: 0.8; }
+#map .land { fill: #1a2230; stroke: #0b0f17; stroke-width: 0.4; }
+#map .arc { fill: none; stroke: var(--amber); stroke-linecap: round; }
+#map .origin { fill: #ffd591; stroke: #0b0f17; stroke-width: 0.9; }
+#map .home-glow { fill: var(--cyan); opacity: 0.18; }
+#map .home-ring { fill: none; stroke: var(--cyan); stroke-width: 1.4; }
+#map .home-icon { fill: var(--cyan); }
+
+/* Text over a map is unreadable without this. The ground is brought back
+   across the left two thirds, fading out where the writing ends. */
+.fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg,
+    var(--ground) 0%, var(--ground) 34%, rgba(11, 15, 23, 0.92) 46%,
+    rgba(11, 15, 23, 0.55) 60%, rgba(11, 15, 23, 0.1) 78%, rgba(11, 15, 23, 0) 100%);
+}
+
+.rule { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--amber); }
+
+.panel { position: absolute; top: 0; left: 0; padding: 70px 0 0 72px; width: 700px; }
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border: 1px solid #1f4d47;
+  border-radius: 999px;
+  padding: 7px 16px;
+}
+.live i { width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); display: block; }
+
+h1 {
+  font-family: "IBM Plex Sans Condensed", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 104px;
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  margin: 28px 0 0;
+}
+h1 span { color: var(--amber); }
+
+.what {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 21px;
+  color: var(--amber);
+  margin-top: 16px;
+  letter-spacing: 0.01em;
+}
+
+p {
+  font-size: 24px;
+  line-height: 1.45;
+  color: var(--ink-dim);
+  margin: 20px 0 0;
+  max-width: 520px;
+}
+p b { color: var(--ink); font-weight: 500; }
+
+.foot {
+  position: absolute;
+  left: 72px;
+  bottom: 54px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 23px;
+  color: var(--cyan);
+}
+.foot em { display: block; font-style: normal; font-size: 17px; color: #5e6e86; margin-top: 9px; }
+</style>
+</head>
+<body>
+
+<div id="map-holder"><svg id="map" aria-hidden="true"></svg></div>
+<div class="fade"></div>
+<div class="rule"></div>
+
+<div class="panel">
+  <span class="live"><i></i>live sensor</span>
+  <h1>arapuca<span>.</span></h1>
+  <div class="what">medium interaction SSH and HTTP honeypot</div>
+  <p>A real server on a public address, inviting you to attack it.
+     <b>Nothing you send is ever executed.</b></p>
+</div>
+
+<div class="foot">arapuca.netlify.app<em>github.com/CarlosZambonii/arapuca</em></div>
+
+<script src="vendor/d3-array.min.js"></script>
+<script src="vendor/d3-geo.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var WIDTH = 860, HEIGHT = 594, NS = "http://www.w3.org/2000/svg";
+
+  function node(name, attrs) {
+    var element = document.createElementNS(NS, name);
+    Object.keys(attrs).forEach(function (key) {
+      if (attrs[key] !== null && attrs[key] !== undefined) { element.setAttribute(key, attrs[key]); }
+    });
+    return element;
+  }
+
+  function draw(world, data) {
+    var svg = document.getElementById("map");
+    svg.setAttribute("viewBox", "0 0 " + WIDTH + " " + HEIGHT);
+    var projection = d3.geoNaturalEarth1().fitSize([WIDTH, HEIGHT], { type: "Sphere" });
+    var path = d3.geoPath(projection);
+
+    svg.appendChild(node("path", { class: "sphere", d: path({ type: "Sphere" }) }));
+
+    var hit = {};
+    var top = 1;
+    (data.countries || []).forEach(function (country) {
+      if (!country.id) { return; }
+      hit[String(Number(country.id))] = country.attacks;
+      top = Math.max(top, country.attacks);
+    });
+    var span = Math.log1p(top) || 1;
+
+    var countries = topojson.feature(world, world.objects.countries);
+    countries.features.forEach(function (feature) {
+      var attacks = hit[String(Number(feature.id))];
+      var shade = null;
+      if (attacks) {
+        // The same log ramp and the same two colours as the page.
+        var k = Math.min(1, Math.log1p(attacks) / span);
+        shade = "rgb(" + Math.round(27 + (122 - 27) * k) + "," +
+                         Math.round(36 + (90 - 36) * k) + "," +
+                         Math.round(51 + (44 - 51) * k) + ")";
+      }
+      svg.appendChild(node("path", { class: "land", d: path(feature), fill: shade }));
+    });
+
+    var sensor = data.sensor_location;
+    var origins = (data.origins || []).slice(0, 40);
+    if (!sensor) { return; }
+    var home = [sensor.lon, sensor.lat];
+
+    origins.forEach(function (origin) {
+      var along = d3.geoInterpolate([origin.lon, origin.lat], home);
+      var points = [];
+      for (var i = 0; i <= 36; i += 1) { points.push(along(i / 36)); }
+      var d = path({ type: "LineString", coordinates: points });
+      if (!d) { return; }
+      svg.appendChild(node("path", {
+        class: "arc", d: d, "stroke-width": 1.5, "stroke-opacity": 0.72
+      }));
+    });
+
+    origins.forEach(function (origin) {
+      var xy = projection([origin.lon, origin.lat]);
+      if (xy) { svg.appendChild(node("circle", { class: "origin", cx: xy[0], cy: xy[1], r: 4.2 })); }
+    });
+
+    var at = projection(home);
+    if (!at) { return; }
+    var x = at[0], y = at[1];
+    svg.appendChild(node("circle", { class: "home-glow", cx: x, cy: y, r: 17 }));
+    svg.appendChild(node("circle", { class: "home-ring", cx: x, cy: y, r: 10 }));
+    svg.appendChild(node("path", {
+      class: "home-icon",
+      d: "M" + (x - 5.4) + "," + (y + 0.5) + "L" + x + "," + (y - 5) + "L" + (x + 5.4) + "," + (y + 0.5) +
+         "L" + (x + 3.7) + "," + (y + 0.5) + "L" + (x + 3.7) + "," + (y + 5) +
+         "L" + (x + 1.3) + "," + (y + 5) + "L" + (x + 1.3) + "," + (y + 1.4) +
+         "L" + (x - 1.3) + "," + (y + 1.4) + "L" + (x - 1.3) + "," + (y + 5) +
+         "L" + (x - 3.7) + "," + (y + 5) + "L" + (x - 3.7) + "," + (y + 0.5) + "Z"
+    }));
+  }
+
+  Promise.all([
+    fetch("data/world-110m.json").then(function (r) { return r.json(); }),
+    fetch("data/live.json").then(function (r) { return r.json(); })
+  ]).then(function (both) {
+    draw(both[0], both[1]);
+    document.documentElement.dataset.ready = "1";
+  });
+})();
+</script>
+</body>
+</html>

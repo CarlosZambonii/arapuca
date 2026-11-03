@@ -27,7 +27,9 @@ echo "== em dash check =="
 found_em_dash=0
 for file in "${tracked[@]}"; do
     case "$file" in
-        *.md|*.cpp|*.hpp|*.yml|*.yaml|*.tf|*.py|*.sh|*.json|*.in|*.txt) ;;
+        # web/vendor is third party and minified: it is not ours to rewrite.
+        web/vendor/*) continue ;;
+        *.md|*.cpp|*.hpp|*.yml|*.yaml|*.tf|*.py|*.sh|*.json|*.in|*.txt|*.html|*.toml) ;;
         *) continue ;;
     esac
     if matches=$(grep -n -- "$EM_DASH" "$file" 2>/dev/null); then

@@ -64,6 +64,14 @@
       }
     },
     {
+      "name": "coverage",
+      "inherits": "dev",
+      "displayName": "Coverage instrumentation (GCC, gcov)",
+      "cacheVariables": {
+        "ARAPUCA_COVERAGE": "ON"
+      }
+    },
+    {
       "name": "fuzz",
       "inherits": "clang",
       "displayName": "libFuzzer targets",
@@ -102,6 +110,10 @@
     {
       "name": "tsan",
       "configurePreset": "tsan"
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage"
     },
     {
       "name": "fuzz",
@@ -147,6 +159,26 @@
     {
       "name": "asan",
       "configurePreset": "asan",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "tsan",
+      "configurePreset": "tsan",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
       "output": {
         "outputOnFailure": true
       },

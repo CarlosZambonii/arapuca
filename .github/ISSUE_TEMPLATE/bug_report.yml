@@ -1,0 +1,65 @@
+name: Bug report
+description: Something the honeypot does that it should not, or fails to do
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        If the bug is that an attacker can reach something real through the
+        honeypot, do not open an issue: report it privately through
+        [Security advisories](https://github.com/CarlosZambonii/arapuca/security/advisories/new).
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The output of `arapucad --version`, or the commit you built.
+      placeholder: "arapuca 0.1.0 (event schema v1)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - SSH honeypot or the fake shell
+        - HTTP honeypot or the decoys
+        - Capture, quarantine or VirusTotal
+        - Enrichment (GeoIP, ATT&CK, classifier)
+        - Events, logging or the schema
+        - Build, tests or CI
+        - Deployment (Terraform, Ansible, container)
+        - The public page
+        - The tools in tools/
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens, and what you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: >-
+        The smallest input that does it. A crashing input from one of the
+        fuzz targets is ideal: attach the file and name the target.
+      placeholder: |
+        1. cmake --preset dev && cmake --build --preset dev
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant events or log lines
+      description: >-
+        One JSON object per line from events.jsonl is perfect. Redact the
+        sensor's address if it appears.
+      render: text

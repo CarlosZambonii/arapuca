@@ -13,6 +13,7 @@ process spawning primitive appears anywhere in the sources.
 
 [![CI](https://github.com/CarlosZambonii/arapuca/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlosZambonii/arapuca/actions/workflows/ci.yml)
 [![Container](https://github.com/CarlosZambonii/arapuca/actions/workflows/docker.yml/badge.svg)](https://github.com/CarlosZambonii/arapuca/actions/workflows/docker.yml)
+[![CodeQL](https://github.com/CarlosZambonii/arapuca/actions/workflows/codeql.yml/badge.svg)](https://github.com/CarlosZambonii/arapuca/actions/workflows/codeql.yml)
 
 [Leia em português](README.pt-BR.md)
 
@@ -119,6 +120,16 @@ The development configuration keeps everything writable under `./var` and
 listens on unprivileged ports, so no setup and no cleanup beyond deleting that
 folder.
 
+There is also a container, built for amd64 and arm64 and signed with cosign
+on publication. Verify before you run it, because the whole point of the
+thing is that it sits where attackers can reach it:
+
+```bash
+cosign verify ghcr.io/carloszambonii/arapuca:latest \
+  --certificate-identity-regexp '^https://github.com/CarlosZambonii/arapuca/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 Then, from another terminal:
 
 ```bash
@@ -176,14 +187,27 @@ One JSON object per line, documented field by field in
 
 ### Dashboards
 
-<!-- Screenshots go here once the sensor has collected a representative week.
-     Placeholders rather than invented images: a dashboard of fabricated
-     numbers would misrepresent what this thing produces. -->
+Two dashboards and an alert policy with eight conditions, defined in
+[`deploy/terraform/newrelic/`](deploy/terraform/newrelic/) and created by
+`terraform apply`, never by hand in the console.
 
-| | |
-|---|---|
-| ![Overview dashboard](docs/images/dashboard-overview.png) | ![Sessions dashboard](docs/images/dashboard-sessions.png) |
-| _Overview: traffic, geography, credentials, ATT&CK techniques_ | _Sessions: transcripts, typing rhythm, classification_ |
+**Arapuca, overview**: events and unique attackers over 24 hours, successful
+logins, samples captured, attacks per hour by service, sessions split into bot
+and human, top source countries and networks, the passwords and usernames
+being tried and the pairs that worked, commands typed, ATT&CK techniques and
+tactics, HTTP paths requested, decoy files taken, captured samples with their
+VirusTotal verdicts, downloads refused by the address policy, and channel
+requests refused.
+
+**Arapuca, sessions**: the longest sessions, the ones the classifier reads as
+human, the command transcript newest first, the typing rhythm as a median gap
+between commands, commands never seen before, and the honeypot's own health.
+
+Screenshots are deliberately absent rather than invented: a dashboard of
+fabricated numbers would misrepresent what this produces, which is the one
+thing a portfolio piece must not do. They go in
+[`docs/images/`](docs/images/README.md) once the sensor has collected a
+representative week.
 
 ### Live map
 
@@ -191,6 +215,11 @@ The page is in English and Portuguese, switched by a control in the header.
 It follows the browser on a first visit and remembers the choice. Country
 names come from the browser's own `Intl.DisplayNames`, so they read
 idiomatically in both languages without shipping a table.
+
+The map zooms: a wheel, a pinch or the control in its corner magnifies the
+map rather than the page, a drag moves it, and the keyboard works when it has
+focus. The page's link preview is `web/og.png`, rendered from
+[`web/card.html`](web/card.html) by `scripts/render_social_card.sh`.
 
 [`web/`](web/) is a public page showing where the attacks come from, deployed
 on Netlify. It exists so the honeypot can be shared with people who do not
@@ -236,6 +265,7 @@ Run everything CI runs, locally:
 ```bash
 ./scripts/verify.sh          # formatting, both build types, sanitizers, clang-tidy
 ./scripts/verify.sh quick    # formatting, debug build and tests
+./scripts/coverage.sh        # line and branch coverage, with an HTML report
 ```
 
 The release build is not optional. GCC enables analyses under optimization
@@ -244,13 +274,33 @@ build once reached CI because the local gate only built the debug preset.
 
 Every change runs through: GCC and Clang on x86_64 and arm64,
 AddressSanitizer and UndefinedBehaviorSanitizer with leak detection,
-clang-tidy at zero findings with a security oriented profile, clang-format,
-eight libFuzzer targets for sixty seconds each, a check that no process
-spawning primitive exists, and a check that no public address was committed.
+ThreadSanitizer, clang-tidy at zero findings with a security oriented
+profile, clang-format, CodeQL with the security extended queries, eight
+libFuzzer targets for sixty seconds each, coverage against a floor, `ruff`
+and `mypy --strict` over the Python in `tools/`, a Trivy scan of the
+container image, a check that no process spawning primitive exists, and a
+check that no public address was committed.
+
+ThreadSanitizer is there because the daemon is threaded throughout: an accept
+loop per service, a capture worker, a bounded bus and one sink shared between
+them. AddressSanitizer cannot see a data race between any two of those.
+
+Overnight, each fuzz target runs for ten minutes against a corpus that
+accumulates between runs, which is a different exercise from the sixty second
+smoke test on a pull request: one catches a regression, the other finds
+something new.
 
 Integration tests drive a real SSH client and a real HTTP client against real
 servers, because a channel policy can be correct in a unit test and wrong on
 the wire.
+
+## Contributing and reporting
+
+[`CONTRIBUTING.md`](CONTRIBUTING.md) has the gates and the conventions.
+[`SECURITY.md`](SECURITY.md) says what counts as a vulnerability here, which
+is narrower than it looks: getting in with a weak password is the invitation,
+not a finding. [`CHANGELOG.md`](CHANGELOG.md) records what changed between
+releases.
 
 ## Legal and ethical notice
 

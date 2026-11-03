@@ -9,6 +9,14 @@
   publish = "web"
   command = ""
 
+  # Netlify rebuilds on every push to main, and most pushes here cannot change
+  # the page: C++ sources, workflows, the daily IoC feed and the weekly report
+  # all live outside web/. The ignore command is run in the repository with
+  # the previous deployed commit in CACHED_COMMIT_REF, and an exit status of 0
+  # cancels the build, so git diff --quiet cancels exactly when nothing the
+  # page is built from has changed.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- web/ netlify.toml"
+
 [build.environment]
   NODE_VERSION = "20"
 

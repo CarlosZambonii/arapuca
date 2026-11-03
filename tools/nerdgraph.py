@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 import sys
 import time
-from typing import Any
+from typing import Any, TypedDict
 
 import requests
 
@@ -32,6 +32,18 @@ query($accountId: Int!, $nrql: Nrql!) {
 
 class NerdGraphError(RuntimeError):
     """Raised when the API cannot be reached or refuses the query."""
+
+
+class ApiSettings(TypedDict):
+    """Everything run_nrql needs to reach the account.
+
+    A TypedDict rather than three loose values, so `run_nrql(query, **api)`
+    is checked rather than taking whatever the caller happened to assemble.
+    """
+
+    account_id: int
+    api_key: str
+    region: str
 
 
 def endpoint_for(region: str) -> str:
@@ -68,8 +80,7 @@ def run_nrql(
 
         if 400 <= response.status_code < 500:
             raise NerdGraphError(
-                f"NerdGraph refused the request ({response.status_code}): "
-                f"{response.text[:300]}"
+                f"NerdGraph refused the request ({response.status_code}): {response.text[:300]}"
             )
         if response.status_code >= 500:
             last_error = NerdGraphError(f"NerdGraph returned {response.status_code}")
@@ -91,7 +102,7 @@ def run_nrql(
     raise NerdGraphError(f"NerdGraph unreachable after {attempts} attempts: {last_error}")
 
 
-def settings_from_environment() -> tuple[int, str, str]:
+def settings_from_environment() -> ApiSettings:
     """Read account, key and region from the environment.
 
     Exits with a clear message rather than a traceback: this runs in CI and
@@ -114,7 +125,7 @@ def settings_from_environment() -> tuple[int, str, str]:
         raise SystemExit(2)
 
     try:
-        return int(account), key, region
+        return {"account_id": int(account), "api_key": key, "region": region}
     except ValueError:
         print("NEW_RELIC_ACCOUNT_ID must be a number", file=sys.stderr)
         raise SystemExit(2) from None

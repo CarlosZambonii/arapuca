@@ -1,0 +1,104 @@
+name: Fuzz nightly
+
+# The pull request gate fuzzes each target for sixty seconds, which catches a
+# regression and nothing else. Finding something new takes a campaign, and a
+# campaign cannot sit on the critical path of a push. This is that campaign.
+
+on:
+  schedule:
+    - cron: "48 2 * * *"
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Minutes per target"
+        required: false
+        default: "10"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fuzz-nightly
+  cancel-in-progress: false
+
+jobs:
+  campaign:
+    name: Fuzz ${{ matrix.target }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # One job per target. A single job running them in sequence would take
+        # an hour and report the first crash only.
+        target:
+          - address_policy
+          - command_line
+          - config
+          - http_request
+          - redaction
+          - shell
+          - terminal_input
+          - vfs_path
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build pkg-config libssl-dev \
+            libcurl4-openssl-dev libssh-dev libyaml-cpp-dev libmaxminddb-dev \
+            libminizip-dev clang libclang-rt-18-dev
+
+      # The corpus is the memory of every previous night. Without it each run
+      # starts from the committed seeds and rediscovers the same shallow paths
+      # instead of going deeper.
+      - name: Restore the accumulated corpus
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: corpus-cache/${{ matrix.target }}
+          key: fuzz-corpus-${{ matrix.target }}-${{ github.run_id }}
+          restore-keys: |
+            fuzz-corpus-${{ matrix.target }}-
+
+      - name: Configure
+        run: cmake --preset fuzz
+
+      - name: Build
+        run: cmake --build --preset fuzz
+
+      - name: Run the campaign
+        run: |
+          set -euo pipefail
+          target="${{ matrix.target }}"
+          minutes="${{ inputs.minutes || '10' }}"
+          mkdir -p "corpus-cache/${target}" "artifacts/${target}"
+          "build/fuzz/tests/fuzz/arapuca_fuzz_${target}" \
+            "corpus-cache/${target}" "tests/fuzz/corpus/${target}" \
+            -max_total_time=$((minutes * 60)) \
+            -max_len=65536 \
+            -rss_limit_mb=2048 \
+            -print_final_stats=1 \
+            -artifact_prefix="artifacts/${target}/"
+
+      # Minimised, because a crash is only useful if someone can read it. The
+      # raw input is kept as well: minimisation can lose the shape that made
+      # it interesting.
+      - name: Minimise the corpus for tomorrow
+        if: success()
+        run: |
+          set -euo pipefail
+          target="${{ matrix.target }}"
+          mkdir -p "corpus-min/${target}"
+          "build/fuzz/tests/fuzz/arapuca_fuzz_${target}" \
+            -merge=1 "corpus-min/${target}" "corpus-cache/${target}"
+          rm -rf "corpus-cache/${target}"
+          mv "corpus-min/${target}" "corpus-cache/${target}"
+
+      - name: Upload any crashing input
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fuzz-crash-${{ matrix.target }}
+          path: artifacts/
+          retention-days: 90

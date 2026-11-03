@@ -1,0 +1,28 @@
+name: Idea
+description: Something the honeypot should do and does not
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        PLAN.md section 1 lists the non goals. High interaction, malware
+        detonation, active response and anything that is not free to run are
+        out of scope by design, not by omission.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is missing, and what it would let you see
+      description: >-
+        The useful framing is what the sensor cannot currently observe, not
+        which feature to add.
+    validations:
+      required: true
+
+  - type: textarea
+    id: safety
+    attributes:
+      label: What it would mean for the safety invariants
+      description: >-
+        PLAN.md section 2 lists ten. Say which ones the idea touches, if any,
+        and how it stays inside them.

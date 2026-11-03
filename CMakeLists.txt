@@ -27,6 +27,7 @@ option(ARAPUCA_BUILD_FUZZERS  "Build the libFuzzer targets (clang only)"  OFF)
 option(ARAPUCA_ENABLE_ASAN    "Build with AddressSanitizer"               OFF)
 option(ARAPUCA_ENABLE_UBSAN   "Build with UndefinedBehaviorSanitizer"     OFF)
 option(ARAPUCA_ENABLE_TSAN    "Build with ThreadSanitizer"                OFF)
+option(ARAPUCA_COVERAGE       "Build instrumented for gcov coverage"      OFF)
 option(ARAPUCA_WERROR         "Treat compiler warnings as errors"         ON)
 option(ARAPUCA_CLANG_TIDY     "Run clang-tidy on Arapuca targets only"    OFF)
 
@@ -47,6 +48,7 @@ endfunction()
 
 include(CompilerWarnings)
 include(Sanitizers)
+include(Coverage)
 include(Dependencies)
 
 # Hardening flags applied to every Arapuca target. This binary parses hostile
@@ -81,4 +83,5 @@ message(STATUS "  Compiler ............ ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COM
 message(STATUS "  Tests ............... ${ARAPUCA_BUILD_TESTS}")
 message(STATUS "  Fuzzers ............. ${ARAPUCA_BUILD_FUZZERS}")
 message(STATUS "  ASan / UBSan / TSan . ${ARAPUCA_ENABLE_ASAN} / ${ARAPUCA_ENABLE_UBSAN} / ${ARAPUCA_ENABLE_TSAN}")
+message(STATUS "  Coverage ............ ${ARAPUCA_COVERAGE}")
 message(STATUS "")

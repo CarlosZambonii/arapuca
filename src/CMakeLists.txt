@@ -54,7 +54,8 @@ target_link_libraries(arapuca_core
     PRIVATE
         arapuca::warnings
         arapuca::hardening
-        arapuca::sanitizers)
+        arapuca::sanitizers
+        arapuca::coverage)
 
 arapuca_apply_tidy(arapuca_core)
 
@@ -72,7 +73,8 @@ target_link_libraries(arapucad
         arapuca::core
         arapuca::warnings
         arapuca::hardening
-        arapuca::sanitizers)
+        arapuca::sanitizers
+        arapuca::coverage)
 
 arapuca_apply_tidy(arapucad)
 

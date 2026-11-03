@@ -52,6 +52,32 @@ jobs:
             clang-format --dry-run --Werror "${files[@]}"
           fi
 
+  python-checks:
+    name: Python tooling
+    runs-on: ubuntu-24.04
+    # tools/ exports the telemetry, writes the IoC feed and generates the page
+    # data. It only ever runs on a schedule, against live data, with nobody
+    # watching, so a mistake there is found by the feed going quiet. These are
+    # the checks that were missing.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install the checkers
+        run: pip install -r tools/requirements.txt -r tools/requirements-dev.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Format
+        run: ruff format --check .
+
+      - name: Types
+        run: mypy
+
   build-and-test:
     name: Build ${{ matrix.arch }} ${{ matrix.compiler }}
     runs-on: ${{ matrix.runner }}
@@ -117,6 +143,70 @@ jobs:
           ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:strict_string_checks=1
           UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
         run: ctest --preset asan
+
+  thread-sanitizer:
+    name: ThreadSanitizer
+    runs-on: ubuntu-24.04
+    # The daemon runs an accept loop per service, a capture worker, a bounded
+    # event bus and one sink shared by all of them. ASan cannot see a data
+    # race between any two of those, and the preset for this existed from the
+    # first commit without anything ever running it.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }}
+
+      - name: Configure
+        run: cmake --preset tsan
+
+      # setarch -R disables address space randomisation for the child.
+      # ThreadSanitizer aborts with "unexpected memory mapping" on a kernel
+      # with 32 bits of mmap entropy, which is what Ubuntu 24.04 ships, and
+      # it aborts during the build, because gtest_discover_tests runs the
+      # binary to enumerate the tests. The usual sysctl workaround needs root
+      # on the runner; this one does not.
+      - name: Build
+        run: setarch -R cmake --build --preset tsan
+
+      - name: Test under ThreadSanitizer
+        env:
+          TSAN_OPTIONS: halt_on_error=1:second_deadlock_stack=1
+        run: setarch -R ctest --preset tsan
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ env.APT_PACKAGES }}
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install gcovr
+        run: pip install gcovr==8.8
+
+      # The floors live in the script, so the same numbers apply locally.
+      - name: Measure
+        run: ./scripts/coverage.sh
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage-report
+          path: |
+            build/coverage/report
+            build/coverage/coverage.xml
+          retention-days: 14
 
   fuzz:
     name: Fuzz smoke
