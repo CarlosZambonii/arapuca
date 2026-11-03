@@ -606,6 +606,104 @@ section { margin-block: 46px; }
   max-width: 76ch;
 }
 
+/* ---------- interactive additions ---------- */
+
+/* Service filter chips, above the feed. */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.chip:hover { color: var(--ink); border-color: var(--amber-deep); }
+.chip[aria-pressed="true"] { color: var(--ground); background: var(--amber); border-color: var(--amber); }
+.chip .c { opacity: 0.7; margin-left: 5px; font-variant-numeric: tabular-nums; }
+
+/* A new feed row slides in when the live refresh brings one. */
+@keyframes ev-enter {
+  from { opacity: 0; transform: translateY(-6px); background: var(--amber-deep); }
+  to { opacity: 1; transform: none; background: var(--surface); }
+}
+.ev.is-new { animation: ev-enter 0.9s ease-out; }
+.ev.is-match { outline: 1px solid var(--amber); background: #1d1a12; }
+@media (prefers-reduced-motion: reduce) { .ev.is-new { animation: none; } }
+
+/* The live dot pulses while auto refresh is on. */
+.pulse.live { box-shadow: 0 0 0 0 rgba(79, 210, 194, 0.6); animation: live-pulse 2.4s ease-out infinite; }
+@keyframes live-pulse {
+  70% { box-shadow: 0 0 0 7px rgba(79, 210, 194, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 210, 194, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .pulse.live { animation: none; } }
+
+/* Attacks per day, a small bar chart under the window note. */
+.timeline { margin: 2px 0 18px; }
+.timeline svg { display: block; width: 100%; height: 44px; overflow: visible; }
+.timeline .bar { fill: var(--amber-deep); transition: fill 0.1s; }
+.timeline .bar:hover, .timeline .bar.on { fill: var(--amber); }
+.timeline-caption {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-faint);
+  margin-top: 3px;
+  min-height: 1em;
+}
+
+/* The find-yourself search in the invitation. */
+.finder { display: flex; gap: 8px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.finder input {
+  flex: 1 1 200px;
+  min-width: 0;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 9px 12px;
+}
+.finder input:focus { outline: none; border-color: var(--amber); }
+.finder button {
+  flex: none;
+  background: transparent;
+  color: var(--amber);
+  border: 1px solid var(--amber-deep);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 9px 15px;
+  cursor: pointer;
+}
+.finder button:hover { background: var(--amber); color: var(--ground); }
+.finder-note {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  min-height: 1em;
+}
+.finder-note.hit { color: var(--cyan); }
+.finder-note.miss { color: var(--ink-dim); }
+
+/* Map focus mode: when an origin is selected, the rest recede. */
+#map.focused .arc { stroke-opacity: 0.08; }
+#map.focused .origin { fill-opacity: 0.25; }
+#map .arc.lit { stroke-opacity: 0.95 !important; stroke: var(--amber); }
+#map .origin.lit { fill-opacity: 1 !important; fill: var(--amber); stroke: var(--ink); }
+#map .origin.found { fill: var(--cyan); fill-opacity: 1 !important; }
+
+.rank .row.lit { outline: 1px solid var(--amber-deep); }
+.rank .row.clickable { cursor: pointer; }
+.rank .row.clickable:hover { background: var(--surface-high); }
+
 .feed { display: flex; flex-direction: column; gap: 1px; }
 .ev {
   display: grid;
@@ -688,6 +786,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         runs. Your address appears with the last octet masked.
       </p>
       <div class="cmd-list" id="commands"></div>
+      <div class="finder">
+        <input type="text" id="finder-input" inputmode="numeric" autocomplete="off"
+               spellcheck="false" data-i18n-ph="finderPlaceholder"
+               placeholder="your address, e.g. 203.0.113.x">
+        <button type="button" id="finder-go" data-i18n="finderGo">find me</button>
+        <p class="finder-note" id="finder-note" aria-live="polite"></p>
+      </div>
       <p class="fineprint" data-i18n="fineprint">
         Attacking this host is invited. Attacking anything else from it is not:
         no channel reaches anything real, port forwarding and SFTP are refused,
@@ -703,6 +808,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     <div class="section-head">
       <h2 data-i18n="originTitle">Where it comes from</h2>
       <span class="note" id="window-note">last 30 days</span>
+    </div>
+    <div class="timeline" id="timeline" hidden>
+      <svg id="timeline-svg" role="img" aria-label="Attacks per day"></svg>
+      <div class="timeline-caption" id="timeline-caption"></div>
     </div>
     <p class="map-caveat" id="map-caveat" hidden></p>
     <div class="map-layout">
@@ -784,6 +893,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       <h2 data-i18n="recentTitle">Recent attempts</h2>
       <span class="note" data-i18n="recentNote">addresses masked</span>
     </div>
+    <div class="chips" id="service-chips" role="group" aria-label="Filter by service"></div>
     <div class="feed" id="feed"></div>
   </section>
 
@@ -919,6 +1029,22 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
                     "resultado fabricado.",
       replayFrom: "sess\u00e3o de ",
       replayCommands: " comandos",
+      chipAll: "todos",
+      svcSsh: "ssh",
+      svcTelnet: "telnet",
+      svcHttp: "http",
+      finderPlaceholder: "seu endere\u00e7o, ex. 203.0.113.x",
+      finderGo: "me ache",
+      finderHit: "achei voc\u00ea: ",
+      finderHitMap: " tentativa(s) suas, destacadas abaixo e no mapa",
+      finderMiss: "nada desse endere\u00e7o por aqui ainda. ataque e tente de novo.",
+      finderBad: "digite um endere\u00e7o IPv4, ex. 203.0.113.45",
+      timelineCaption: "ataques por dia, \u00faltimos 30 dias",
+      timelineDay: " ataques em ",
+      liveOn: "ao vivo, atualizando sozinho",
+      focusCleared: "clique numa origem no mapa para focar",
+      focusOn: "focando ",
+      newArrivals: " nova(s) tentativa(s)",
       topCities: "Cidades de origem",
       sensorHere: "O sensor fica aqui",
       attacksReceived: " ataques recebidos",
@@ -978,6 +1104,22 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
                   "was recorded and answered with a fabricated result.",
     replayFrom: "session from ",
     replayCommands: " commands",
+    chipAll: "all",
+    svcSsh: "ssh",
+    svcTelnet: "telnet",
+    svcHttp: "http",
+    finderPlaceholder: "your address, e.g. 203.0.113.x",
+    finderGo: "find me",
+    finderHit: "found you: ",
+    finderHitMap: " of your attempts, lit below and on the map",
+    finderMiss: "nothing from that address yet. attack it and try again.",
+    finderBad: "type an IPv4 address, e.g. 203.0.113.45",
+    timelineCaption: "attacks per day, last 30 days",
+    timelineDay: " attacks on ",
+    liveOn: "live, refreshing on its own",
+    focusCleared: "click an origin on the map to focus it",
+    focusOn: "focusing ",
+    newArrivals: " new attempt(s)",
     topCities: "Top cities",
     sensorHere: "The sensor lives here",
     attacksReceived: " attacks received",
@@ -1020,6 +1162,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       var value = (STRINGS[lang] || {})[node.dataset.i18nLabel] || node.dataset.enLabel;
       node.setAttribute("aria-label", value);
       node.setAttribute("title", value);
+    });
+
+    document.querySelectorAll("[data-i18n-ph]").forEach(function (node) {
+      if (!node.dataset.enPh) { node.dataset.enPh = node.getAttribute("placeholder") || ""; }
+      var value = (STRINGS[lang] || {})[node.dataset.i18nPh] || node.dataset.enPh;
+      node.setAttribute("placeholder", value);
     });
 
     document.querySelectorAll(".lang-btn").forEach(function (button) {
@@ -1132,36 +1280,64 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   /* ---------- counters ---------- */
 
+  var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Count a number up to its target. A static figure says the same thing, but
+     a counter that climbs on load, and ticks when the live refresh bumps it,
+     is what makes the page read as a thing that is happening rather than a
+     snapshot. Reduced motion jumps straight to the value. */
+  function animateCount(node, to) {
+    var from = Number(node.dataset.value || 0);
+    node.dataset.value = to;
+    if (reducedMotion || from === to) { node.textContent = num(to); return; }
+    var start = null;
+    var duration = Math.min(1100, 350 + Math.abs(to - from) * 4);
+    function step(now) {
+      if (start === null) { start = now; }
+      var k = Math.min(1, (now - start) / duration);
+      var eased = 1 - Math.pow(1 - k, 3);
+      node.textContent = num(Math.round(from + (to - from) * eased));
+      if (k < 1) { requestAnimationFrame(step); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Kept across renders so a reused tile animates from its last value, not
+  // from zero, when the live refresh brings new numbers.
+  var statNodes = {};
+
   function renderStats(totals) {
     // Four, not five. Five tiles leave one alone in a row at phone width,
     // and session count is the least interesting of them to a visitor.
     var items = [
-      { n: totals.events, k: t("statAttacks"), cool: false },
-      { n: totals.attackers, k: t("statAddresses"), cool: false },
-      { n: totals.countries, k: t("statCountries"), cool: false },
-      { n: totals.samples, k: t("statSamples"), cool: true }
+      { key: "events", n: totals.events, k: t("statAttacks"), cool: false },
+      { key: "attackers", n: totals.attackers, k: t("statAddresses"), cool: false },
+      { key: "countries", n: totals.countries, k: t("statCountries"), cool: false },
+      { key: "samples", n: totals.samples, k: t("statSamples"), cool: true }
     ];
 
     var holder = el("stats");
     holder.textContent = "";
+    statNodes = {};
     items.forEach(function (item) {
       var box = document.createElement("div");
       box.className = "stat" + (item.cool ? " cool" : "");
       var n = document.createElement("span");
       n.className = "n";
-      n.textContent = num(item.n);
       var k = document.createElement("span");
       k.className = "k";
       k.textContent = item.k;
       box.appendChild(n);
       box.appendChild(k);
       holder.appendChild(box);
+      statNodes[item.key] = n;
+      animateCount(n, item.n || 0);
     });
   }
 
   /* ---------- ranked lists ---------- */
 
-  function renderRank(id, rows, cool) {
+  function renderRank(id, rows, cool, onPick) {
     var holder = el(id);
     holder.textContent = "";
 
@@ -1178,6 +1354,11 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     rows.forEach(function (row) {
       var line = document.createElement("div");
       line.className = "row" + (cool ? " cool" : "");
+      if (row.key) { line.dataset.key = row.key; }
+      if (onPick && row.key) {
+        line.classList.add("clickable");
+        line.addEventListener("click", function () { onPick(row.key); });
+      }
 
       var bar = document.createElement("div");
       bar.className = "bar";
@@ -1597,17 +1778,21 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // --- attack lines -----------------------------------------------------
     var arcs = svgEl("g", {});
     var drawn = [];
+    mapIndex = {};
     origins.forEach(function (origin, index) {
       var from = [origin.lon, origin.lat];
       var d = arcBetween(path, from, home);
       if (!d) { return; }
       var weight = originWeight(origin.attacks);
-      arcs.appendChild(svgEl("path", {
+      var arcPath = svgEl("path", {
         class: "arc",
         d: d,
         "stroke-width": (0.55 + weight * 1.5).toFixed(2),
         "stroke-opacity": (0.3 + weight * 0.45).toFixed(2)
-      }));
+      });
+      arcs.appendChild(arcPath);
+      var key = originKey(origin);
+      mapIndex[key] = { arc: arcPath, dot: null, iso: (origin.iso2 || origin.country_iso || "") };
       drawn.push({
         origin: origin,
         along: d3.geoInterpolate(from, home),
@@ -1633,12 +1818,19 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         "fill-opacity": (0.62 + weight * 0.38).toFixed(2)
       });
       zoomables.push({ node: dot, r: radius });
+      var key = originKey(origin);
+      if (mapIndex[key]) { mapIndex[key].dot = dot; }
+      else { mapIndex[key] = { arc: null, dot: dot, iso: (origin.iso2 || origin.country_iso || "") }; }
       var lines = [
         origin.city + ", " + countryName(origin),
         num(origin.attacks) + t("attacksAddresses") + num(origin.attackers) + t("addresses")
       ];
       dot.addEventListener("mousemove", function (event) { showTip(box.frame, event, lines); });
       dot.addEventListener("mouseleave", hideTip);
+      // A click drills into this origin: its line and dot light, the rest
+      // recede, and the cities list marks the same row.
+      dot.addEventListener("click", function (event) { event.stopPropagation(); focusOrigin(key); });
+      dot.style.cursor = "pointer";
       dots.appendChild(dot);
     });
     viewport.appendChild(dots);
@@ -1751,7 +1943,9 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var what = document.createElement("span");
     what.className = "what";
 
-    if (event.kind === "ssh.command") {
+    // A command from either shell, SSH or Telnet, reads as "ran <command>".
+    // Only the login attempts read as "tried <user> / <pass>".
+    if (event.kind === "ssh.command" || event.kind === "telnet.command") {
       what.appendChild(text(document.createElement("b"), t("ran")));
       what.appendChild(document.createTextNode(event.command || ""));
     } else {
@@ -1765,6 +1959,44 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     return what;
   }
 
+  /* The service an event belongs to, from its event_type: ssh.command is ssh,
+     telnet.auth_attempt is telnet, http.login_attempt is http. The filter
+     chips and the feed rows both read this. */
+  function serviceOf(event) {
+    var kind = event.kind || "";
+    var dot = kind.indexOf(".");
+    return dot > 0 ? kind.slice(0, dot) : "";
+  }
+
+  /* A stable key for one feed event, so the live refresh can tell an attempt
+     it has already shown from a genuinely new one. */
+  function feedKey(event) {
+    return (event.at || "") + "|" + (event.ip || "") + "|" + (event.command || event.password || "");
+  }
+
+  var feedState = { filter: "all", seen: {} };
+
+  function buildFeedRow(event, isNew) {
+    var line = document.createElement("div");
+    line.className = "ev" + (isNew ? " is-new" : "");
+    line.dataset.service = serviceOf(event);
+    line.dataset.ip = event.ip || "";
+    line.dataset.country = event.country || "";
+
+    var when = document.createElement("span");
+    when.className = "t";
+    when.textContent = event.at ? event.at.slice(11, 19) : "";
+    line.appendChild(when);
+
+    var who = document.createElement("span");
+    who.className = "who";
+    who.textContent = event.ip + (event.country ? " " + event.country : "");
+    line.appendChild(who);
+
+    line.appendChild(describe(event));
+    return line;
+  }
+
   function renderFeed(rows) {
     var holder = el("feed");
     holder.textContent = "";
@@ -1772,23 +2004,65 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       el("feed-section").hidden = true;
       return;
     }
+    el("feed-section").hidden = false;
+    feedState.seen = {};
     rows.forEach(function (event) {
-      var line = document.createElement("div");
-      line.className = "ev";
-
-      var when = document.createElement("span");
-      when.className = "t";
-      when.textContent = event.at ? event.at.slice(11, 19) : "";
-      line.appendChild(when);
-
-      var who = document.createElement("span");
-      who.className = "who";
-      who.textContent = event.ip + (event.country ? " " + event.country : "");
-      line.appendChild(who);
-
-      line.appendChild(describe(event));
-      holder.appendChild(line);
+      feedState.seen[feedKey(event)] = true;
+      holder.appendChild(buildFeedRow(event, false));
     });
+    renderChips(rows);
+    applyFeedFilter();
+  }
+
+  /* ---------- service filter ---------- */
+
+  function renderChips(rows) {
+    var counts = { all: rows.length, ssh: 0, telnet: 0, http: 0 };
+    rows.forEach(function (event) {
+      var service = serviceOf(event);
+      if (counts[service] !== undefined) { counts[service] += 1; }
+    });
+
+    var order = [
+      { key: "all", label: t("chipAll") },
+      { key: "ssh", label: t("svcSsh") },
+      { key: "telnet", label: t("svcTelnet") },
+      { key: "http", label: t("svcHttp") }
+    ];
+    var holder = el("service-chips");
+    holder.textContent = "";
+    order.forEach(function (item) {
+      // A service with nothing in the current feed, other than "all", is left
+      // out rather than shown as a dead zero.
+      if (item.key !== "all" && counts[item.key] === 0) { return; }
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.dataset.service = item.key;
+      chip.setAttribute("aria-pressed", feedState.filter === item.key ? "true" : "false");
+      chip.appendChild(document.createTextNode(item.label));
+      var count = document.createElement("span");
+      count.className = "c";
+      count.textContent = counts[item.key];
+      chip.appendChild(count);
+      chip.addEventListener("click", function () {
+        feedState.filter = item.key;
+        applyFeedFilter();
+        renderChips(rows);
+      });
+      holder.appendChild(chip);
+    });
+  }
+
+  function applyFeedFilter() {
+    var filter = feedState.filter;
+    var shown = 0;
+    el("feed").querySelectorAll(".ev").forEach(function (row) {
+      var visible = filter === "all" || row.dataset.service === filter;
+      row.hidden = !visible;
+      if (visible) { shown += 1; }
+    });
+    return shown;
   }
 
 
@@ -1985,6 +2259,202 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     }
   }
 
+  /* ---------- timeline ---------- */
+
+  function renderTimeline(daily) {
+    var holder = el("timeline");
+    var svg = el("timeline-svg");
+    if (!daily || daily.length < 2) { holder.hidden = true; return; }
+    holder.hidden = false;
+    svg.textContent = "";
+
+    var width = Math.max(280, holder.clientWidth || 600);
+    var height = 44;
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    var top = daily.reduce(function (max, day) { return Math.max(max, day.count || 0); }, 0) || 1;
+    var slot = width / daily.length;
+    var barWidth = Math.max(1, slot - 2);
+
+    daily.forEach(function (day, index) {
+      // Square root, so a quiet day is still a visible sliver next to the one
+      // persistent brute forcer's spike rather than a flat line.
+      var h = Math.max(1, Math.sqrt((day.count || 0) / top) * (height - 4));
+      var rect = svgEl("rect", {
+        class: "bar",
+        x: (index * slot).toFixed(1),
+        y: (height - h).toFixed(1),
+        width: barWidth.toFixed(1),
+        height: h.toFixed(1)
+      });
+      function label() {
+        var date = (day.at || "").slice(0, 10);
+        el("timeline-caption").textContent = num(day.count || 0) + t("timelineDay") + date;
+        rect.classList.add("on");
+      }
+      function clear() { rect.classList.remove("on"); el("timeline-caption").textContent = t("timelineCaption"); }
+      rect.addEventListener("mouseenter", label);
+      rect.addEventListener("mouseleave", clear);
+      svg.appendChild(rect);
+    });
+    el("timeline-caption").textContent = t("timelineCaption");
+  }
+
+  /* ---------- map focus (drill-down) ---------- */
+
+  // Filled by renderMap: a city key to its arc and dot, so a click anywhere
+  // the city appears can light the same geometry.
+  var mapIndex = {};
+  var focusKey = null;
+
+  function originKey(origin) {
+    return (origin.city || "") + "|" + (origin.iso2 || origin.country_iso || "");
+  }
+
+  function clearFocus() {
+    focusKey = null;
+    var svg = el("map");
+    if (svg) { svg.classList.remove("focused"); }
+    Object.keys(mapIndex).forEach(function (key) {
+      var entry = mapIndex[key];
+      if (entry.arc) { entry.arc.classList.remove("lit"); }
+      if (entry.dot) { entry.dot.classList.remove("lit"); }
+    });
+    el("cities").querySelectorAll(".row").forEach(function (row) { row.classList.remove("lit"); });
+  }
+
+  function focusOrigin(key) {
+    if (focusKey === key) { clearFocus(); return; }
+    clearFocus();
+    focusKey = key;
+    var svg = el("map");
+    if (svg) { svg.classList.add("focused"); }
+    var entry = mapIndex[key];
+    if (entry) {
+      if (entry.arc) { entry.arc.classList.add("lit"); }
+      if (entry.dot) { entry.dot.classList.add("lit"); }
+    }
+    el("cities").querySelectorAll(".row").forEach(function (row) {
+      row.classList.toggle("lit", row.dataset.key === key);
+    });
+  }
+
+  /* ---------- find yourself ---------- */
+
+  function normaliseIp(raw) {
+    var value = (raw || "").trim();
+    var masked = value.replace(/\.(x|\*|0)$/i, "");
+    var parts = masked.split(".");
+    if (parts.length < 3 || parts.length > 4) { return null; }
+    for (var i = 0; i < parts.length; i += 1) {
+      if (!/^\d{1,3}$/.test(parts[i]) || Number(parts[i]) > 255) { return null; }
+    }
+    // Match on the masked /24, which is how addresses appear on the page.
+    return parts.slice(0, 3).join(".");
+  }
+
+  function findMe() {
+    var note = el("finder-note");
+    note.className = "finder-note";
+    var prefix = normaliseIp(el("finder-input").value);
+    if (!prefix) { note.classList.add("miss"); note.textContent = t("finderBad"); return; }
+
+    var hits = 0;
+    var countries = {};
+    el("feed").querySelectorAll(".ev").forEach(function (row) {
+      var match = (row.dataset.ip || "").indexOf(prefix) === 0;
+      row.classList.toggle("is-match", match);
+      if (match) { hits += 1; countries[row.dataset.country] = true; }
+    });
+
+    // The feed knows the address, the map knows the city: light every origin
+    // in a country the matched attempts came from, so the search reaches the
+    // map too.
+    Object.keys(mapIndex).forEach(function (key) {
+      var entry = mapIndex[key];
+      if (entry.dot) { entry.dot.classList.toggle("found", hits > 0 && !!countries[entry.iso]); }
+    });
+
+    if (hits > 0) {
+      note.classList.add("hit");
+      note.textContent = t("finderHit") + hits + t("finderHitMap");
+      el("feed-section").scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    } else {
+      note.classList.add("miss");
+      note.textContent = t("finderMiss");
+    }
+  }
+
+  /* ---------- live refresh ---------- */
+
+  var liveTimer = null;
+
+  function sameData(a, b) {
+    if (!a || !b) { return false; }
+    return JSON.stringify(withoutStamp(a)) === JSON.stringify(withoutStamp(b));
+  }
+  function withoutStamp(data) {
+    var copy = {};
+    Object.keys(data).forEach(function (key) { if (key !== "generated_at") { copy[key] = data[key]; } });
+    return copy;
+  }
+
+  function startLive() {
+    if (liveTimer) { return; }
+    var dot = document.querySelector(".pulse");
+    if (dot) { dot.classList.add("live"); }
+    // Every 90 seconds, and only while the tab is visible: a backgrounded tab
+    // refreshing is spent battery and spent requests for a page nobody is
+    // looking at.
+    liveTimer = setInterval(function () {
+      if (document.hidden) { return; }
+      fetch("data/live.json", { cache: "no-store" })
+        .then(function (response) { return response.ok ? response.json() : null; })
+        .then(function (fresh) {
+          if (fresh && !sameData(fresh, state.data)) { applyRefresh(fresh); }
+        })
+        .catch(function () { /* a failed poll is not worth surfacing */ });
+    }, 90000);
+  }
+
+  /* A refresh that keeps the page the visitor is reading: the counters tick to
+     the new figures, genuinely new attempts slide into the top of the feed,
+     and the map and timeline redraw. The language choice and the map zoom are
+     left alone. */
+  function applyRefresh(fresh) {
+    var previous = state.data || {};
+    state.data = fresh;
+
+    if (fresh.totals) {
+      if (statNodes.events) { animateCount(statNodes.events, fresh.totals.events || 0); }
+      if (statNodes.attackers) { animateCount(statNodes.attackers, fresh.totals.attackers || 0); }
+      if (statNodes.countries) { animateCount(statNodes.countries, fresh.totals.countries || 0); }
+      if (statNodes.samples) { animateCount(statNodes.samples, fresh.totals.samples || 0); }
+    }
+
+    var holder = el("feed");
+    var arrivals = 0;
+    (fresh.recent || []).forEach(function (event) {
+      var key = feedKey(event);
+      if (!feedState.seen[key]) {
+        feedState.seen[key] = true;
+        var row = buildFeedRow(event, true);
+        holder.insertBefore(row, holder.firstChild);
+        arrivals += 1;
+      }
+    });
+    // Keep the feed from growing without bound as the hours pass.
+    var rows = holder.querySelectorAll(".ev");
+    for (var i = rows.length - 1; i >= 40; i -= 1) { rows[i].remove(); }
+    if (arrivals > 0) { renderChips(fresh.recent || []); applyFeedFilter(); }
+
+    renderRankPair(fresh);
+    renderTechniques(fresh.techniques);
+    renderTimeline(fresh.daily);
+    renderMap();
+    renderReplay(fresh.session);
+    renderCaveat();
+  }
+
   function render() {
     var data = state.data;
     renderCommands(data.target);
@@ -2004,23 +2474,31 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       return;
     }
 
-    renderRank("countries", data.countries.slice(0, 12).map(function (country) {
+    renderRankPair(data);
+    renderTechniques(data.techniques);
+    renderFeed(data.recent);
+    renderTimeline(data.daily);
+    renderReplay(data.session);
+    renderMap();
+    renderCaveat();
+  }
+
+  // Shared by the first render and the live refresh. The cities carry a key
+  // so a click drills into that origin on the map.
+  function renderRankPair(data) {
+    renderRank("countries", (data.countries || []).slice(0, 12).map(function (country) {
       return { label: countryName(country), value: country.attacks };
     }));
     renderRank("cities", (data.origins || []).slice(0, 12).map(function (origin) {
       return {
         label: origin.city + ", " + countryName(origin),
-        value: origin.attacks
+        value: origin.attacks,
+        key: originKey(origin)
       };
-    }));
+    }), false, focusOrigin);
     renderRank("passwords", data.passwords);
     renderRank("usernames", data.usernames);
     renderRank("commands-rank", data.commands, true);
-    renderTechniques(data.techniques);
-    renderFeed(data.recent);
-    renderReplay(data.session);
-    renderMap();
-    renderCaveat();
   }
 
   /* The counters count every event; the map can only draw the ones the GeoIP
@@ -2042,12 +2520,36 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     note.hidden = false;
   }
 
+  function bindInteractions() {
+    // Find yourself: Enter in the box or the button both run the search.
+    var input = el("finder-input");
+    var go = el("finder-go");
+    if (input) {
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") { event.preventDefault(); findMe(); }
+      });
+    }
+    if (go) { go.addEventListener("click", findMe); }
+
+    // A click on the map background, or Escape, clears a drill-down focus.
+    var svg = el("map");
+    if (svg) {
+      svg.addEventListener("click", function (event) {
+        if (event.target === svg || event.target.classList.contains("sphere")) { clearFocus(); }
+      });
+    }
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { clearFocus(); }
+    });
+  }
+
   function boot() {
     document.querySelectorAll(".lang-btn").forEach(function (button) {
       button.addEventListener("click", function () { applyLanguage(button.dataset.lang); });
     });
     applyLanguage(initialLanguage());
     bindMapGestures();
+    bindInteractions();
 
     // Both fetches are awaited together and the page is drawn once. An
     // earlier version rendered from whichever arrived first and let the other
@@ -2079,6 +2581,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
       state.world = settled[1].status === "fulfilled" ? settled[1].value : null;
       render();
+      if (state.data && state.data.totals && state.data.totals.events > 0) { startLive(); }
     });
 
     var timer;
