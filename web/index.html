@@ -354,6 +354,13 @@ section { margin-block: 46px; }
   padding: 8px 4px 2px;
 }
 .ramp { height: 7px; flex: 1; border-radius: 2px; min-width: 60px; }
+.legend-note {
+  margin: 2px 4px 0;
+  max-width: 62ch;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-faint);
+}
 
 /* ---------- lists ---------- */
 
@@ -547,6 +554,11 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
           <div class="ramp" id="ramp"></div>
           <span data-i18n="more">more</span>
         </div>
+        <p class="legend-note" data-i18n="legendNote">
+          The colour is per country and covers the whole territory, overseas
+          departments included: France shaded here means Paris, not Cayenne.
+          The dots mark the city each attempt actually came from.
+        </p>
       </div>
       <div>
         <div class="col"><h3 data-i18n="topCountries">Top countries</h3><div class="rank" id="countries"></div></div>
@@ -705,7 +717,11 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       mapCaveatD: "). O resto vem de endere\u00e7os que a base de GeoIP n\u00e3o " +
                   "localiza at\u00e9 a cidade, ent\u00e3o os n\u00fameros acima s\u00e3o " +
                   "maiores do que a soma do mapa.",
-      geoCredit: "Dados de IP para localiza\u00e7\u00e3o por "
+      geoCredit: "Dados de IP para localiza\u00e7\u00e3o por ",
+      legendNote: "A cor \u00e9 por pa\u00eds e cobre o territ\u00f3rio inteiro, " +
+                  "inclusive departamentos ultramarinos: a Fran\u00e7a acesa aqui " +
+                  "quer dizer Paris, n\u00e3o Caiena. As bolinhas marcam a cidade de " +
+                  "onde cada tentativa realmente veio."
     }
   };
 
