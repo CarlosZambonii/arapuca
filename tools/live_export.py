@@ -86,6 +86,17 @@ QUERIES = {
     f"IN ('ssh.auth_attempt', 'ssh.command', 'http.login_attempt') "
     f"LIMIT 40 SINCE 2 days ago",
     "daily": f"SELECT count(*) FROM Log WHERE {SCOPE} TIMESERIES 1 day SINCE 30 days ago",
+    # The attack map needs a point, not a country: the city facet carries the
+    # coordinates, and latest() is enough because every event from one city
+    # resolves to the same place.
+    "origins": f"SELECT count(*) AS attacks, uniqueCount(src_ip) AS attackers, "
+    f"latest(geo.latitude) AS lat, latest(geo.longitude) AS lon "
+    f"FROM Log WHERE {SCOPE} AND geo.city IS NOT NULL AND geo.city != '' "
+    f"FACET geo.city, geo.country_iso, geo.country LIMIT 60 SINCE 30 days ago",
+    # How many events the map can actually draw. The page states the gap
+    # rather than letting the counters and the map quietly disagree.
+    "located": f"SELECT count(*) AS located FROM Log WHERE {SCOPE} "
+    f"AND geo.country_iso IS NOT NULL SINCE 30 days ago",
 }
 
 
@@ -239,6 +250,23 @@ def build(
     }
 
 
+# Every result key build() reads. Kept beside the queries so the two drift
+# loudly rather than quietly.
+REQUIRED_RESULTS = (
+    "totals",
+    "captures",
+    "countries",
+    "origins",
+    "located",
+    "passwords",
+    "usernames",
+    "commands",
+    "techniques",
+    "recent",
+    "daily",
+)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default="web/data/live.json")
@@ -260,6 +288,13 @@ def main() -> int:
     api = {"account_id": account_id, "api_key": api_key, "region": region}
 
     results = {name: run_nrql(query, **api) for name, query in QUERIES.items()}
+
+    # A key that build() reads but QUERIES never asked for is a KeyError after
+    # every query has already been paid for. It has happened once; the check
+    # costs nothing and names the key.
+    missing = [name for name in REQUIRED_RESULTS if name not in results]
+    if missing:
+        raise SystemExit("QUERIES is missing: " + ", ".join(missing))
 
     sensor = None
     if arguments.sensor_location:
