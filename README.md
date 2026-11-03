@@ -11,8 +11,8 @@ The name is Brazilian Portuguese for a simple trap made of sticks.
 fabricated or read out of an in memory filesystem, and CI fails the build if a
 process spawning primitive appears anywhere in the sources.
 
-[![CI](https://github.com/OWNER/arapuca/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/arapuca/actions/workflows/ci.yml)
-[![Container](https://github.com/OWNER/arapuca/actions/workflows/docker.yml/badge.svg)](https://github.com/OWNER/arapuca/actions/workflows/docker.yml)
+[![CI](https://github.com/CarlosZambonii/arapuca/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlosZambonii/arapuca/actions/workflows/ci.yml)
+[![Container](https://github.com/CarlosZambonii/arapuca/actions/workflows/docker.yml/badge.svg)](https://github.com/CarlosZambonii/arapuca/actions/workflows/docker.yml)
 
 [Leia em português](README.pt-BR.md)
 

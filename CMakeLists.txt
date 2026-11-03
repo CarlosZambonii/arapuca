@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(arapuca
     VERSION 0.1.0
     DESCRIPTION "Medium interaction SSH and HTTP honeypot"
-    HOMEPAGE_URL "https://github.com/arapuca/arapuca"
+    HOMEPAGE_URL "https://github.com/CarlosZambonii/arapuca"
     LANGUAGES CXX)
 
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)

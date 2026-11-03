@@ -24,7 +24,7 @@
   vars:
     arapuca_user: ubuntu
     arapuca_dir: /opt/arapuca
-    arapuca_image: "ghcr.io/arapuca/arapuca:latest"
+    arapuca_image: "ghcr.io/carloszambonii/arapuca:latest"
     # The container listens here; the host maps the privileged ports onto them.
     arapuca_ssh_container_port: 2222
     arapuca_http_container_port: 8080
