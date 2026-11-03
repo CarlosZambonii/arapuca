@@ -220,8 +220,11 @@ leem naturalmente nos dois idiomas sem enviar tabela nenhuma.
 
 O mapa tem zoom: a roda do mouse, um gesto de pinça ou o controle no canto
 aproximam o mapa, não a página, o arrasto move, e o teclado funciona quando
-ele está em foco. A prévia do link é `web/og.png`, gerada a partir de
-[`web/card.html`](web/card.html) por `scripts/render_social_card.sh`.
+ele está em foco. Abaixo dele, quando uma sessão capturada tem o que mostrar,
+um terminal reproduz os comandos de um atacante com os intervalos que ele
+realmente deixou entre eles, que é o `since_prev_ms` que o classificador lê
+para distinguir um bot de uma mão. A prévia do link é `web/og.png`, gerada a
+partir de [`web/card.html`](web/card.html) por `scripts/render_social_card.sh`.
 
 A pasta [`web/`](web/) é uma página pública que mostra de onde vêm os ataques,
 publicada no Netlify. Ela existe para o honeypot poder ser compartilhado com

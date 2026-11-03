@@ -18,6 +18,11 @@ is bumped only on a breaking change to the envelope and is documented in
 * A link preview image. `web/card.html` is rendered to `web/og.png` by
   `scripts/render_social_card.sh`, so sharing the page shows the map rather
   than an empty rectangle.
+* A session replay on the public page: the busiest captured session is
+  exported with each command's `seq` and `since_prev_ms`, and a terminal
+  panel plays it back at the attacker's own rhythm, with play, pause and
+  restart, a static render under reduced motion, and the panel hidden until a
+  session is worth showing.
 * ThreadSanitizer runs in CI and in `scripts/verify.sh`. The preset existed
   from the first commit and nothing ever ran it, on a daemon that is threaded
   throughout.

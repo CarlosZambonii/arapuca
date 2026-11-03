@@ -21,12 +21,13 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import re
 import sys
 from datetime import UTC, datetime
 from typing import Any
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
-from nerdgraph import run_nrql, settings_from_environment
+from nerdgraph import ApiSettings, run_nrql, settings_from_environment
 
 SCOPE = "logtype = 'arapuca'"
 
@@ -96,7 +97,70 @@ QUERIES = {
     # rather than letting the counters and the map quietly disagree.
     "located": f"SELECT count(*) AS located FROM Log WHERE {SCOPE} "
     f"AND geo.country_iso IS NOT NULL SINCE 30 days ago",
+    # The busiest session, for the replay. A facet is ordered by its
+    # aggregate descending, so LIMIT 1 is the one that typed the most.
+    "top_session": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "
+    f"event_type = 'ssh.command' AND since_prev_ms IS NOT NULL "
+    f"FACET session_id LIMIT 1 SINCE 30 days ago",
 }
+
+
+# A session's commands, in order, for the replay on the page. Separate from
+# QUERIES because it depends on which session QUERIES['top_session'] found:
+# there is nothing to ask until the first query has answered.
+def collect_session(
+    api: ApiSettings, results: dict[str, list[dict[str, Any]]]
+) -> dict[str, Any] | None:
+    picked = results.get("top_session") or []
+    if not picked:
+        return None
+
+    # A bot is worth replaying; a human's three commands are not, and a single
+    # command is not a session. The floor keeps the panel off the page until
+    # there is something that reads as an attack.
+    if int(picked[0].get("commands") or 0) < 4:
+        return None
+
+    names = facet(picked[0])
+    if not names or not names[0] or names[0] == "None":
+        return None
+    session_id = names[0]
+
+    # The id is interpolated, not parameterised, so it is constrained to the
+    # shape the id generator produces (Crockford base32) before it reaches the
+    # query. An id from the telemetry that is not that shape is not trusted
+    # into an NRQL string.
+    if not re.fullmatch(r"[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{1,64}", session_id):
+        return None
+
+    rows = run_nrql(
+        f"SELECT command, seq, since_prev_ms, geo.country_iso, timestamp "
+        f"FROM Log WHERE {SCOPE} AND event_type = 'ssh.command' "
+        f"AND session_id = '{session_id}' SINCE 30 days ago LIMIT 200",
+        **api,
+    )
+    commands = []
+    for row in rows:
+        text = (row.get("command") or "").strip()
+        if not text:
+            continue
+        commands.append(
+            {
+                "seq": int(row.get("seq") or 0),
+                "command": text[:200],
+                "since_prev_ms": max(0, int(row.get("since_prev_ms") or 0)),
+                "at": iso_timestamp(row.get("timestamp")),
+            }
+        )
+    if len(commands) < 4:
+        return None
+    commands.sort(key=lambda item: item["seq"])
+    first = commands[0]
+    return {
+        "country": rows[0].get("geo.country_iso") or "",
+        "started_at": first.get("at", ""),
+        "commands": commands,
+    }
 
 
 def facet(row: dict[str, Any]) -> list[str]:
@@ -131,7 +195,10 @@ def iso_timestamp(value: Any) -> str:
 
 
 def build(
-    results: dict[str, list[dict[str, Any]]], target: str, sensor: dict[str, Any] | None
+    results: dict[str, list[dict[str, Any]]],
+    target: str,
+    sensor: dict[str, Any] | None,
+    session: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     totals = (results["totals"] or [{}])[0]
     captures = (results["captures"] or [{}])[0]
@@ -247,6 +314,7 @@ def build(
         "techniques": techniques,
         "recent": recent[:30],
         "daily": daily,
+        "session": session,
     }
 
 
@@ -264,6 +332,7 @@ REQUIRED_RESULTS = (
     "techniques",
     "recent",
     "daily",
+    "top_session",
 )
 
 
@@ -309,7 +378,8 @@ def main() -> int:
             except ValueError:
                 print("ignoring an unparseable sensor location", file=sys.stderr)
 
-    payload = build(results, arguments.target, sensor)
+    session = collect_session(api, results)
+    payload = build(results, arguments.target, sensor, session)
 
     path = pathlib.Path(arguments.output)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -320,6 +390,8 @@ def main() -> int:
         f"{payload['located_events']} located, {len(payload['countries'])} countries, "
         f"{len(payload['origins'])} origin cities"
     )
+    if session:
+        print(f"replay session: {len(session['commands'])} commands")
     return 0
 
 

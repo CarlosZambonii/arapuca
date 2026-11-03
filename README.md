@@ -218,7 +218,10 @@ idiomatically in both languages without shipping a table.
 
 The map zooms: a wheel, a pinch or the control in its corner magnifies the
 map rather than the page, a drag moves it, and the keyboard works when it has
-focus. The page's link preview is `web/og.png`, rendered from
+focus. Under it, when a captured session has enough to show, a terminal
+replays one attacker's commands at the gaps they actually left between them,
+which is the `since_prev_ms` the classifier reads to tell a bot from a hand.
+The page's link preview is `web/og.png`, rendered from
 [`web/card.html`](web/card.html) by `scripts/render_social_card.sh`.
 
 [`web/`](web/) is a public page showing where the attacks come from, deployed
