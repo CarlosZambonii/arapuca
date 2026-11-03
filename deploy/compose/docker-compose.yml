@@ -37,6 +37,10 @@ services:
         volume:
           nocopy: true
       - arapuca-state:/var/lib/arapuca/state
+      # GeoIP databases, installed on the host by Ansible and read only here.
+      # They are refreshed monthly from outside the container, which is why
+      # this is a bind mount rather than a volume.
+      - /var/lib/arapuca/geoip:/var/lib/arapuca/geoip:ro
       - arapuca-logs:/var/log/arapuca
       # Beside the compose file, not relative to the repository. Ansible
       # copies config/ into the same directory as this file, and a path like

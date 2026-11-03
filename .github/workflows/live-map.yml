@@ -39,6 +39,7 @@ jobs:
         run: |
           python tools/live_export.py \
             --target "${{ vars.ARAPUCA_PUBLIC_HOST }}" \
+            --sensor-location "${{ vars.ARAPUCA_SENSOR_LOCATION }}" \
             --output web/data/live.json
 
       - name: Commit, which triggers the Netlify deploy

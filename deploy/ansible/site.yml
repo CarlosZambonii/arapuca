@@ -284,8 +284,73 @@
       notify: Restart newrelic-infra
 
     # -----------------------------------------------------------------------
-    # GeoLite2
+    # GeoIP
     # -----------------------------------------------------------------------
+    #
+    # DB-IP Lite by default, MaxMind GeoLite2 when credentials are given.
+    #
+    # MaxMind now requires a corporate email address to sign up for GeoLite2,
+    # which puts it out of reach for a personal project. DB-IP publishes the
+    # same MMDB format under CC-BY-4.0 with no account at all, and the
+    # honeypot reads it without a single code change: the schema is the one
+    # libmaxminddb expects.
+    #
+    # CC-BY-4.0 requires attribution, which the public page and both READMEs
+    # carry. That obligation is the price of the data and is not optional.
+
+    - name: Create the GeoIP directory
+      ansible.builtin.file:
+        path: /var/lib/arapuca/geoip
+        state: directory
+        owner: "10001"
+        group: "10001"
+        mode: "0755"
+
+    - name: Install the GeoIP refresh script
+      ansible.builtin.copy:
+        dest: /usr/local/bin/arapuca-geoip-update
+        mode: "0755"
+        content: |
+          #!/usr/bin/env bash
+          # Refresh the DB-IP Lite databases. They are published monthly under
+          # a dated URL, so this falls back to the previous month during the
+          # first days of a new one, before that month's file exists.
+          set -euo pipefail
+
+          target=/var/lib/arapuca/geoip
+          for db in city asn; do
+            for month in "$(date -u +%Y-%m)" "$(date -u -d '1 month ago' +%Y-%m)"; do
+              url="https://download.db-ip.com/free/dbip-${db}-lite-${month}.mmdb.gz"
+              if curl -sfL --max-time 300 -o "${target}/.${db}.gz" "$url"; then
+                gunzip -cf "${target}/.${db}.gz" > "${target}/.${db}.mmdb"
+                # Moved into place only once the whole file is on disk, so the
+                # honeypot never opens a half written database.
+                mv -f "${target}/.${db}.mmdb" "${target}/dbip-${db}.mmdb"
+                rm -f "${target}/.${db}.gz"
+                echo "updated ${db} from ${month}"
+                break
+              fi
+            done
+          done
+
+          chown -R 10001:10001 "$target"
+
+    - name: Download the GeoIP databases now
+      ansible.builtin.command: /usr/local/bin/arapuca-geoip-update
+      register: geoip_download
+      changed_when: "'updated' in geoip_download.stdout"
+      when: not (maxmind_license_key | length > 0)
+
+    - name: Refresh the GeoIP databases monthly
+      ansible.builtin.cron:
+        name: arapuca-geoip
+        day: "4"
+        hour: "4"
+        minute: "17"
+        job: "/usr/local/bin/arapuca-geoip-update >/dev/null 2>&1 && /usr/bin/docker restart arapuca >/dev/null 2>&1"
+      when: not (maxmind_license_key | length > 0)
+
+    # The MaxMind path, for a deployment that does have credentials.
     - name: Install the GeoLite2 updater
       ansible.builtin.apt:
         name: geoipupdate
@@ -327,6 +392,19 @@
         src: ../../config/
         dest: "{{ arapuca_dir }}/config/"
         mode: "0644"
+
+    # The file names differ between the two sources, so the configuration
+    # inside the container has to match whichever was installed.
+    - name: Point the honeypot at the installed GeoIP databases
+      ansible.builtin.lineinfile:
+        path: "{{ arapuca_dir }}/config/arapuca.yaml"
+        regexp: "^  {{ item.key }}:"
+        line: "  {{ item.key }}: {{ item.value }}"
+      loop:
+        - key: city_db
+          value: "/var/lib/arapuca/geoip/{{ 'GeoLite2-City.mmdb' if maxmind_license_key | length > 0 else 'dbip-city.mmdb' }}"
+        - key: asn_db
+          value: "/var/lib/arapuca/geoip/{{ 'GeoLite2-ASN.mmdb' if maxmind_license_key | length > 0 else 'dbip-asn.mmdb' }}"
 
     - name: Write the environment file
       ansible.builtin.copy:

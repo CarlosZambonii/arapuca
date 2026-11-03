@@ -282,6 +282,13 @@ section { margin-block: 46px; }
 }
 @media (max-width: 820px) { .map-layout { grid-template-columns: 1fr; } }
 
+.map-caveat {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin: -8px 0 16px;
+  max-width: 76ch;
+}
+
 .map-frame {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -300,6 +307,24 @@ section { margin-block: 46px; }
 #map .land.hit { cursor: pointer; }
 #map .land.hit:hover { stroke: var(--ink); stroke-width: 0.8; }
 #map .sphere { fill: #0d1420; stroke: var(--line); stroke-width: 0.6; }
+
+/* Attack lines. Drawn under the markers, so a dot is never hidden by a line
+   arriving at it. */
+#map .arc { fill: none; stroke: var(--amber); stroke-linecap: round; pointer-events: none; }
+#map .pulse-dot { fill: var(--amber); pointer-events: none; }
+
+#map .origin { fill: #ffd591; stroke: #0b0f17; stroke-width: 0.9; cursor: pointer; }
+#map .origin:hover { stroke: var(--ink); stroke-width: 1.4; }
+
+/* The sensor itself. Cyan, because everything attacking is amber and the
+   thing being attacked should not read as one more attacker. */
+#map .home-glow { fill: var(--cyan); opacity: 0.16; pointer-events: none; }
+#map .home-ring { fill: none; stroke: var(--cyan); stroke-width: 1.2; pointer-events: none; }
+#map .home-icon { fill: var(--cyan); stroke: none; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  #map .pulse-dot { display: none; }
+}
 
 .tip {
   position: absolute;
@@ -459,6 +484,8 @@ footer a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px soli
 footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(--amber-deep); }
 .foot-rows { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-bottom: 16px; }
 .disclaimer { max-width: 74ch; line-height: 1.65; }
+.credit { margin-top: 14px; font-size: 11px; color: var(--ink-faint); }
+.credit a { color: var(--ink-faint); }
 
 :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 </style>
@@ -508,6 +535,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       <h2 data-i18n="originTitle">Where it comes from</h2>
       <span class="note" id="window-note">last 30 days</span>
     </div>
+    <p class="map-caveat" id="map-caveat" hidden></p>
     <div class="map-layout">
       <div>
         <div class="map-frame">
@@ -522,6 +550,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       </div>
       <div>
         <div class="col"><h3 data-i18n="topCountries">Top countries</h3><div class="rank" id="countries"></div></div>
+        <div class="col" style="margin-top:18px"><h3 data-i18n="topCities">Top cities</h3><div class="rank" id="cities"></div></div>
       </div>
     </div>
   </section>
@@ -566,6 +595,11 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       Passwords are shown in full because they are what is being sprayed at
       the internet rather than anybody's secret. Captured samples are held
       encrypted and read only, and are never published or uploaded anywhere.
+    </p>
+    <p class="credit">
+      <span data-i18n="geoCredit">IP geolocation data by </span><a
+        href="https://db-ip.com">DB-IP</a>, <a
+        href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
     </p>
   </footer>
 
@@ -661,7 +695,17 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       events: " eventos",
       attacksAddresses: " ataques, ",
       addresses: " endere\u00e7os",
-      mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa"
+      mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
+      topCities: "Cidades de origem",
+      sensorHere: "O sensor fica aqui",
+      attacksReceived: " ataques recebidos",
+      mapCaveatA: "O mapa mostra ",
+      mapCaveatB: " dos ",
+      mapCaveatC: " eventos (",
+      mapCaveatD: "). O resto vem de endere\u00e7os que a base de GeoIP n\u00e3o " +
+                  "localiza at\u00e9 a cidade, ent\u00e3o os n\u00fameros acima s\u00e3o " +
+                  "maiores do que a soma do mapa.",
+      geoCredit: "Dados de IP para localiza\u00e7\u00e3o por "
     }
   };
 
@@ -688,7 +732,17 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     events: " events",
     attacksAddresses: " attacks, ",
     addresses: " addresses",
-    mapUnavailable: "map geometry could not be loaded"
+    mapUnavailable: "map geometry could not be loaded",
+    topCities: "Top cities",
+    sensorHere: "The sensor lives here",
+    attacksReceived: " attacks received",
+    mapCaveatA: "The map places ",
+    mapCaveatB: " of ",
+    mapCaveatC: " events (",
+    mapCaveatD: "). The rest come from addresses the GeoIP database cannot " +
+                "resolve to a city, so the figures above are larger than the " +
+                "map adds up to.",
+    geoCredit: "IP geolocation data by "
   };
 
   var lang = "en";
@@ -729,15 +783,19 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
      becomes "R\u00fassia" rather than a literal translation. Older browsers
      without it keep the English name. */
   var regionNames = null;
-  function countryName(country) {
-    if (lang === "en") { return country.name; }
+  function countryName(row) {
+    // Two shapes reach this: the country rank carries {name, iso2}, the map
+    // origins carry {country, country_iso}. Both are a country.
+    var english = row.name || row.country || "";
+    var iso = row.iso2 || row.country_iso || "";
+    if (lang === "en") { return english; }
     try {
       if (!regionNames) {
         regionNames = new Intl.DisplayNames(["pt-BR"], { type: "region" });
       }
-      return (country.iso2 && regionNames.of(country.iso2)) || country.name;
+      return (iso && regionNames.of(iso)) || english;
     } catch (error) {
-      return country.name;
+      return english;
     }
   }
 
@@ -890,6 +948,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   /* ---------- the map ---------- */
 
   var SVG_NS = "http://www.w3.org/2000/svg";
+  var animation = null;
 
   function svgEl(name, attrs) {
     var node = document.createElementNS(SVG_NS, name);
@@ -934,13 +993,42 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       ];
     }
     var a = parse(from), b = parse(to);
-    return function (t) {
-      var k = Math.max(0, Math.min(1, t));
+    return function (k) {
+      var x = Math.max(0, Math.min(1, k));
       return "rgb(" +
-        Math.round(a[0] + (b[0] - a[0]) * k) + "," +
-        Math.round(a[1] + (b[1] - a[1]) * k) + "," +
-        Math.round(a[2] + (b[2] - a[2]) * k) + ")";
+        Math.round(a[0] + (b[0] - a[0]) * x) + "," +
+        Math.round(a[1] + (b[1] - a[1]) * x) + "," +
+        Math.round(a[2] + (b[2] - a[2]) * x) + ")";
     };
+  }
+
+  function showTip(frame, event, lines) {
+    var tip = el("tip");
+    tip.textContent = "";
+    lines.forEach(function (line, index) {
+      var row = document.createElement("div");
+      if (index > 0) { row.className = "c"; }
+      row.textContent = line;
+      tip.appendChild(row);
+    });
+    var bounds = frame.getBoundingClientRect();
+    tip.style.left = (event.clientX - bounds.left) + "px";
+    tip.style.top = (event.clientY - bounds.top) + "px";
+    tip.hidden = false;
+  }
+
+  function hideTip() { el("tip").hidden = true; }
+
+  /* A great circle between two points, sampled into a line the projection
+     can draw. Straight on a globe, curved on a flat map, which is both
+     correct and what makes it read as a trajectory. */
+  function arcBetween(path, from, to) {
+    var along = d3.geoInterpolate(from, to);
+    var points = [];
+    for (var i = 0; i <= 36; i += 1) {
+      points.push(along(i / 36));
+    }
+    return path({ type: "LineString", coordinates: points });
   }
 
   function renderMap() {
@@ -950,15 +1038,20 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       return;
     }
 
+    if (animation) { cancelAnimationFrame(animation); animation = null; }
+
+    var data = state.data || {};
     var byId = {};
-    var top = 1;
-    if (state.data) {
-      state.data.countries.forEach(function (country) {
-        if (!country.id) { return; }
-        byId[String(Number(country.id))] = country;
-        top = Math.max(top, country.attacks);
-      });
-    }
+    var topCountry = 1;
+    (data.countries || []).forEach(function (country) {
+      if (!country.id) { return; }
+      byId[String(Number(country.id))] = country;
+      topCountry = Math.max(topCountry, country.attacks);
+    });
+
+    var origins = (data.origins || []).slice(0, 60);
+    var sensor = data.sensor_location || null;
+    var topOrigin = origins.reduce(function (max, o) { return Math.max(max, o.attacks); }, 1);
 
     svg.textContent = "";
     var box = sizeMap(svg);
@@ -970,14 +1063,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // Square root, not linear: one country usually produces most of the
     // traffic, and a linear ramp would leave every other country the same
     // shade as a country with no traffic at all.
-    var shade = mixer("#1d2838", "#f2a33c");
-    function colour(attacks) { return shade(Math.sqrt(attacks / top)); }
+    var shade = mixer("#1b2433", "#7a5a2c");
+    function colour(attacks) { return shade(Math.sqrt(attacks / topCountry)); }
 
     svg.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
 
-    var group = svgEl("g", {});
-    var tip = el("tip");
-
+    // --- countries, as context under the lines ---------------------------
+    var land = svgEl("g", {});
     countries.features.forEach(function (feature) {
       var hit = byId[String(Number(feature.id))];
       var shape = svgEl("path", {
@@ -985,30 +1077,142 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         class: "land" + (hit ? " hit" : ""),
         fill: hit ? colour(hit.attacks) : null
       });
-
       if (hit) {
         shape.addEventListener("mousemove", function (event) {
-          tip.textContent = "";
-          var name = document.createElement("div");
-          name.textContent = countryName(hit);
-          var count = document.createElement("div");
-          count.className = "c";
-          count.textContent = num(hit.attacks) + t("attacksAddresses") + num(hit.attackers) + t("addresses");
-          tip.appendChild(name);
-          tip.appendChild(count);
-          var bounds = box.frame.getBoundingClientRect();
-          tip.style.left = (event.clientX - bounds.left) + "px";
-          tip.style.top = (event.clientY - bounds.top) + "px";
-          tip.hidden = false;
+          showTip(box.frame, event, [
+            countryName(hit),
+            num(hit.attacks) + t("attacksAddresses") + num(hit.attackers) + t("addresses")
+          ]);
         });
-        shape.addEventListener("mouseleave", function () { tip.hidden = true; });
+        shape.addEventListener("mouseleave", hideTip);
       }
-      group.appendChild(shape);
+      land.appendChild(shape);
     });
-    svg.appendChild(group);
+    svg.appendChild(land);
+
+    if (!sensor || !origins.length) {
+      el("ramp").style.background = "linear-gradient(to right, " +
+        colour(0) + ", " + colour(topCountry * 0.35) + ", " + colour(topCountry) + ")";
+      return;
+    }
+
+    var home = [sensor.lon, sensor.lat];
+    var homeXY = projection(home);
+
+    // --- attack lines -----------------------------------------------------
+    var arcs = svgEl("g", {});
+    var drawn = [];
+    origins.forEach(function (origin, index) {
+      var from = [origin.lon, origin.lat];
+      var d = arcBetween(path, from, home);
+      if (!d) { return; }
+      var weight = Math.sqrt(origin.attacks / topOrigin);
+      arcs.appendChild(svgEl("path", {
+        class: "arc",
+        d: d,
+        "stroke-width": (0.4 + weight * 1.4).toFixed(2),
+        "stroke-opacity": (0.18 + weight * 0.42).toFixed(2)
+      }));
+      drawn.push({
+        origin: origin,
+        along: d3.geoInterpolate(from, home),
+        // Spread the starting points, or every pulse leaves at the same
+        // instant and the map blinks instead of flowing.
+        phase: (index * 0.137) % 1,
+        weight: weight
+      });
+    });
+    svg.appendChild(arcs);
+
+    // --- origin cities ----------------------------------------------------
+    var dots = svgEl("g", {});
+    origins.forEach(function (origin) {
+      var xy = projection([origin.lon, origin.lat]);
+      if (!xy) { return; }
+      var weight = Math.sqrt(origin.attacks / topOrigin);
+      var dot = svgEl("circle", {
+        class: "origin",
+        cx: xy[0], cy: xy[1],
+        r: (2 + weight * 4).toFixed(2),
+        "fill-opacity": (0.55 + weight * 0.45).toFixed(2)
+      });
+      var lines = [
+        origin.city + ", " + countryName(origin),
+        num(origin.attacks) + t("attacksAddresses") + num(origin.attackers) + t("addresses")
+      ];
+      dot.addEventListener("mousemove", function (event) { showTip(box.frame, event, lines); });
+      dot.addEventListener("mouseleave", hideTip);
+      dots.appendChild(dot);
+    });
+    svg.appendChild(dots);
+
+    // --- the sensor -------------------------------------------------------
+    if (homeXY) {
+      var marker = svgEl("g", {});
+      marker.appendChild(svgEl("circle", { class: "home-glow", cx: homeXY[0], cy: homeXY[1], r: 13 }));
+      marker.appendChild(svgEl("circle", { class: "home-ring", cx: homeXY[0], cy: homeXY[1], r: 8 }));
+
+      // A house, drawn rather than an emoji: an emoji renders as a different
+      // picture on every platform and some of them have no colour at all.
+      var x = homeXY[0], y = homeXY[1];
+      var house = svgEl("path", {
+        class: "home-icon",
+        d: "M" + (x - 4.5) + "," + (y + 0.4) +
+           "L" + x + "," + (y - 4.2) +
+           "L" + (x + 4.5) + "," + (y + 0.4) +
+           "L" + (x + 3.1) + "," + (y + 0.4) +
+           "L" + (x + 3.1) + "," + (y + 4.2) +
+           "L" + (x + 1.1) + "," + (y + 4.2) +
+           "L" + (x + 1.1) + "," + (y + 1.2) +
+           "L" + (x - 1.1) + "," + (y + 1.2) +
+           "L" + (x - 1.1) + "," + (y + 4.2) +
+           "L" + (x - 3.1) + "," + (y + 4.2) +
+           "L" + (x - 3.1) + "," + (y + 0.4) + "Z"
+      });
+      var homeLines = [
+        t("sensorHere"),
+        [sensor.city, sensor.country].filter(Boolean).join(", "),
+        num(data.totals && data.totals.events) + t("attacksReceived")
+      ].filter(Boolean);
+      house.addEventListener("mousemove", function (event) { showTip(box.frame, event, homeLines); });
+      house.addEventListener("mouseleave", hideTip);
+      marker.appendChild(house);
+      svg.appendChild(marker);
+    }
+
+    // --- pulses travelling in -------------------------------------------
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced && drawn.length) {
+      var pulses = svgEl("g", {});
+      var nodes = drawn.map(function (arc) {
+        var dot = svgEl("circle", { class: "pulse-dot", r: (1 + arc.weight * 1.8).toFixed(2), cx: -10, cy: -10 });
+        pulses.appendChild(dot);
+        return dot;
+      });
+      svg.appendChild(pulses);
+
+      var started = null;
+      var travel = 5200; // milliseconds for one trip, slow enough to follow
+      function step(now) {
+        if (started === null) { started = now; }
+        var base = ((now - started) / travel);
+        drawn.forEach(function (arc, index) {
+          var k = (base + arc.phase) % 1;
+          var xy = projection(arc.along(k));
+          var node = nodes[index];
+          if (!xy) { node.setAttribute("opacity", "0"); return; }
+          node.setAttribute("cx", xy[0]);
+          node.setAttribute("cy", xy[1]);
+          // Fade in on departure and out on arrival, so a dot never pops.
+          node.setAttribute("opacity", (Math.sin(k * Math.PI) * 0.9).toFixed(2));
+        });
+        animation = requestAnimationFrame(step);
+      }
+      animation = requestAnimationFrame(step);
+    }
 
     el("ramp").style.background = "linear-gradient(to right, " +
-      colour(0) + ", " + colour(top * 0.35) + ", " + colour(top) + ")";
+      colour(0) + ", " + colour(topCountry * 0.35) + ", " + colour(topCountry) + ")";
   }
 
   /* ---------- techniques and feed ---------- */
@@ -1119,11 +1323,18 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     if (!data.totals.events) {
       renderEmpty();
       renderMap();
+      renderCaveat();
       return;
     }
 
     renderRank("countries", data.countries.slice(0, 12).map(function (country) {
       return { label: countryName(country), value: country.attacks };
+    }));
+    renderRank("cities", (data.origins || []).slice(0, 12).map(function (origin) {
+      return {
+        label: origin.city + ", " + countryName(origin),
+        value: origin.attacks
+      };
     }));
     renderRank("passwords", data.passwords);
     renderRank("usernames", data.usernames);
@@ -1131,6 +1342,26 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     renderTechniques(data.techniques);
     renderFeed(data.recent);
     renderMap();
+    renderCaveat();
+  }
+
+  /* The counters count every event; the map can only draw the ones the GeoIP
+     database resolves to a place. Those two numbers differ, visibly, and a
+     page that shows both without saying so is lying by omission. */
+  function renderCaveat() {
+    var data = state.data || {};
+    var note = el("map-caveat");
+    var located = data.located_events || 0;
+    var total = (data.totals && data.totals.events) || 0;
+
+    if (!total || !located || located >= total) {
+      note.hidden = true;
+      return;
+    }
+    var share = Math.round((located / total) * 100);
+    note.textContent = t("mapCaveatA") + num(located) + t("mapCaveatB") + num(total) +
+                       t("mapCaveatC") + share + "%" + t("mapCaveatD");
+    note.hidden = false;
   }
 
   function boot() {

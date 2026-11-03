@@ -267,6 +267,16 @@ Antes de rodar uma:
   reaproveitados, e o CGNAT faz um endereço representar milhares de pessoas.
   São evidência para correlacionar, não lista de bloqueio.
 
+## Atribuição
+
+A geolocalização de IP usa as bases Lite do [DB-IP](https://db-ip.com) (City e
+ASN), sob licença [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). As
+bases são baixadas no momento do deploy e atualizadas por mês; elas não são
+redistribuídas neste repositório nem na imagem do contêiner. O GeoLite2 da
+MaxMind continua suportado como alternativa quando há uma chave de licença
+configurada.
+
 ## Licença
 
-MIT, veja [LICENSE](LICENSE).
+MIT, veja [LICENSE](LICENSE). A licença cobre o código deste projeto, não as
+bases de geolocalização acima, que mantêm os termos delas.

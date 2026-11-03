@@ -269,6 +269,15 @@ Before running one:
   carrier grade NAT means one address can represent thousands of people. They
   are evidence to correlate, not a drop list.
 
+## Attribution
+
+IP geolocation uses the [DB-IP](https://db-ip.com) Lite databases (City and
+ASN), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The
+databases are downloaded at deploy time and refreshed monthly; they are not
+redistributed in this repository or in the container image. MaxMind GeoLite2
+is still supported as an alternative when a licence key is configured.
+
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE). The licence covers this project's own code, not
+the geolocation databases above, which keep their own terms.

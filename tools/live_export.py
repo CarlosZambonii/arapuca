@@ -122,7 +122,9 @@ def iso_timestamp(value: Any) -> str:
         return ""
 
 
-def build(results: dict[str, list[dict[str, Any]]], target: str) -> dict[str, Any]:
+def build(
+    results: dict[str, list[dict[str, Any]]], target: str, sensor: dict[str, Any] | None
+) -> dict[str, Any]:
     totals = (results["totals"] or [{}])[0]
     captures = (results["captures"] or [{}])[0]
 
@@ -184,6 +186,29 @@ def build(results: dict[str, list[dict[str, Any]]], target: str) -> dict[str, An
         )
     recent.sort(key=lambda item: item["at"], reverse=True)
 
+    origins = []
+    for row in results["origins"]:
+        names = facet(row)
+        if len(names) < 2:
+            continue
+        lat, lon = row.get("lat"), row.get("lon")
+        if lat is None or lon is None:
+            continue
+        origins.append(
+            {
+                "city": names[0],
+                "iso2": names[1].upper(),
+                "country": names[2] if len(names) > 2 else names[1],
+                "lat": float(lat),
+                "lon": float(lon),
+                "attacks": int(row.get("attacks") or 0),
+                "attackers": int(row.get("attackers") or 0),
+            }
+        )
+    origins.sort(key=lambda item: item["attacks"], reverse=True)
+
+    located = int((results["located"] or [{}])[0].get("located") or 0)
+
     daily = [
         {"at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000), "count": int(row.get("count") or 0)}
         for row in results["daily"]
@@ -194,6 +219,7 @@ def build(results: dict[str, list[dict[str, Any]]], target: str) -> dict[str, An
         "generated_at": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
         "window": "30 days",
         "target": target,
+        "sensor_location": sensor,
         "totals": {
             "events": int(totals.get("events") or 0),
             "attackers": int(totals.get("attackers") or 0),
@@ -202,6 +228,8 @@ def build(results: dict[str, list[dict[str, Any]]], target: str) -> dict[str, An
             "countries": len(countries),
         },
         "countries": countries,
+        "origins": origins,
+        "located_events": located,
         "passwords": simple("passwords", "tries"),
         "usernames": simple("usernames", "tries"),
         "commands": simple("commands", "seen"),
@@ -220,13 +248,34 @@ def main() -> int:
         help="Public host attackers should aim at. Comes from a repository variable, "
         "never from a committed file.",
     )
+    parser.add_argument(
+        "--sensor-location",
+        default="",
+        help="Where the sensor itself sits, as 'lat,lon,city,country'. Drawn as the "
+        "centre of the attack map. Empty leaves the marker off.",
+    )
     arguments = parser.parse_args()
 
     account_id, api_key, region = settings_from_environment()
     api = {"account_id": account_id, "api_key": api_key, "region": region}
 
     results = {name: run_nrql(query, **api) for name, query in QUERIES.items()}
-    payload = build(results, arguments.target)
+
+    sensor = None
+    if arguments.sensor_location:
+        parts = [piece.strip() for piece in arguments.sensor_location.split(",")]
+        if len(parts) >= 2:
+            try:
+                sensor = {
+                    "lat": float(parts[0]),
+                    "lon": float(parts[1]),
+                    "city": parts[2] if len(parts) > 2 else "",
+                    "country": parts[3] if len(parts) > 3 else "",
+                }
+            except ValueError:
+                print("ignoring an unparseable sensor location", file=sys.stderr)
+
+    payload = build(results, arguments.target, sensor)
 
     path = pathlib.Path(arguments.output)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -234,7 +283,8 @@ def main() -> int:
 
     print(
         f"wrote {path}: {payload['totals']['events']} events, "
-        f"{len(payload['countries'])} countries"
+        f"{payload['located_events']} located, {len(payload['countries'])} countries, "
+        f"{len(payload['origins'])} origin cities"
     )
     return 0
 
