@@ -224,6 +224,17 @@ docs/                         schema de eventos, deploy, dependências
 
 ## Critérios de qualidade
 
+Para rodar localmente tudo que o CI roda:
+
+```bash
+./scripts/verify.sh          # formatação, os dois tipos de build, sanitizers, clang-tidy
+./scripts/verify.sh quick    # formatação, build debug e testes
+```
+
+O build release não é opcional. O GCC habilita análises sob otimização que
+não consegue fazer com `-O0`, e um aviso que só aparece em release chegou ao
+CI uma vez porque o portão local só construía o preset de debug.
+
 Toda mudança passa por: GCC e Clang em x86_64 e arm64, AddressSanitizer e
 UndefinedBehaviorSanitizer com detecção de vazamento, clang-tidy com zero
 achados e perfil voltado a segurança, clang-format, oito alvos libFuzzer por

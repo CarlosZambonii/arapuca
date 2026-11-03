@@ -63,6 +63,37 @@ void build_tree(const YAML::Node& node, VfsNode& target, std::size_t depth) {
     }
 }
 
+/// Append the components of `path` to `parts`, resolving `.` and `..` as it
+/// goes. Returns false when the result would pass the depth bound.
+///
+/// Used for both the working directory and the path argument. An earlier
+/// version normalised only the argument and copied the working directory
+/// verbatim, so a working directory containing `..` passed straight into the
+/// result. The fake shell only ever stores an already resolved path there, so
+/// nothing was reachable, but the function's contract says it never returns a
+/// path outside the virtual root, and as written that was not true. The fuzz
+/// target found it.
+bool append_normalized(std::vector<std::string_view>& parts, std::string_view path) {
+    for (const auto& component : split_path(path)) {
+        if (component == ".") {
+            continue;
+        }
+        if (component == "..") {
+            // At the root this is a no op, which is what a real kernel does
+            // with /.. and is what stops any traversal out of the tree.
+            if (!parts.empty()) {
+                parts.pop_back();
+            }
+            continue;
+        }
+        if (parts.size() >= Vfs::kMaxDepth) {
+            return false;
+        }
+        parts.push_back(component);
+    }
+    return true;
+}
+
 }  // namespace
 
 std::size_t VfsNode::size() const {
@@ -151,25 +182,12 @@ std::optional<std::string> Vfs::resolve(std::string_view cwd, std::string_view i
 
     std::vector<std::string_view> parts;
     if (input.front() != '/') {
-        parts = split_path(cwd);
-    }
-
-    for (const auto& component : split_path(input)) {
-        if (component == ".") {
-            continue;
-        }
-        if (component == "..") {
-            // At the root this is a no op, which is what a real kernel does
-            // with /.. and is what stops any traversal out of the tree.
-            if (!parts.empty()) {
-                parts.pop_back();
-            }
-            continue;
-        }
-        if (parts.size() >= kMaxDepth) {
+        if (!append_normalized(parts, cwd)) {
             return std::nullopt;
         }
-        parts.push_back(component);
+    }
+    if (!append_normalized(parts, input)) {
+        return std::nullopt;
     }
 
     std::string out;

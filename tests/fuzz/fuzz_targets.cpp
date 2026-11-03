@@ -150,9 +150,9 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 
 #else
 
-#include <fstream>
+#include "../support/read_file.hpp"
+
 #include <iostream>
-#include <iterator>
 #include <vector>
 
 /// Corpus replay. Every file named on the command line is fed to the target
@@ -161,13 +161,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
 int main(int argc, char** argv) {
     int replayed = 0;
     for (int i = 1; i < argc; ++i) {
-        std::ifstream file(argv[i], std::ios::binary);
-        if (!file) {
-            std::cerr << "cannot read " << argv[i] << "\n";
-            return 1;
-        }
-        const std::vector<char> bytes((std::istreambuf_iterator<char>(file)),
-                                      std::istreambuf_iterator<char>());
+        const std::string bytes = arapuca::testing::read_whole_file(argv[i]);
         dispatch(reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size());  // NOLINT
         ++replayed;
     }

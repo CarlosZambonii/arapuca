@@ -3,6 +3,8 @@
 #include <arapuca/capture/quarantine.hpp>
 #include <arapuca/capture/virustotal.hpp>
 
+#include "../support/read_file.hpp"
+
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -158,9 +160,7 @@ TEST_F(QuarantineTest, ArchiveIsAZipAndIsEncrypted) {
     Quarantine quarantine(config());
     const auto result = quarantine.store("secret payload bytes", "x.bin");
 
-    std::ifstream file(result.path, std::ios::binary);
-    const std::string content((std::istreambuf_iterator<char>(file)),
-                              std::istreambuf_iterator<char>());
+    const std::string content = arapuca::testing::read_whole_file(result.path);
 
     ASSERT_GE(content.size(), 4U);
     EXPECT_EQ("PK\x03\x04", content.substr(0, 4));

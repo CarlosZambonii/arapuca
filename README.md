@@ -226,6 +226,17 @@ docs/                         event schema, deployment, dependencies
 
 ## Quality gates
 
+Run everything CI runs, locally:
+
+```bash
+./scripts/verify.sh          # formatting, both build types, sanitizers, clang-tidy
+./scripts/verify.sh quick    # formatting, debug build and tests
+```
+
+The release build is not optional. GCC enables analyses under optimization
+that it cannot perform at `-O0`, and a warning that only appears in a release
+build once reached CI because the local gate only built the debug preset.
+
 Every change runs through: GCC and Clang on x86_64 and arm64,
 AddressSanitizer and UndefinedBehaviorSanitizer with leak detection,
 clang-tidy at zero findings with a security oriented profile, clang-format,

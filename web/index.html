@@ -75,6 +75,31 @@ body {
 
 .masthead { padding-block: 40px 28px; }
 
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.topline .eyebrow { margin: 0; }
+
+.lang { display: flex; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; }
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 5px 10px;
+  border: 0;
+  background: var(--surface);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+.lang-btn:hover { color: var(--ink-dim); }
+.lang-btn[aria-pressed="true"] { background: var(--surface-high); color: var(--amber); }
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -443,9 +468,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span></p>
-    <h1>Arapuca<span class="quiet">, a honeypot you are invited to attack</span></h1>
-    <p class="lede">
+    <div class="topline">
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span></p>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="pt">PT</button>
+      </div>
+    </div>
+    <h1>Arapuca<span class="quiet" data-i18n="tagline">, a honeypot you are invited to attack</span></h1>
+    <p class="lede" data-i18n-html="lede">
       A fake SSH and HTTP server sitting on a public address, accepting weak
       passwords on purpose and recording everything that happens next.
       <strong>Nothing you send is ever executed.</strong> The shell is
@@ -454,14 +485,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     </p>
 
     <div class="invite">
-      <h2>Try to get in</h2>
-      <p>
+      <h2 data-i18n="inviteTitle">Try to get in</h2>
+      <p data-i18n="inviteBody">
         It answers on the standard ports. Guess a weak password, look around,
         and watch your country light up on the map below once the next export
         runs. Your address appears with the last octet masked.
       </p>
       <div class="cmd-list" id="commands"></div>
-      <p class="fineprint">
+      <p class="fineprint" data-i18n="fineprint">
         Attacking this host is invited. Attacking anything else from it is not:
         no channel reaches anything real, port forwarding and SFTP are refused,
         and a download request aimed at a private range or at the cloud
@@ -474,7 +505,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   <section>
     <div class="section-head">
-      <h2>Where it comes from</h2>
+      <h2 data-i18n="originTitle">Where it comes from</h2>
       <span class="note" id="window-note">last 30 days</span>
     </div>
     <div class="map-layout">
@@ -484,51 +515,51 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
           <div class="tip" id="tip" hidden></div>
         </div>
         <div class="legend">
-          <span>fewer</span>
+          <span data-i18n="fewer">fewer</span>
           <div class="ramp" id="ramp"></div>
-          <span>more</span>
+          <span data-i18n="more">more</span>
         </div>
       </div>
       <div>
-        <div class="col"><h3>Top countries</h3><div class="rank" id="countries"></div></div>
+        <div class="col"><h3 data-i18n="topCountries">Top countries</h3><div class="rank" id="countries"></div></div>
       </div>
     </div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>What they try</h2>
-      <span class="note">credentials and commands</span>
+      <h2 data-i18n="triesTitle">What they try</h2>
+      <span class="note" data-i18n="triesNote">credentials and commands</span>
     </div>
     <div class="cols">
-      <div class="col"><h3>Passwords</h3><div class="rank" id="passwords"></div></div>
-      <div class="col"><h3>Usernames</h3><div class="rank" id="usernames"></div></div>
-      <div class="col"><h3>Commands typed</h3><div class="rank" id="commands-rank"></div></div>
+      <div class="col"><h3 data-i18n="passwords">Passwords</h3><div class="rank" id="passwords"></div></div>
+      <div class="col"><h3 data-i18n="usernames">Usernames</h3><div class="rank" id="usernames"></div></div>
+      <div class="col"><h3 data-i18n="commandsTyped">Commands typed</h3><div class="rank" id="commands-rank"></div></div>
     </div>
   </section>
 
   <section id="tech-section">
     <div class="section-head">
-      <h2>MITRE ATT&amp;CK</h2>
-      <span class="note">mapped from rules in yaml</span>
+      <h2 data-i18n="attackTitle">MITRE ATT&amp;CK</h2>
+      <span class="note" data-i18n="attackNote">mapped from rules in yaml</span>
     </div>
     <div class="tech-grid" id="techniques"></div>
   </section>
 
   <section id="feed-section">
     <div class="section-head">
-      <h2>Recent attempts</h2>
-      <span class="note">addresses masked</span>
+      <h2 data-i18n="recentTitle">Recent attempts</h2>
+      <span class="note" data-i18n="recentNote">addresses masked</span>
     </div>
     <div class="feed" id="feed"></div>
   </section>
 
   <footer>
     <div class="foot-rows">
-      <span>Source and full write up: <a href="https://github.com/CarlosZambonii/arapuca">github.com/CarlosZambonii/arapuca</a></span>
+      <span><span data-i18n="sourceLabel">Source and full write up:</span> <a href="https://github.com/CarlosZambonii/arapuca">github.com/CarlosZambonii/arapuca</a></span>
       <span id="generated">data pending</span>
     </div>
-    <p class="disclaimer">
+    <p class="disclaimer" data-i18n="disclaimer">
       Everything on this page was recorded by the sensor itself. Source
       addresses are shown with the host part masked: addresses get reused, and
       carrier grade NAT means one address can stand for thousands of people.
@@ -555,6 +586,169 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   var WORLD = "data/world-110m.json";
   var state = { data: null, world: null };
+
+  /* ---------- language ----------
+
+     English is the source: it is what the HTML carries, so the page reads
+     correctly before any script runs. Portuguese is a dictionary applied on
+     top. The choice is remembered per visitor, and the first visit follows
+     the browser.
+
+     Translated rather than transliterated. "Tentativas recentes" is what a
+     Brazilian reader expects, not "Recentes tentativas". */
+
+  var STRINGS = {
+    en: {},
+    pt: {
+      tagline: ", um honeypot que convida voc\u00ea a atacar",
+      lede: "Um servidor SSH e HTTP falso num endere\u00e7o p\u00fablico, aceitando senhas " +
+            "fracas de prop\u00f3sito e registrando tudo o que acontece depois. " +
+            "<strong>Nada do que voc\u00ea enviar \u00e9 executado.</strong> O shell \u00e9 " +
+            "fabricado, o sistema de arquivos vive em mem\u00f3ria, e as credenciais que " +
+            "voc\u00ea encontrar nele n\u00e3o abrem nada.",
+      inviteTitle: "Tente entrar",
+      inviteBody: "Ele responde nas portas padr\u00e3o. Chute uma senha fraca, d\u00ea uma " +
+                  "olhada, e veja seu pa\u00eds acender no mapa abaixo na pr\u00f3xima " +
+                  "atualiza\u00e7\u00e3o. Seu endere\u00e7o aparece com o \u00faltimo octeto " +
+                  "mascarado.",
+      fineprint: "Atacar este host \u00e9 convidado. Atacar qualquer outra coisa a partir " +
+                 "dele n\u00e3o \u00e9: nenhum canal alcan\u00e7a algo real, encaminhamento " +
+                 "de porta e SFTP s\u00e3o recusados, e um download apontado para faixa " +
+                 "privada ou para o servi\u00e7o de metadados da nuvem \u00e9 descartado " +
+                 "antes de conectar.",
+      originTitle: "De onde vem",
+      triesTitle: "O que tentam",
+      triesNote: "credenciais e comandos",
+      attackTitle: "MITRE ATT&CK",
+      attackNote: "mapeado por regras em yaml",
+      recentTitle: "Tentativas recentes",
+      recentNote: "endere\u00e7os mascarados",
+      topCountries: "Pa\u00edses",
+      passwords: "Senhas",
+      usernames: "Usu\u00e1rios",
+      commandsTyped: "Comandos digitados",
+      fewer: "menos",
+      more: "mais",
+      sourceLabel: "C\u00f3digo e descri\u00e7\u00e3o completa:",
+      disclaimer: "Tudo nesta p\u00e1gina foi registrado pelo pr\u00f3prio sensor. Os " +
+                  "endere\u00e7os de origem aparecem com a parte de host mascarada: " +
+                  "endere\u00e7os s\u00e3o reaproveitados, e o CGNAT faz um endere\u00e7o " +
+                  "representar milhares de pessoas. As senhas aparecem inteiras porque " +
+                  "s\u00e3o o que est\u00e1 sendo jogado na internet, n\u00e3o segredo de " +
+                  "ningu\u00e9m. As amostras capturadas ficam cifradas e somente leitura, e " +
+                  "nunca s\u00e3o publicadas nem enviadas a lugar nenhum.",
+
+      /* dynamic */
+      statAttacks: "ataques registrados",
+      statAddresses: "endere\u00e7os \u00fanicos",
+      statCountries: "pa\u00edses",
+      statSamples: "amostras capturadas",
+      statusLive: "sensor ao vivo",
+      statusCollecting: "sensor no ar, coletando",
+      statusUnavailable: "dados indispon\u00edveis",
+      windowPrefix: "\u00faltimos ",
+      days30: "30 dias",
+      updated: "Atualizado ",
+      pending: "dados pendentes",
+      copy: "copiar",
+      copied: "copiado",
+      nothingYet: "nada ainda",
+      emptyTitle: "Nada registrado ainda",
+      emptyBody: "O sensor est\u00e1 coletando. Tente um dos comandos acima.",
+      ran: "rodou ",
+      tried: "tentou ",
+      empty: "(vazio)",
+      events: " eventos",
+      attacksAddresses: " ataques, ",
+      addresses: " endere\u00e7os",
+      mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa"
+    }
+  };
+
+  var FALLBACK = {
+    statAttacks: "attacks recorded",
+    statAddresses: "unique addresses",
+    statCountries: "countries",
+    statSamples: "samples captured",
+    statusLive: "live sensor",
+    statusCollecting: "sensor online, collecting",
+    statusUnavailable: "data unavailable",
+    windowPrefix: "last ",
+    days30: "30 days",
+    updated: "Updated ",
+    pending: "data pending",
+    copy: "copy",
+    copied: "copied",
+    nothingYet: "nothing yet",
+    emptyTitle: "Nothing recorded yet",
+    emptyBody: "The sensor is collecting. Try one of the commands above.",
+    ran: "ran ",
+    tried: "tried ",
+    empty: "(empty)",
+    events: " events",
+    attacksAddresses: " attacks, ",
+    addresses: " addresses",
+    mapUnavailable: "map geometry could not be loaded"
+  };
+
+  var lang = "en";
+
+  function t(key) {
+    var table = STRINGS[lang] || {};
+    return table[key] || FALLBACK[key] || key;
+  }
+
+  function applyLanguage(next) {
+    lang = STRINGS[next] ? next : "en";
+    regionNames = null;
+    document.documentElement.setAttribute("lang", lang === "pt" ? "pt-BR" : "en");
+
+    document.querySelectorAll("[data-i18n]").forEach(function (node) {
+      if (!node.dataset.enText) { node.dataset.enText = node.textContent; }
+      var value = (STRINGS[lang] || {})[node.dataset.i18n];
+      node.textContent = value || node.dataset.enText;
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (node) {
+      if (!node.dataset.enHtml) { node.dataset.enHtml = node.innerHTML; }
+      var value = (STRINGS[lang] || {})[node.dataset.i18nHtml];
+      node.innerHTML = value || node.dataset.enHtml;
+    });
+
+    document.querySelectorAll(".lang-btn").forEach(function (button) {
+      button.setAttribute("aria-pressed", button.dataset.lang === lang ? "true" : "false");
+    });
+
+    try { localStorage.setItem("arapuca-lang", lang); } catch (error) { /* private window */ }
+
+    if (state.data) { render(); }
+  }
+
+  /* Country names arrive from GeoIP in English. Intl.DisplayNames is built
+     into the browser and gives the idiomatic name in any language, so there
+     is no table to ship and nothing to keep in sync: "Russian Federation"
+     becomes "R\u00fassia" rather than a literal translation. Older browsers
+     without it keep the English name. */
+  var regionNames = null;
+  function countryName(country) {
+    if (lang === "en") { return country.name; }
+    try {
+      if (!regionNames) {
+        regionNames = new Intl.DisplayNames(["pt-BR"], { type: "region" });
+      }
+      return (country.iso2 && regionNames.of(country.iso2)) || country.name;
+    } catch (error) {
+      return country.name;
+    }
+  }
+
+  function initialLanguage() {
+    try {
+      var stored = localStorage.getItem("arapuca-lang");
+      if (stored && STRINGS[stored]) { return stored; }
+    } catch (error) { /* blocked storage, fall through to the browser */ }
+    var preferred = (navigator.language || "en").toLowerCase();
+    return preferred.indexOf("pt") === 0 ? "pt" : "en";
+  }
 
   function el(id) { return document.getElementById(id); }
   function num(value) { return (value || 0).toLocaleString("en-US"); }
@@ -595,15 +789,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       var button = document.createElement("button");
       button.className = "copy";
       button.type = "button";
-      button.textContent = "copy";
+      button.textContent = t("copy");
       button.addEventListener("click", function () {
         var full = line.parts.join("");
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(full).then(function () {
-            button.textContent = "copied";
+            button.textContent = t("copied");
             button.dataset.done = "1";
             setTimeout(function () {
-              button.textContent = "copy";
+              button.textContent = t("copy");
               delete button.dataset.done;
             }, 1600);
           }, function () { selectText(code); });
@@ -630,10 +824,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // Four, not five. Five tiles leave one alone in a row at phone width,
     // and session count is the least interesting of them to a visitor.
     var items = [
-      { n: totals.events, k: "attacks recorded", cool: false },
-      { n: totals.attackers, k: "unique addresses", cool: false },
-      { n: totals.countries, k: "countries", cool: false },
-      { n: totals.samples, k: "samples captured", cool: true }
+      { n: totals.events, k: t("statAttacks"), cool: false },
+      { n: totals.attackers, k: t("statAddresses"), cool: false },
+      { n: totals.countries, k: t("statCountries"), cool: false },
+      { n: totals.samples, k: t("statSamples"), cool: true }
     ];
 
     var holder = el("stats");
@@ -662,7 +856,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     if (!rows || !rows.length) {
       var none = document.createElement("div");
       none.className = "row";
-      none.appendChild(text(document.createElement("span"), "nothing yet")).className = "label";
+      none.appendChild(text(document.createElement("span"), t("nothingYet"))).className = "label";
       holder.appendChild(none);
       return;
     }
@@ -725,7 +919,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       x: box.width / 2, y: box.height / 2, "text-anchor": "middle",
       fill: "#5e6e86", "font-family": "IBM Plex Mono, monospace", "font-size": 12
     });
-    label.textContent = "map geometry could not be loaded";
+    label.textContent = t("mapUnavailable");
     svg.appendChild(label);
   }
 
@@ -796,10 +990,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         shape.addEventListener("mousemove", function (event) {
           tip.textContent = "";
           var name = document.createElement("div");
-          name.textContent = hit.name;
+          name.textContent = countryName(hit);
           var count = document.createElement("div");
           count.className = "c";
-          count.textContent = num(hit.attacks) + " attacks, " + num(hit.attackers) + " addresses";
+          count.textContent = num(hit.attacks) + t("attacksAddresses") + num(hit.attackers) + t("addresses");
           tip.appendChild(name);
           tip.appendChild(count);
           var bounds = box.frame.getBoundingClientRect();
@@ -837,7 +1031,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       name.textContent = row.name;
       var count = document.createElement("div");
       count.className = "ct";
-      count.textContent = num(row.events) + " events";
+      count.textContent = num(row.events) + t("events");
       card.appendChild(id);
       card.appendChild(name);
       card.appendChild(count);
@@ -850,14 +1044,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     what.className = "what";
 
     if (event.kind === "ssh.command") {
-      what.appendChild(text(document.createElement("b"), "ran "));
+      what.appendChild(text(document.createElement("b"), t("ran")));
       what.appendChild(document.createTextNode(event.command || ""));
     } else {
-      what.appendChild(text(document.createElement("b"), "tried "));
-      what.appendChild(document.createTextNode((event.username || "(empty)") + " / "));
+      what.appendChild(text(document.createElement("b"), t("tried")));
+      what.appendChild(document.createTextNode((event.username || t("empty")) + " / "));
       var password = document.createElement("span");
       password.className = "pw";
-      password.textContent = event.password || "(empty)";
+      password.textContent = event.password || t("empty");
       what.appendChild(password);
     }
     return what;
@@ -898,9 +1092,9 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       var box = document.createElement("div");
       box.className = "empty";
       var title = document.createElement("strong");
-      title.textContent = "Nothing recorded yet";
+      title.textContent = t("emptyTitle");
       var body = document.createElement("span");
-      body.textContent = "The sensor is collecting. Try one of the commands above.";
+      body.textContent = t("emptyBody");
       box.appendChild(title);
       box.appendChild(body);
       holder.appendChild(box);
@@ -915,12 +1109,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var data = state.data;
     renderCommands(data.target);
     renderStats(data.totals);
-    el("window-note").textContent = "last " + (data.window || "30 days");
+    el("window-note").textContent = t("windowPrefix") + (data.window === "30 days" || !data.window ? t("days30") : data.window);
 
     if (data.generated_at) {
-      el("generated").textContent = "Updated " + data.generated_at.replace("T", " ").replace("Z", " UTC");
+      el("generated").textContent = t("updated") + data.generated_at.replace("T", " ").replace("Z", " UTC");
     }
-    el("status").textContent = data.totals.events > 0 ? "live sensor" : "sensor online, collecting";
+    el("status").textContent = data.totals.events > 0 ? t("statusLive") : t("statusCollecting");
 
     if (!data.totals.events) {
       renderEmpty();
@@ -929,7 +1123,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     }
 
     renderRank("countries", data.countries.slice(0, 12).map(function (country) {
-      return { label: country.name, value: country.attacks };
+      return { label: countryName(country), value: country.attacks };
     }));
     renderRank("passwords", data.passwords);
     renderRank("usernames", data.usernames);
@@ -940,6 +1134,11 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   }
 
   function boot() {
+    document.querySelectorAll(".lang-btn").forEach(function (button) {
+      button.addEventListener("click", function () { applyLanguage(button.dataset.lang); });
+    });
+    applyLanguage(initialLanguage());
+
     // Both fetches are awaited together and the page is drawn once. An
     // earlier version rendered from whichever arrived first and let the other
     // trigger a redraw, which raced: the map drew before the figures existed
@@ -959,7 +1158,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       if (settled[0].status === "fulfilled") {
         state.data = settled[0].value;
       } else {
-        el("status").textContent = "data unavailable";
+        el("status").textContent = t("statusUnavailable");
         state.data = {
           target: "", window: "30 days",
           totals: { events: 0, attackers: 0, sessions: 0, samples: 0, countries: 0 },

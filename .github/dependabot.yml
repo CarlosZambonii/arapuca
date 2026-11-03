@@ -26,6 +26,16 @@ updates:
     open-pull-requests-limit: 3
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # The base image is a platform decision, not a floating dependency.
+      # Ubuntu 24.04 is what CI, the container and the VPS all run, and it is
+      # what pins libssh to 0.10.6. Moving it is a deliberate change with a
+      # CI matrix and a VPS rebuild behind it, so Dependabot proposing 26.04
+      # on a Monday is noise that would quietly break the one supported base.
+      - dependency-name: "ubuntu"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   - package-ecosystem: "pip"
     directory: "/tools"
@@ -39,10 +49,22 @@ updates:
     commit-message:
       prefix: "chore(deps)"
 
+  # One entry per configuration. Terraform has no single root here: the OCI
+  # and New Relic stacks are separate, each with its own provider set, and a
+  # directory with no configuration in it is an error rather than an empty
+  # update.
   - package-ecosystem: "terraform"
-    directory: "/deploy/terraform"
+    directory: "/deploy/terraform/oci"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: "terraform"
+    directory: "/deploy/terraform/newrelic"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "chore(deps)"

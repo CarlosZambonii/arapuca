@@ -1,5 +1,7 @@
 #include <arapuca/core/logging.hpp>
 
+#include "../support/read_file.hpp"
+
 #include <gtest/gtest.h>
 
 #include <filesystem>
@@ -59,9 +61,7 @@ TEST(Logging, WritesToTheConfiguredFile) {
     log().warn("honeypot started with a test marker {}", 42);
     log().flush();
 
-    std::ifstream input(path);
-    const std::string content((std::istreambuf_iterator<char>(input)),
-                              std::istreambuf_iterator<char>());
+    const std::string content = arapuca::testing::read_whole_file(path);
     EXPECT_NE(std::string::npos, content.find("test marker 42"));
 
     init_logging(LogLevel::Info);
@@ -77,9 +77,7 @@ TEST(Logging, RespectsTheConfiguredLevel) {
     log().error("this must appear");
     log().flush();
 
-    std::ifstream input(path);
-    const std::string content((std::istreambuf_iterator<char>(input)),
-                              std::istreambuf_iterator<char>());
+    const std::string content = arapuca::testing::read_whole_file(path);
     EXPECT_EQ(std::string::npos, content.find("must not appear"));
     EXPECT_NE(std::string::npos, content.find("this must appear"));
 

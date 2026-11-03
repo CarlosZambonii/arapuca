@@ -127,6 +127,21 @@ TEST(VfsResolve, CannotEscapeTheRoot) {
     EXPECT_EQ("/etc/passwd", Vfs::resolve("/home/deploy", "../../../../etc/passwd"));
 }
 
+// Found by the fuzz target. The working directory was copied verbatim while
+// only the path argument was normalised, so a `..` in the working directory
+// survived into the result. Nothing in the shell could reach it, because the
+// shell only ever stores an already resolved path, but the function promises
+// more than that and has to keep the promise on its own.
+TEST(VfsResolve, UnnormalisedWorkingDirectoryIsStillNormalised) {
+    EXPECT_EQ("/etc", Vfs::resolve("/home/../etc", "."));
+    EXPECT_EQ("/etc/passwd", Vfs::resolve("/a/b/../../etc", "passwd"));
+    EXPECT_EQ("/", Vfs::resolve("/../../..", "."));
+
+    const auto resolved = Vfs::resolve("../...././.", "../etc/passwd").value_or(std::string{});
+    EXPECT_EQ(std::string::npos, resolved.find("/../")) << resolved;
+    EXPECT_EQ('/', resolved.front());
+}
+
 TEST(VfsResolve, EmptyInputMeansTheWorkingDirectory) {
     EXPECT_EQ("/etc", Vfs::resolve("/etc", ""));
 }
