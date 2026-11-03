@@ -13,7 +13,7 @@
 # ---------------------------------------------------------------------------
 # Build
 # ---------------------------------------------------------------------------
-FROM ubuntu:24.04 AS build
+FROM ubuntu:26.04 AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -54,7 +54,7 @@ RUN cmake -S . -B build \
 # ---------------------------------------------------------------------------
 # Runtime
 # ---------------------------------------------------------------------------
-FROM ubuntu:24.04 AS runtime
+FROM ubuntu:26.04 AS runtime
 
 ENV DEBIAN_FRONTEND=noninteractive
 
