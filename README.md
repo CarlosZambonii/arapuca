@@ -187,6 +187,11 @@ One JSON object per line, documented field by field in
 
 ### Live map
 
+The page is in English and Portuguese, switched by a control in the header.
+It follows the browser on a first visit and remembers the choice. Country
+names come from the browser's own `Intl.DisplayNames`, so they read
+idiomatically in both languages without shipping a table.
+
 [`web/`](web/) is a public page showing where the attacks come from, deployed
 on Netlify. It exists so the honeypot can be shared with people who do not
 have a New Relic account, and so anyone reading about it can try to get in and

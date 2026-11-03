@@ -185,6 +185,11 @@ Um objeto JSON por linha, documentado campo a campo em
 
 ### Mapa ao vivo
 
+A página está em inglês e português, com um seletor no cabeçalho. Na
+primeira visita ela segue o idioma do navegador e depois lembra a escolha.
+Os nomes dos países vêm do `Intl.DisplayNames` do próprio navegador, então
+leem naturalmente nos dois idiomas sem enviar tabela nenhuma.
+
 A pasta [`web/`](web/) é uma página pública que mostra de onde vêm os ataques,
 publicada no Netlify. Ela existe para o honeypot poder ser compartilhado com
 quem não tem conta no New Relic, e para quem ler sobre ele poder tentar entrar
