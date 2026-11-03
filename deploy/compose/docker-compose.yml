@@ -6,7 +6,10 @@
 
 services:
   arapuca:
-    image: ghcr.io/${GITHUB_REPOSITORY:-arapuca/arapuca}:${ARAPUCA_TAG:-latest}
+    # One variable, named for what it is. An earlier version read
+    # GITHUB_REPOSITORY, which exists only inside CI, so on the VPS it fell
+    # back to a repository that does not exist and the pull was denied.
+    image: ${ARAPUCA_IMAGE:-ghcr.io/carloszambonii/arapuca:latest}
     container_name: arapuca
     restart: unless-stopped
 
@@ -35,9 +38,11 @@ services:
           nocopy: true
       - arapuca-state:/var/lib/arapuca/state
       - arapuca-logs:/var/log/arapuca
-      # Read only: the configuration is part of the image and the deployment,
-      # not something the running container can rewrite.
-      - ../../config:/etc/arapuca:ro
+      # Beside the compose file, not relative to the repository. Ansible
+      # copies config/ into the same directory as this file, and a path like
+      # ../../config resolved to /config on the VPS and left the container
+      # restarting on a missing configuration.
+      - ./config:/etc/arapuca:ro
 
     environment:
       - ARAPUCA_SENSOR_NAME=${ARAPUCA_SENSOR_NAME:-arapuca}

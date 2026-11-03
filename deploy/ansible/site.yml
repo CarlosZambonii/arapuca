@@ -54,19 +54,41 @@
           Check that cloud-init ran, then reconnect on the relocated port.
         success_msg: "Operator SSH is on port {{ operator_ssh_port }}, port 22 is free"
 
-    - name: Confirm sshd is listening only on the operator port
+    # What matters is not that port 22 is empty, it is that the real sshd is
+    # not on it. Once the honeypot is deployed the port is occupied by the
+    # container, which is the desired end state, so a check for an empty port
+    # made this play fail on every run after the first.
+    - name: Find what is listening on port 22
       ansible.builtin.shell:
-        cmd: ss -tlnH | awk '{print $4}' | sed 's/.*://' | sort -u
-      register: listening_ports
+        cmd: |
+          set -o pipefail
+          ss -tlnpH 2>/dev/null | awk '$4 ~ /:22$/ {print $0}'
+        executable: /bin/bash
+      register: port22
       changed_when: false
+      failed_when: false
 
-    - name: Refuse to continue if anything is listening on port 22
+    - name: Refuse to continue if the real sshd is on port 22
       ansible.builtin.assert:
         that:
-          - "'22' not in listening_ports.stdout_lines"
-        fail_msg: "Something is listening on port 22. It must be free before the honeypot takes it."
+          - "'sshd' not in port22.stdout"
+        fail_msg: >-
+          The real sshd is listening on port 22. Opening that port for the
+          honeypot would expose it. Move sshd to the operator port first.
+        success_msg: >-
+          Port 22 is free of the real sshd
+          {{ '(the honeypot container holds it)' if port22.stdout | length > 0 else '' }}
 
   tasks:
+    # Created first, because later tasks write into it. An earlier version
+    # created it just before the deploy and the firewall note, written during
+    # the Docker section, failed on a directory that did not exist yet.
+    - name: Create the deployment directory
+      ansible.builtin.file:
+        path: "{{ arapuca_dir }}"
+        state: directory
+        mode: "0755"
+
     # -----------------------------------------------------------------------
     # Base hardening
     # -----------------------------------------------------------------------
@@ -217,17 +239,21 @@
     # -----------------------------------------------------------------------
     # New Relic
     # -----------------------------------------------------------------------
+    # Saved as .asc, not .gpg. New Relic serves an ASCII armored key, and apt
+    # reads an armored key only from a .asc file: pointing signed-by at a
+    # .gpg file holding armored text fails with NO_PUBKEY, which reads like a
+    # missing key rather than a wrong file extension.
     - name: Add the New Relic apt key
       ansible.builtin.get_url:
         url: https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg
-        dest: /etc/apt/keyrings/newrelic-infra.gpg
+        dest: /etc/apt/keyrings/newrelic-infra.asc
         mode: "0644"
       when: newrelic_license_key | length > 0
 
     - name: Add the New Relic repository
       ansible.builtin.apt_repository:
         repo: >-
-          deb [signed-by=/etc/apt/keyrings/newrelic-infra.gpg]
+          deb [signed-by=/etc/apt/keyrings/newrelic-infra.asc]
           https://download.newrelic.com/infrastructure_agent/linux/apt
           {{ ansible_distribution_release }} main
         filename: newrelic-infra
@@ -290,12 +316,6 @@
     # -----------------------------------------------------------------------
     # The honeypot itself
     # -----------------------------------------------------------------------
-    - name: Create the deployment directory
-      ansible.builtin.file:
-        path: "{{ arapuca_dir }}"
-        state: directory
-        mode: "0755"
-
     - name: Copy the compose file
       ansible.builtin.copy:
         src: ../compose/docker-compose.yml
@@ -313,8 +333,8 @@
         dest: "{{ arapuca_dir }}/.env"
         mode: "0600"
         content: |
+          ARAPUCA_IMAGE={{ arapuca_image }}
           ARAPUCA_SENSOR_NAME={{ sensor_name }}
-          ARAPUCA_TAG=latest
           VT_API_KEY={{ virustotal_api_key }}
       no_log: true
 
