@@ -1060,11 +1060,22 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var projection = d3.geoNaturalEarth1().fitSize([box.width, box.height], { type: "Sphere" });
     var path = d3.geoPath(projection);
 
-    // Square root, not linear: one country usually produces most of the
-    // traffic, and a linear ramp would leave every other country the same
-    // shade as a country with no traffic at all.
+    // Logarithmic, not linear and not square root. Real traffic is one
+    // persistent brute forcer and a long tail: a single address accounted
+    // for 718 of 756 located events here, and under either of the other two
+    // ramps every other country and every other city collapsed into the
+    // background. A log ramp keeps the dominant source dominant and still
+    // leaves a single attempt visible.
+    function ramp(top) {
+        var span = Math.log1p(top) || 1;
+        return function (value) {
+            return Math.min(1, Math.log1p(Math.max(0, value)) / span);
+        };
+    }
     var shade = mixer("#1b2433", "#7a5a2c");
-    function colour(attacks) { return shade(Math.sqrt(attacks / topCountry)); }
+    var countryWeight = ramp(topCountry);
+    var originWeight = ramp(topOrigin);
+    function colour(attacks) { return shade(countryWeight(attacks)); }
 
     svg.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
 
@@ -1092,7 +1103,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
     if (!sensor || !origins.length) {
       el("ramp").style.background = "linear-gradient(to right, " +
-        colour(0) + ", " + colour(topCountry * 0.35) + ", " + colour(topCountry) + ")";
+        shade(0) + ", " + shade(0.5) + ", " + shade(1) + ")";
       return;
     }
 
@@ -1106,12 +1117,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       var from = [origin.lon, origin.lat];
       var d = arcBetween(path, from, home);
       if (!d) { return; }
-      var weight = Math.sqrt(origin.attacks / topOrigin);
+      var weight = originWeight(origin.attacks);
       arcs.appendChild(svgEl("path", {
         class: "arc",
         d: d,
-        "stroke-width": (0.4 + weight * 1.4).toFixed(2),
-        "stroke-opacity": (0.18 + weight * 0.42).toFixed(2)
+        "stroke-width": (0.55 + weight * 1.5).toFixed(2),
+        "stroke-opacity": (0.3 + weight * 0.45).toFixed(2)
       }));
       drawn.push({
         origin: origin,
@@ -1129,12 +1140,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     origins.forEach(function (origin) {
       var xy = projection([origin.lon, origin.lat]);
       if (!xy) { return; }
-      var weight = Math.sqrt(origin.attacks / topOrigin);
+      var weight = originWeight(origin.attacks);
       var dot = svgEl("circle", {
         class: "origin",
         cx: xy[0], cy: xy[1],
-        r: (2 + weight * 4).toFixed(2),
-        "fill-opacity": (0.55 + weight * 0.45).toFixed(2)
+        r: (2.2 + weight * 4.3).toFixed(2),
+        "fill-opacity": (0.62 + weight * 0.38).toFixed(2)
       });
       var lines = [
         origin.city + ", " + countryName(origin),
@@ -1212,7 +1223,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     }
 
     el("ramp").style.background = "linear-gradient(to right, " +
-      colour(0) + ", " + colour(topCountry * 0.35) + ", " + colour(topCountry) + ")";
+      shade(0) + ", " + shade(0.5) + ", " + shade(1) + ")";
   }
 
   /* ---------- techniques and feed ---------- */
