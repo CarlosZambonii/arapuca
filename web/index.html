@@ -104,6 +104,9 @@ body {
   flex-wrap: wrap;
 }
 .topline .eyebrow { margin: 0; }
+.uptime { color: var(--ink-faint); text-transform: none; letter-spacing: 0; }
+.uptime::before { content: "\00b7"; margin: 0 0.5em; color: var(--ink-faint); }
+.uptime:empty { display: none; }
 
 .lang { display: flex; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; }
 .lang-btn {
@@ -662,7 +665,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   <header class="masthead">
     <div class="topline">
-      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span></p>
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span><span id="uptime" class="uptime"></span></p>
       <div class="lang" role="group" aria-label="Language">
         <button type="button" class="lang-btn" data-lang="en">EN</button>
         <button type="button" class="lang-btn" data-lang="pt">PT</button>
@@ -879,6 +882,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       statCountries: "pa\u00edses",
       statSamples: "amostras capturadas",
       statusLive: "sensor ao vivo",
+      collectingFor: "coletando h\u00e1 ",
+      dayOne: "1 dia",
+      dayMany: " dias",
+      collectingToday: "coletando desde hoje",
       statusCollecting: "sensor no ar, coletando",
       statusUnavailable: "dados indispon\u00edveis",
       windowPrefix: "\u00faltimos ",
@@ -935,6 +942,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     statCountries: "countries",
     statSamples: "samples captured",
     statusLive: "live sensor",
+    collectingFor: "collecting for ",
+    dayOne: "1 day",
+    dayMany: " days",
+    collectingToday: "collecting since today",
     statusCollecting: "sensor online, collecting",
     statusUnavailable: "data unavailable",
     windowPrefix: "last ",
@@ -1957,6 +1968,23 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   /* ---------- boot ---------- */
 
+  /* How long the sensor has been online, from its first recorded event. The
+     figure "15 attackers" means little without the window it was gathered in;
+     a sensor that has been public three days and a sensor public three months
+     are different claims, and this line is which one it is. */
+  function renderUptime(since) {
+    var holder = el("uptime");
+    if (!since) { holder.textContent = ""; return; }
+    var start = new Date(since);
+    if (isNaN(start.getTime())) { holder.textContent = ""; return; }
+    var days = Math.floor((Date.now() - start.getTime()) / 86400000);
+    if (days <= 0) {
+      holder.textContent = t("collectingToday");
+    } else {
+      holder.textContent = t("collectingFor") + (days === 1 ? t("dayOne") : days + t("dayMany"));
+    }
+  }
+
   function render() {
     var data = state.data;
     renderCommands(data.target);
@@ -1967,6 +1995,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       el("generated").textContent = t("updated") + data.generated_at.replace("T", " ").replace("Z", " UTC");
     }
     el("status").textContent = data.totals.events > 0 ? t("statusLive") : t("statusCollecting");
+    renderUptime(data.collecting_since);
 
     if (!data.totals.events) {
       renderEmpty();

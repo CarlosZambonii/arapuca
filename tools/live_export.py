@@ -97,6 +97,10 @@ QUERIES = {
     # rather than letting the counters and the map quietly disagree.
     "located": f"SELECT count(*) AS located FROM Log WHERE {SCOPE} "
     f"AND geo.country_iso IS NOT NULL SINCE 30 days ago",
+    # When the sensor first spoke. A wide window so a sensor up longer than
+    # the map's 30 days is still dated from its real start, not clipped to it.
+    "first_event": f"SELECT min(timestamp) AS first FROM Log WHERE {SCOPE} "
+    f"SINCE 180 days ago",
     # The busiest session, for the replay. A facet is ordered by its
     # aggregate descending, so LIMIT 1 is the one that typed the most.
     "top_session": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "
@@ -283,6 +287,8 @@ def build(
     origins.sort(key=lambda item: item["attacks"], reverse=True)
 
     located = int((results["located"] or [{}])[0].get("located") or 0)
+    first = (results["first_event"] or [{}])[0].get("first")
+    collecting_since = iso_timestamp(first) if first else ""
 
     daily = [
         {
@@ -308,6 +314,7 @@ def build(
         "countries": countries,
         "origins": origins,
         "located_events": located,
+        "collecting_since": collecting_since,
         "passwords": simple("passwords", "tries"),
         "usernames": simple("usernames", "tries"),
         "commands": simple("commands", "seen"),
@@ -333,6 +340,7 @@ REQUIRED_RESULTS = (
     "recent",
     "daily",
     "top_session",
+    "first_event",
 )
 
 
