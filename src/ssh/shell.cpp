@@ -37,24 +37,53 @@ std::string command_not_found(std::string_view name) {
     return message;
 }
 
+/// BusyBox ash does not say "command not found": it says "not found", prefixed
+/// with the shell's own argv[0], which on a logged in Telnet session is -sh.
+/// The scripts that fingerprint an embedded device read exactly this.
+std::string applet_not_found(std::string_view name) {
+    std::string message = "-sh: ";
+    message.append(name);
+    message += ": not found\n";
+    return message;
+}
+
 Shell::Shell(const CommandRegistry& registry, ShellContext context)
     : registry_(&registry), context_(std::move(context)) {
     if (context_.cwd.empty()) {
         context_.cwd = context_.home();
     }
     if (context_.env.empty()) {
-        context_.env = {{"HOME", context_.home()},
-                        {"USER", context_.username},
-                        {"SHELL", "/bin/bash"},
-                        {"PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"},
-                        {"TERM", "xterm-256color"},
-                        {"LANG", "en_US.UTF-8"},
-                        {"PWD", context_.cwd}};
+        if (context_.persona == Persona::Busybox) {
+            context_.env = {{"HOME", context_.cwd},
+                            {"USER", context_.username},
+                            {"SHELL", "/bin/sh"},
+                            {"PATH", "/usr/sbin:/usr/bin:/sbin:/bin"},
+                            {"PWD", context_.cwd}};
+        } else {
+            context_.env = {
+                {"HOME", context_.home()},
+                {"USER", context_.username},
+                {"SHELL", "/bin/bash"},
+                {"PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"},
+                {"TERM", "xterm-256color"},
+                {"LANG", "en_US.UTF-8"},
+                {"PWD", context_.cwd}};
+        }
     }
 }
 
 std::string Shell::prompt() const {
     const bool is_root = context_.username == "root";
+
+    // BusyBox ash shows the working directory and a bare # or $, with none of
+    // bash's user@host. It is the prompt a camera or a router gives, which is
+    // what the Telnet persona is impersonating.
+    if (context_.persona == Persona::Busybox) {
+        std::string out = context_.cwd;
+        out += is_root ? " # " : " $ ";
+        return out;
+    }
+
     std::string directory = context_.cwd;
     const std::string home = context_.home();
     if (directory == home) {
@@ -108,7 +137,8 @@ Shell::Result Shell::execute(std::string_view line) {
 
         CommandOutcome outcome;
         if (handler == nullptr) {
-            outcome.output = command_not_found(name);
+            outcome.output = context_.persona == Persona::Busybox ? applet_not_found(name)
+                                                                  : command_not_found(name);
             outcome.status = 127;
             outcome.recognized = false;
             result.unknown_commands.push_back(name);

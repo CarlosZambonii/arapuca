@@ -45,6 +45,23 @@ ssh:
   max_sessions_per_ip: 8
   session_timeout_seconds: 300
 
+telnet:
+  # The IoT surface. Port 23 is knocked on almost exclusively by botnets
+  # looking for a BusyBox device, so the honeypot answers as one: a different
+  # credential list, a different persona, the same capture engine behind it.
+  enabled: true
+  port: 2323
+  # Shown before the login prompt. A real device often sends its model here.
+  banner: ""
+  hostname: "router"
+  credentials_file: telnet_credentials.yaml
+  filesystem_file: telnet_filesystem.yaml
+  max_sessions: 256
+  max_sessions_per_ip: 8
+  # Shorter than SSH: a bot's whole session is a handful of commands in a few
+  # seconds, and a connection open longer than this is sitting idle.
+  session_timeout_seconds: 120
+
 http:
   enabled: true
   port: 8080

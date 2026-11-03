@@ -22,7 +22,7 @@ Present in every event, whatever its type.
 | `event_id` | string | ULID, 26 characters. Sorts chronologically, so a raw `sort` over the log file produces time order without parsing timestamps |
 | `event_type` | string | See the table below |
 | `timestamp` | string | RFC 3339, UTC, millisecond precision, for example `2026-11-02T14:31:07.482Z` |
-| `service` | string | `ssh`, `http`, `capture` or `honeypot`. Derived from `event_type` rather than stored, so the two cannot disagree |
+| `service` | string | `ssh`, `telnet`, `http`, `capture` or `honeypot`. Derived from `event_type` rather than stored, so the two cannot disagree |
 | `sensor` | string | Which honeypot produced this. Set from `sensor_name` or `ARAPUCA_SENSOR_NAME` |
 | `src_ip` | string | Attacker address. Empty when not applicable |
 | `src_port` | integer | Attacker source port |
@@ -65,6 +65,10 @@ Populated by the first matching rule in `config/mitre.yaml`.
 | `ssh.command` | One command line typed or sent by exec |
 | `ssh.channel_denied` | A channel or global request the policy refuses |
 | `ssh.session_end` | Session finished, with its classification |
+| `telnet.auth_attempt` | Every Telnet login attempt, accepted or not |
+| `telnet.session_start` | A Telnet connection was accepted |
+| `telnet.command` | One command line typed in the BusyBox shell |
+| `telnet.session_end` | Telnet session finished, with its classification |
 | `http.request` | Every HTTP request, including 404s |
 | `http.login_attempt` | Credentials posted to the fake admin panel |
 | `capture.download` | A download was attempted, whatever the outcome |
@@ -124,6 +128,16 @@ probing for a SOCKS proxy is telling you what they wanted the machine for.
 | `classification` | string | `bot`, `likely_human` or `unknown` |
 | `classification_score` | number | Negative leans bot, positive leans human, clamped to [-1, 1] |
 | `classification_reason` | string | Which signals fired, in words |
+
+### `telnet.*`
+
+The Telnet events carry the same fields as their SSH counterparts.
+`telnet.auth_attempt` has `username`, `password`, `accepted` and `rule`;
+`telnet.command` has `command`, `command_argv0`, `seq`, `since_prev_ms`,
+`response_bytes`, `status` and `unknown`; `telnet.session_end` has
+`duration_ms`, `command_count`, `username` and the classification fields. The
+MITRE mapping reuses the SSH rules, since a technique like brute force or
+ingress tool transfer is the same whatever the transport.
 
 ### `http.request`
 

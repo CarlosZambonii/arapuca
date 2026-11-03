@@ -28,6 +28,13 @@ ssh:
   filesystem_file: filesystem.yaml
   session_timeout_seconds: 120
 
+telnet:
+  enabled: true
+  port: 2323
+  hostname: "router"
+  credentials_file: telnet_credentials.yaml
+  filesystem_file: telnet_filesystem.yaml
+
 http:
   port: 8080
   decoy_dir: http

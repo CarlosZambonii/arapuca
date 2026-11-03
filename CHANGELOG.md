@@ -34,6 +34,12 @@ is bumped only on a breaking change to the envelope and is documented in
 * A nightly fuzzing campaign, ten minutes per target with a corpus that
   accumulates between runs, separate from the sixty second smoke test on
   pull requests.
+* A Telnet honeypot on port 23 with a BusyBox persona, for the IoT botnets
+  that only knock on 23. It has its own Mirai-style credential list and an
+  embedded device filesystem, answers the `/bin/busybox` applet probe the
+  bots fingerprint with, and feeds `wget` and `tftp` downloads into the same
+  capture engine. New `telnet.*` events, which the public page and the IoC
+  feed now include.
 * The HTTP honeypot is now exposed on 8080 as well as 80, for the scanners
   that only ever probe the alt-HTTP port.
 * Tests for the Python in `tools/`, which had ruff and mypy but no tests,

@@ -37,6 +37,7 @@ jobs:
           - http_request
           - redaction
           - shell
+          - telnet_protocol
           - terminal_input
           - vfs_path
     steps:

@@ -18,11 +18,13 @@
 
 #include <arapuca/capture/address_policy.hpp>
 #include <arapuca/core/config.hpp>
+#include <arapuca/core/limits.hpp>
 #include <arapuca/http/request_record.hpp>
 #include <arapuca/ssh/command_line.hpp>
 #include <arapuca/ssh/line_editor.hpp>
 #include <arapuca/ssh/shell.hpp>
 #include <arapuca/ssh/vfs.hpp>
+#include <arapuca/telnet/protocol.hpp>
 #include <arapuca/util/redaction.hpp>
 
 #include <cstddef>
@@ -116,6 +118,26 @@ namespace {
     (void)shell.execute(input).output.size();
 }
 
+[[maybe_unused]] void fuzz_telnet_protocol(std::string_view input) {
+    // Split the input into chunks, so a sequence straddling a recv boundary
+    // is exercised the way it actually arrives off a socket. The invariant:
+    // the decoder never crashes and never emits more response than the
+    // negotiation cap allows.
+    arapuca::telnet::Decoder decoder;
+    std::size_t offset = 0;
+    while (offset < input.size()) {
+        const std::size_t step = (static_cast<unsigned char>(input[offset]) % 7) + 1;
+        const auto chunk = input.substr(offset, step);
+        const auto out = decoder.feed(chunk);
+        (void)out.clean.size();
+        (void)out.response.size();
+        offset += chunk.size();
+    }
+    if (decoder.negotiations() > arapuca::limits::kMaxTelnetNegotiations) {
+        __builtin_trap();
+    }
+}
+
 void dispatch(const std::uint8_t* data, std::size_t size) {
     const std::string_view input(reinterpret_cast<const char*>(data), size);  // NOLINT
 #if ARAPUCA_FUZZ_TARGET == 1
@@ -134,6 +156,8 @@ void dispatch(const std::uint8_t* data, std::size_t size) {
     fuzz_address_policy(input);
 #elif ARAPUCA_FUZZ_TARGET == 8
     fuzz_shell(input);
+#elif ARAPUCA_FUZZ_TARGET == 9
+    fuzz_telnet_protocol(input);
 #else
 #error "ARAPUCA_FUZZ_TARGET must be set to a target number"
 #endif

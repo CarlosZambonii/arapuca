@@ -1,0 +1,78 @@
+# The fake filesystem the BusyBox shell on Telnet walks.
+#
+# This is a device, not a server: an ARM camera or router running BusyBox, the
+# kind of thing an IoT botnet expects to find on port 23. It is deliberately
+# small, because such devices are. Nothing here touches the real filesystem.
+# `cat /proc/cpuinfo` reads the string below out of a map, no syscall involved.
+
+root:
+  bin:
+    type: dir
+    children:
+      busybox:
+        type: file
+        content: "\x7fELF binary\n"
+      sh:
+        type: file
+        content: ""
+  dev:
+    type: dir
+    children:
+      watchdog:
+        type: file
+        content: ""
+      null:
+        type: file
+        content: ""
+  etc:
+    type: dir
+    children:
+      hostname:
+        type: file
+        content: "router\n"
+      version:
+        type: file
+        content: "HW: v2.1  FW: 1.0.14  build 2018-11-15\n"
+      passwd:
+        type: file
+        content: |
+          root:x:0:0:root:/:/bin/sh
+          nobody:x:99:99:nobody:/:/bin/false
+    # A busybox device keeps almost nothing here. That is itself the tell.
+  proc:
+    type: dir
+    children:
+      cpuinfo:
+        type: file
+        content: |
+          processor	: 0
+          model name	: ARMv7 Processor rev 5 (v7l)
+          BogoMIPS	: 1194.24
+          Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpd32
+          CPU implementer	: 0x41
+          CPU architecture: 7
+          CPU variant	: 0x0
+          CPU part	: 0xc07
+          CPU revision	: 5
+
+          Hardware	: Hisilicon Hi3518
+          Revision	: 0000
+          Serial		: 0000000000000000
+      mounts:
+        type: file
+        content: |
+          rootfs / rootfs rw 0 0
+          /dev/root / squashfs ro,relatime 0 0
+          proc /proc proc rw,relatime 0 0
+          tmpfs /tmp tmpfs rw,relatime 0 0
+      version:
+        type: file
+        content: |
+          Linux version 3.10.14 (jenkins@build) (gcc version 4.8.3) #1 SMP PREEMPT 2018
+  tmp:
+    type: dir
+  var:
+    type: dir
+    children:
+      run:
+        type: dir

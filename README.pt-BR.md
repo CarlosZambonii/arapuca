@@ -1,6 +1,6 @@
 # Arapuca
 
-Um honeypot SSH e HTTP de média interação em C++20. Ele roda num endereço
+Um honeypot SSH, Telnet e HTTP de média interação em C++20. Ele roda num endereço
 público, deixa atacantes entrarem com credenciais fracas, registra tudo o que
 eles fazem, captura o que tentam baixar, e manda tudo para o New Relic, onde
 os dashboards e alertas são provisionados como código.
@@ -26,6 +26,13 @@ que valem a pena roubar.
 caminhos que os scanners realmente pedem, e arquivos isca em `/.env`,
 `/.git/config`, `/backup.sql`, `/wp-config.php` e outros. O que o atacante
 levar desses arquivos é fabricado e não abre nada.
+
+**Um servidor Telnet falso** na porta 23, onde botnets de IoT como a Mirai
+procuram um dispositivo BusyBox, não um servidor. Ele responde como um: as
+credenciais de fábrica que esses bots jogam, o teste `/bin/busybox <applet>`
+com que fazem fingerprint, um `uname` ARM, e o mesmo caminho de captura por
+trás de `wget` e `tftp`. A persona é BusyBox ash, não o bash Ubuntu que o lado
+SSH mostra.
 
 **Captura de malware.** Quando o atacante digita `wget` ou `curl` no shell
 falso, a URL é buscada numa thread separada, com timeouts rígidos, limite de
@@ -151,9 +158,9 @@ ansible-playbook -i inventory/hosts.yml site.yml \
   -e newrelic_license_key="$NEW_RELIC_LICENSE_KEY" \
   -e virustotal_api_key="$VT_API_KEY"
 
-# 3. Só agora abre as portas do honeypot. Isto abre 22, 80 e 8080: o honeypot
-#    HTTP responde na 80 e na 8080, a porta alt-HTTP que muitos scanners
-#    varrem no lugar da 80.
+# 3. Só agora abre as portas do honeypot. Isto abre 22, 23, 80 e 8080: SSH na
+#    22, o honeypot Telnet na 23, e o honeypot HTTP na 80 e na 8080, a porta
+#    alt-HTTP que muitos scanners varrem no lugar da 80.
 cd ../terraform/oci
 terraform apply -var expose_honeypot_ports=true
 

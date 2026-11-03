@@ -34,6 +34,21 @@ inline constexpr std::size_t kMaxCommandsPerSession = 2000;
 inline constexpr std::size_t kMaxSshSessions = 256;
 inline constexpr std::size_t kMaxSshSessionsPerIp = 8;
 
+// --- Telnet ----------------------------------------------------------------
+
+/// Concurrent Telnet sessions, process wide and per source address.
+inline constexpr std::size_t kMaxTelnetSessions = 256;
+inline constexpr std::size_t kMaxTelnetSessionsPerIp = 8;
+
+/// Bytes read from a Telnet client before a newline before the line is cut.
+/// A client that never sends a newline cannot grow the buffer without bound.
+inline constexpr std::size_t kMaxTelnetLine = 8192;
+
+/// IAC negotiation commands answered in one session before the rest are
+/// swallowed in silence. A peer that only negotiates is spending our memory,
+/// not attacking, and past this there is nothing more to learn from it.
+inline constexpr std::size_t kMaxTelnetNegotiations = 256;
+
 // --- HTTP ------------------------------------------------------------------
 
 inline constexpr std::size_t kMaxHttpUrl = 4096;

@@ -19,7 +19,8 @@ set(ARAPUCA_FUZZ_TARGETS
     http_request     # 5
     config           # 6
     address_policy   # 7
-    shell)           # 8
+    shell            # 8
+    telnet_protocol) # 9
 
 set(_index 0)
 foreach(target ${ARAPUCA_FUZZ_TARGETS})

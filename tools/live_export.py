@@ -73,17 +73,21 @@ QUERIES = {
     f"FROM Log WHERE {SCOPE} AND geo.country_iso IS NOT NULL "
     f"FACET geo.country_iso, geo.country LIMIT MAX SINCE 30 days ago",
     "passwords": f"SELECT count(*) AS tries FROM Log WHERE {SCOPE} AND event_type "
-    f"IN ('ssh.auth_attempt', 'http.login_attempt') FACET password LIMIT 12 SINCE 30 days ago",
+    f"IN ('ssh.auth_attempt', 'telnet.auth_attempt', 'http.login_attempt') "
+    f"FACET password LIMIT 12 SINCE 30 days ago",
     "usernames": f"SELECT count(*) AS tries FROM Log WHERE {SCOPE} AND event_type "
-    f"IN ('ssh.auth_attempt', 'http.login_attempt') FACET username LIMIT 12 SINCE 30 days ago",
+    f"IN ('ssh.auth_attempt', 'telnet.auth_attempt', 'http.login_attempt') "
+    f"FACET username LIMIT 12 SINCE 30 days ago",
     "commands": f"SELECT count(*) AS seen FROM Log WHERE {SCOPE} AND "
-    f"event_type = 'ssh.command' FACET command LIMIT 12 SINCE 30 days ago",
+    f"event_type IN ('ssh.command', 'telnet.command') "
+    f"FACET command LIMIT 12 SINCE 30 days ago",
     "techniques": f"SELECT count(*) AS events FROM Log WHERE {SCOPE} AND "
     f"mitre.technique_id IS NOT NULL FACET mitre.technique_id, mitre.technique "
     f"LIMIT 10 SINCE 30 days ago",
     "recent": f"SELECT timestamp, src_ip, geo.country_iso, event_type, username, "
     f"password, command FROM Log WHERE {SCOPE} AND event_type "
-    f"IN ('ssh.auth_attempt', 'ssh.command', 'http.login_attempt') "
+    f"IN ('ssh.auth_attempt', 'ssh.command', 'telnet.auth_attempt', "
+    f"'telnet.command', 'http.login_attempt') "
     f"LIMIT 40 SINCE 2 days ago",
     "daily": f"SELECT count(*) FROM Log WHERE {SCOPE} TIMESERIES 1 day SINCE 30 days ago",
     # The attack map needs a point, not a country: the city facet carries the
@@ -103,7 +107,7 @@ QUERIES = {
     # The busiest session, for the replay. A facet is ordered by its
     # aggregate descending, so LIMIT 1 is the one that typed the most.
     "top_session": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "
-    f"event_type = 'ssh.command' AND since_prev_ms IS NOT NULL "
+    f"event_type IN ('ssh.command', 'telnet.command') AND since_prev_ms IS NOT NULL "
     f"FACET session_id LIMIT 1 SINCE 30 days ago",
 }
 
@@ -138,7 +142,7 @@ def collect_session(
 
     rows = run_nrql(
         f"SELECT command, seq, since_prev_ms, geo.country_iso, timestamp "
-        f"FROM Log WHERE {SCOPE} AND event_type = 'ssh.command' "
+        f"FROM Log WHERE {SCOPE} AND event_type IN ('ssh.command', 'telnet.command') "
         f"AND session_id = '{session_id}' SINCE 30 days ago LIMIT 200",
         **api,
     )

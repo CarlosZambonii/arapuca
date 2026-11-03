@@ -19,6 +19,8 @@ add_executable(arapuca_unit_tests
     unit/test_mitre_mapper.cpp
     unit/test_session_classifier.cpp
     unit/test_shell.cpp
+    unit/test_telnet_protocol.cpp
+    unit/test_telnet_shell.cpp
     unit/test_vfs.cpp
     unit/test_redaction.cpp
     unit/test_version.cpp)
@@ -51,7 +53,8 @@ gtest_discover_tests(arapuca_unit_tests
 # ---------------------------------------------------------------------------
 add_executable(arapuca_integration_tests
     integration/test_http_server.cpp
-    integration/test_ssh_server.cpp)
+    integration/test_ssh_server.cpp
+    integration/test_telnet_server.cpp)
 
 target_link_libraries(arapuca_integration_tests
     PRIVATE

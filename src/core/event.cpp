@@ -14,6 +14,10 @@ std::string_view to_string(EventType type) {
         case EventType::SshCommand:        return "ssh.command";
         case EventType::SshChannelDenied:  return "ssh.channel_denied";
         case EventType::SshSessionEnd:     return "ssh.session_end";
+        case EventType::TelnetAuthAttempt: return "telnet.auth_attempt";
+        case EventType::TelnetSessionStart:return "telnet.session_start";
+        case EventType::TelnetCommand:     return "telnet.command";
+        case EventType::TelnetSessionEnd:  return "telnet.session_end";
         case EventType::HttpRequest:       return "http.request";
         case EventType::HttpLoginAttempt:  return "http.login_attempt";
         case EventType::CaptureDownload:   return "capture.download";
@@ -32,6 +36,11 @@ std::string_view service_of(EventType type) {
         case EventType::SshChannelDenied:
         case EventType::SshSessionEnd:
             return "ssh";
+        case EventType::TelnetAuthAttempt:
+        case EventType::TelnetSessionStart:
+        case EventType::TelnetCommand:
+        case EventType::TelnetSessionEnd:
+            return "telnet";
         case EventType::HttpRequest:
         case EventType::HttpLoginAttempt:
             return "http";

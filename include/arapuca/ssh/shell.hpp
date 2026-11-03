@@ -16,6 +16,7 @@
 #include <arapuca/ssh/vfs.hpp>
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <string>
@@ -25,12 +26,22 @@
 
 namespace arapuca::ssh {
 
+/// Which shell the session is impersonating. It changes the prompt and the
+/// message an unknown command gives: an Ubuntu server runs bash, an IoT
+/// device on Telnet runs BusyBox ash, and the two are told apart by exactly
+/// these details by the scripts that probe them.
+enum class Persona : std::uint8_t {
+    Bash,
+    Busybox,
+};
+
 /// Everything one session knows about itself. Each session owns its own copy,
 /// so a file an attacker creates is theirs alone and is gone afterwards.
 struct ShellContext {
     std::string username = "root";
     std::string hostname = "srv-web-03";
     std::string cwd = "/root";
+    Persona persona = Persona::Bash;
     Vfs vfs;
     std::vector<std::string> history;
     std::map<std::string, std::string> env;

@@ -123,6 +123,20 @@ Config Config::parse(const std::string& yaml_text) {
         config.ssh.session_timeout = std::chrono::seconds(static_cast<long>(timeout));
     }
 
+    if (const YAML::Node telnet = root["telnet"]) {
+        read(telnet, "enabled", config.telnet.enabled);
+        read_port(telnet, "port", config.telnet.port);
+        read(telnet, "banner", config.telnet.banner);
+        read(telnet, "hostname", config.telnet.hostname);
+        read_path(telnet, "credentials_file", config.telnet.credentials_file);
+        read_path(telnet, "filesystem_file", config.telnet.filesystem_file);
+        read(telnet, "max_sessions", config.telnet.max_sessions);
+        read(telnet, "max_sessions_per_ip", config.telnet.max_sessions_per_ip);
+        auto telnet_timeout = static_cast<std::size_t>(config.telnet.session_timeout.count());
+        read(telnet, "session_timeout_seconds", telnet_timeout);
+        config.telnet.session_timeout = std::chrono::seconds(static_cast<long>(telnet_timeout));
+    }
+
     if (const YAML::Node http = root["http"]) {
         read(http, "enabled", config.http.enabled);
         read_port(http, "port", config.http.port);
@@ -200,8 +214,22 @@ std::vector<std::string> Config::validate_and_clamp() {
     if (http.enabled && http.port == 0) {
         throw ConfigError("http.port must not be zero");
     }
+    if (telnet.enabled && telnet.port == 0) {
+        throw ConfigError("telnet.port must not be zero");
+    }
     if (ssh.enabled && http.enabled && ssh.port == http.port) {
         throw ConfigError("ssh.port and http.port must differ");
+    }
+    // Every enabled listener needs its own port. The honeypot binds them in
+    // one process, so a collision is a startup failure either way; caught
+    // here it names which two rather than surfacing as a bind error.
+    if (telnet.enabled) {
+        if (ssh.enabled && telnet.port == ssh.port) {
+            throw ConfigError("telnet.port and ssh.port must differ");
+        }
+        if (http.enabled && telnet.port == http.port) {
+            throw ConfigError("telnet.port and http.port must differ");
+        }
     }
     if (capture.enabled && capture.quarantine_dir.empty()) {
         throw ConfigError("capture.quarantine_dir must not be empty");
@@ -220,11 +248,20 @@ std::vector<std::string> Config::validate_and_clamp() {
     clamp_to(ssh.max_sessions, limits::kMaxSshSessions, "ssh.max_sessions", clamped);
     clamp_to(
         ssh.max_sessions_per_ip, limits::kMaxSshSessionsPerIp, "ssh.max_sessions_per_ip", clamped);
+    clamp_to(telnet.max_sessions, limits::kMaxTelnetSessions, "telnet.max_sessions", clamped);
+    clamp_to(telnet.max_sessions_per_ip,
+             limits::kMaxTelnetSessionsPerIp,
+             "telnet.max_sessions_per_ip",
+             clamped);
     clamp_to(
         http.max_body_recorded, limits::kMaxHttpBodyRecorded, "http.max_body_recorded", clamped);
     clamp_to(
         capture.max_sample_bytes, limits::kMaxSampleBytes, "capture.max_sample_bytes", clamped);
 
+    if (telnet.max_sessions_per_ip > telnet.max_sessions) {
+        telnet.max_sessions_per_ip = telnet.max_sessions;
+        clamped.emplace_back("telnet.max_sessions_per_ip reduced to telnet.max_sessions");
+    }
     if (ssh.max_sessions_per_ip > ssh.max_sessions) {
         clamped.emplace_back("ssh.max_sessions_per_ip reduced to ssh.max_sessions");
         ssh.max_sessions_per_ip = ssh.max_sessions;
@@ -247,6 +284,8 @@ void Config::resolve_paths_against(const std::filesystem::path& base) {
     fix(ssh.host_key);
     fix(ssh.credentials_file);
     fix(ssh.filesystem_file);
+    fix(telnet.credentials_file);
+    fix(telnet.filesystem_file);
     fix(http.decoy_dir);
     fix(capture.quarantine_dir);
     fix(geo.city_db);

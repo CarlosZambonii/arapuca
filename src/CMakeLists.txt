@@ -30,6 +30,9 @@ add_library(arapuca_core
     ssh/shell.cpp
     ssh/ssh_service.cpp
     ssh/vfs.cpp
+    telnet/busybox.cpp
+    telnet/protocol.cpp
+    telnet/telnet_service.cpp
     util/redaction.cpp)
 
 add_library(arapuca::core ALIAS arapuca_core)

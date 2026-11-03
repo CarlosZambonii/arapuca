@@ -40,6 +40,21 @@ struct SshConfig {
     std::chrono::seconds session_timeout{300};
 };
 
+struct TelnetConfig {
+    // Off by default: Telnet shares port numbering with nothing a developer
+    // runs locally, but the service is only wanted on the public sensor, so
+    // the dev configuration leaves it off and the deployed one turns it on.
+    bool enabled = false;
+    std::uint16_t port = 2323;
+    std::string banner;  // sent before the login prompt; empty sends none
+    std::string hostname = "router";
+    std::filesystem::path credentials_file = "config/telnet_credentials.yaml";
+    std::filesystem::path filesystem_file = "config/telnet_filesystem.yaml";
+    std::size_t max_sessions = 256;
+    std::size_t max_sessions_per_ip = 8;
+    std::chrono::seconds session_timeout{120};
+};
+
 struct HttpConfig {
     bool enabled = true;
     std::uint16_t port = 8080;
@@ -82,6 +97,7 @@ struct Config {
     std::string sensor_name = "arapuca";
     EventLogConfig events;
     SshConfig ssh;
+    TelnetConfig telnet;
     HttpConfig http;
     CaptureConfig capture;
     GeoConfig geo;

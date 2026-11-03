@@ -1,6 +1,6 @@
 # Arapuca
 
-A medium interaction SSH and HTTP honeypot in C++20. It runs on a public
+A medium interaction SSH, Telnet and HTTP honeypot in C++20. It runs on a public
 address, lets attackers in with weak credentials, records everything they do,
 captures what they try to download, and ships the lot to New Relic where the
 dashboards and alerts are provisioned as code.
@@ -32,6 +32,12 @@ scanners actually request, and decoy files at `/.env`, `/.git/config`,
 `/backup.sql`, `/wp-config.php` and others. Whatever an attacker takes from
 those files is fabricated and opens nothing.
 
+**A fake Telnet server** on port 23, where IoT botnets like Mirai go looking
+for a BusyBox device rather than a server. It answers as one: the factory
+default credentials those bots spray, the `/bin/busybox <applet>` probe they
+fingerprint with, an ARM `uname`, and the same capture path behind `wget` and
+`tftp`. The persona is BusyBox ash, not the Ubuntu bash the SSH side shows.
+
 **Malware capture.** When an attacker types `wget` or `curl` in the fake
 shell, the URL is fetched on a worker thread with hard timeouts, a size cap,
 and an address policy that refuses private ranges and the cloud metadata
@@ -50,6 +56,7 @@ flowchart TB
     subgraph VPS["Oracle Cloud Always Free instance"]
         subgraph C["Container: non root, read only, no capabilities"]
             SSH["SSH honeypot<br/>libssh, port 2222"]
+            TEL["Telnet honeypot<br/>BusyBox persona, port 2323"]
             HTTP["HTTP honeypot<br/>cpp-httplib, port 8080"]
             SHELL["Fake shell<br/>virtual filesystem<br/>40+ commands"]
             CAP["Capture worker<br/>isolated download<br/>quarantine"]
@@ -67,11 +74,14 @@ flowchart TB
     OUT["iocs/ and reports/"]
 
     A -->|"port 22"| SSH
-    A -->|"port 80"| HTTP
+    A -->|"port 23"| TEL
+    A -->|"ports 80, 8080"| HTTP
     SSH --> SHELL
+    TEL --> SHELL
     SHELL -.->|"URL seen, never fetched here"| CAP
     CAP -->|"sha256 only"| VT
     SSH --> BUS
+    TEL --> BUS
     HTTP --> BUS
     CAP --> BUS
     BUS --> ENR --> SINK
@@ -154,9 +164,9 @@ ansible-playbook -i inventory/hosts.yml site.yml \
   -e newrelic_license_key="$NEW_RELIC_LICENSE_KEY" \
   -e virustotal_api_key="$VT_API_KEY"
 
-# 3. Only now open the honeypot ports. This opens 22, 80 and 8080: the HTTP
-#    honeypot answers on 80 and on 8080, the alt-HTTP port many scanners probe
-#    instead of 80.
+# 3. Only now open the honeypot ports. This opens 22, 23, 80 and 8080: SSH on
+#    22, the Telnet honeypot on 23, and the HTTP honeypot on 80 and on 8080,
+#    the alt-HTTP port many scanners probe instead of 80.
 cd ../terraform/oci
 terraform apply -var expose_honeypot_ports=true
 

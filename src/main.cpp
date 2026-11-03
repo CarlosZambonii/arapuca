@@ -19,6 +19,8 @@
 #include <arapuca/ssh/shell.hpp>
 #include <arapuca/ssh/ssh_service.hpp>
 #include <arapuca/ssh/vfs.hpp>
+#include <arapuca/telnet/busybox.hpp>
+#include <arapuca/telnet/telnet_service.hpp>
 #include <arapuca/version.hpp>
 
 #include <atomic>
@@ -53,7 +55,7 @@ extern "C" void handle_reopen(int /*signal*/) {
 }
 
 void print_usage(std::ostream& out) {
-    out << "Arapuca, a medium interaction SSH and HTTP honeypot.\n"
+    out << "Arapuca, a medium interaction SSH, Telnet and HTTP honeypot.\n"
            "\n"
            "Usage:\n"
            "  arapucad [options]\n"
@@ -199,6 +201,38 @@ int main(int argc, char** argv) {
             ssh.start();
         }
 
+        // --- Telnet --------------------------------------------------------
+        // A BusyBox persona, for the IoT botnets that only ever knock on 23.
+        // It shares the capture engine with SSH: a URL is a URL, whether a bot
+        // typed wget over SSH or tftp over Telnet.
+        const auto telnet_registry = arapuca::telnet::busybox_registry();
+        arapuca::ssh::AuthPolicy telnet_credentials = credentials;
+        arapuca::ssh::Vfs telnet_filesystem = filesystem;
+        if (config.telnet.enabled) {
+            telnet_credentials =
+                arapuca::ssh::AuthPolicy::from_file(config.telnet.credentials_file);
+            telnet_filesystem = arapuca::ssh::Vfs::from_file(config.telnet.filesystem_file);
+        }
+
+        arapuca::telnet::TelnetDependencies telnet_deps;
+        telnet_deps.config = &config;
+        telnet_deps.bus = &bus;
+        telnet_deps.registry = &telnet_registry;
+        telnet_deps.auth = &telnet_credentials;
+        telnet_deps.filesystem = &telnet_filesystem;
+        telnet_deps.mitre = &mitre;
+        telnet_deps.geo = &geo;
+        telnet_deps.on_capture = [&capture](arapuca::ssh::CaptureRequest request) {
+            (void)capture.submit({std::move(request.url),
+                                  std::move(request.session_id),
+                                  std::move(request.source_ip)});
+        };
+
+        arapuca::telnet::TelnetService telnet(std::move(telnet_deps));
+        if (config.telnet.enabled) {
+            telnet.start();
+        }
+
         // --- HTTP ----------------------------------------------------------
         arapuca::http::HttpDependencies http_deps;
         http_deps.config = &config;
@@ -234,6 +268,7 @@ int main(int argc, char** argv) {
         publish_lifecycle(bus, config, "stop", &sink);
 
         http.stop();
+        telnet.stop();
         ssh.stop();
         capture.stop();
 
