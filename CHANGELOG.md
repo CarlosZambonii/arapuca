@@ -34,6 +34,10 @@ is bumped only on a breaking change to the envelope and is documented in
 * A nightly fuzzing campaign, ten minutes per target with a corpus that
   accumulates between runs, separate from the sixty second smoke test on
   pull requests.
+* The HTTP honeypot is now exposed on 8080 as well as 80, for the scanners
+  that only ever probe the alt-HTTP port.
+* Tests for the Python in `tools/`, which had ruff and mypy but no tests,
+  wired into the CI job and the contributing gate.
 * `ruff` and `mypy --strict` over `tools/`, which previously had no checks at
   all and only ever runs unattended on a schedule.
 * Keyless cosign signatures on every published container image, so a pull

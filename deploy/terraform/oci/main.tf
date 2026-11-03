@@ -8,7 +8,7 @@
 
 locals {
   # Ports the honeypot itself answers on, once it exists.
-  honeypot_ports = var.expose_honeypot_ports ? [22, 80] : []
+  honeypot_ports = var.expose_honeypot_ports ? [22, 80, 8080] : []
 
   common_tags = {
     project = "arapuca"

@@ -19,6 +19,10 @@ services:
     ports:
       - "22:2222"
       - "80:8080"
+      # A great many scanners only ever probe 8080, the alt-HTTP and proxy
+      # port, and never 80. The same honeypot answers on both, so the second
+      # mapping costs nothing and widens what is seen.
+      - "8080:8080"
 
     user: "10001:10001"
 

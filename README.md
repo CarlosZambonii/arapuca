@@ -154,7 +154,9 @@ ansible-playbook -i inventory/hosts.yml site.yml \
   -e newrelic_license_key="$NEW_RELIC_LICENSE_KEY" \
   -e virustotal_api_key="$VT_API_KEY"
 
-# 3. Only now open the honeypot ports.
+# 3. Only now open the honeypot ports. This opens 22, 80 and 8080: the HTTP
+#    honeypot answers on 80 and on 8080, the alt-HTTP port many scanners probe
+#    instead of 80.
 cd ../terraform/oci
 terraform apply -var expose_honeypot_ports=true
 
