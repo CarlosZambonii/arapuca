@@ -434,6 +434,25 @@
         - 22
         - 80
 
+    # The container writes its event log as uid 10001, and logrotate resolves
+    # the owner in `create` through the passwd database rather than taking a
+    # number. Without an account of that id on the host it refuses the whole
+    # file with "unknown user" and rotates nothing, silently, for ever.
+    - name: Create the host account that owns the rotated event log
+      ansible.builtin.group:
+        name: arapuca
+        gid: 10001
+        system: true
+
+    - name: Create the host user that owns the rotated event log
+      ansible.builtin.user:
+        name: arapuca
+        uid: 10001
+        group: arapuca
+        system: true
+        create_home: false
+        shell: /usr/sbin/nologin
+
     - name: Install log rotation
       ansible.builtin.copy:
         src: ../compose/logrotate.conf
