@@ -6,6 +6,11 @@
 <title>Arapuca, live honeypot</title>
 <meta name="description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
 
+<!-- A prompt, as the tab icon. Inline so there is no second request and
+     no file to forget: the browser stops asking for /favicon.ico once a
+     link rel=icon is present. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0f17'/%3E%3Cpath d='M7 10l6 6-6 6' fill='none' stroke='%23f2a33c' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='17' y='20' width='9' height='3' rx='1.5' fill='%23f2a33c'/%3E%3C/svg%3E">
+
 <link rel="canonical" href="https://arapuca.netlify.app/">
 
 <!-- The link preview. og:image has to be an absolute URL and a file that
@@ -747,7 +752,9 @@ section { margin-block: 46px; }
 .timeline { margin: 2px 0 18px; }
 .timeline svg { display: block; width: 100%; height: 44px; overflow: visible; }
 .timeline .bar { fill: var(--amber-deep); transition: fill 0.1s; }
-.timeline .bar:hover, .timeline .bar.on { fill: var(--amber); }
+.timeline .bar.on { fill: var(--amber); }
+.timeline .track { fill: var(--line); }
+.timeline .hit { fill: transparent; }
 .timeline-caption {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -806,7 +813,7 @@ section { margin-block: 46px; }
 .feed { display: flex; flex-direction: column; gap: 1px; }
 .ev {
   display: grid;
-  grid-template-columns: 76px 108px 1fr;
+  grid-template-columns: 76px 152px 1fr;
   gap: 12px;
   align-items: baseline;
   background: var(--surface);
@@ -823,7 +830,13 @@ section { margin-block: 46px; }
    above would keep a hidden row on screen without this line. */
 .ev[hidden] { display: none; }
 .ev .t { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
-.ev .who { color: var(--cyan); overflow: hidden; text-overflow: ellipsis; }
+.ev .who { color: var(--cyan); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* One brute forcer fills the feed with its own address. A repeat is dimmed
+   the way a log reader elides a repeated field, so the eye reads the runs
+   instead of the same string twelve times. The text is still there, and so is
+   dataset.ip, so the filter and the address search are untouched. */
+.ev[data-repeat="1"] .who { opacity: 0.28; }
+.ev.is-match[data-repeat="1"] .who { opacity: 1; }
 .ev .what { color: var(--ink-dim); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .ev .what b { color: var(--ink); font-weight: 500; }
 .ev .what .pw { color: var(--amber); }
@@ -2182,7 +2195,27 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       row.hidden = !visible;
       if (visible) { shown += 1; }
     });
+    markFeedRepeats();
     return shown;
+  }
+
+  // Runs over what is actually on screen, so filtering to one service
+  // regroups the runs rather than leaving gaps where a hidden row was.
+  function markFeedRepeats() {
+    var previous = "";
+    el("feed").querySelectorAll(".ev").forEach(function (row) {
+      if (row.hidden) {
+        delete row.dataset.repeat;
+        return;
+      }
+      var address = row.dataset.ip || "";
+      if (address && address === previous) {
+        row.dataset.repeat = "1";
+      } else {
+        delete row.dataset.repeat;
+      }
+      previous = address;
+    });
   }
 
 
@@ -2523,26 +2556,55 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var slot = width / daily.length;
     var barWidth = Math.max(1, slot - 2);
 
+    // A baseline across the whole window. A sensor that has been public for
+    // two days inside a thirty day chart is mostly empty, and twenty eight
+    // one pixel stubs read as a broken chart; a track with bars standing on
+    // it reads as a day that has not happened yet, which is the truth.
+    svg.appendChild(svgEl("rect", {
+      class: "track",
+      x: "0",
+      y: (height - 1).toFixed(1),
+      width: width.toFixed(1),
+      height: "1"
+    }));
+
     daily.forEach(function (day, index) {
+      var count = day.count || 0;
+      var date = (day.at || "").slice(0, 10);
+
       // Square root, so a quiet day is still a visible sliver next to the one
       // persistent brute forcer's spike rather than a flat line.
-      var h = Math.max(1, Math.sqrt((day.count || 0) / top) * (height - 4));
-      var rect = svgEl("rect", {
-        class: "bar",
-        x: (index * slot).toFixed(1),
-        y: (height - h).toFixed(1),
-        width: barWidth.toFixed(1),
-        height: h.toFixed(1)
-      });
-      function label() {
-        var date = (day.at || "").slice(0, 10);
-        el("timeline-caption").textContent = num(day.count || 0) + t("timelineDay") + date;
-        rect.classList.add("on");
+      var rect = null;
+      if (count > 0) {
+        var h = Math.max(2, Math.sqrt(count / top) * (height - 4));
+        rect = svgEl("rect", {
+          class: "bar",
+          x: (index * slot).toFixed(1),
+          y: (height - h).toFixed(1),
+          width: barWidth.toFixed(1),
+          height: h.toFixed(1)
+        });
+        svg.appendChild(rect);
       }
-      function clear() { rect.classList.remove("on"); el("timeline-caption").textContent = t("timelineCaption"); }
-      rect.addEventListener("mouseenter", label);
-      rect.addEventListener("mouseleave", clear);
-      svg.appendChild(rect);
+
+      // A transparent column over every day, so the pointer finds the quiet
+      // ones too and the caption can say a day had nothing.
+      var hit = svgEl("rect", {
+        class: "hit",
+        x: (index * slot).toFixed(1),
+        y: "0",
+        width: slot.toFixed(1),
+        height: String(height)
+      });
+      hit.addEventListener("mouseenter", function () {
+        el("timeline-caption").textContent = num(count) + t("timelineDay") + date;
+        if (rect) { rect.classList.add("on"); }
+      });
+      hit.addEventListener("mouseleave", function () {
+        if (rect) { rect.classList.remove("on"); }
+        el("timeline-caption").textContent = t("timelineCaption");
+      });
+      svg.appendChild(hit);
     });
     el("timeline-caption").textContent = t("timelineCaption");
   }
