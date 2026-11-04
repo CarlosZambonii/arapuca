@@ -85,6 +85,18 @@ is bumped only on a breaking change to the envelope and is documented in
   page fetches nothing, so `wget` says what the sensor would do rather than
   doing it from a reader's browser.
 
+### Changed
+
+* The public page moved from Netlify to GitHub Pages. Netlify's credit based
+  pricing charges 15 credits per production deploy out of 300 a month, which
+  is 20 deploys, and the hourly live map refresh alone wants 720. Pages has no
+  per deploy cost, and its ten builds an hour ceiling does not apply to a
+  workflow that uploads the artifact itself.
+* The response headers `netlify.toml` set are gone with it. The content
+  security policy moved into a `<meta>` element; `frame-ancestors` is ignored
+  there, and `X-Content-Type-Options`, `X-Frame-Options` and
+  `Permissions-Policy` have no meta equivalent.
+
 ### Fixed
 
 * The service filter chips on the public page did nothing. They set `hidden`
@@ -93,8 +105,6 @@ is bumped only on a breaking change to the envelope and is documented in
 * A release tag built a container image and then threw it away: the publish
   job was triggered by `v*` tags but its condition only ever allowed `main`.
   Tags now publish `:v1.2.3`, `:1.2.3` and `:latest`.
-* Netlify rebuilt the page on every push, including the ones that cannot
-  change it. The build is now skipped unless something under `web/` changed.
 * The README showed two broken images where the dashboard screenshots will
   go. It now describes what the dashboards contain, which is true today.
 

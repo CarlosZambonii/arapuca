@@ -27,8 +27,8 @@ outside its own sandbox. Concretely, any of these is a defect, not a feature:
 
 * Guessing a password and getting a shell. That is the invitation.
 * The fabricated credentials in the decoy files.
-* Findings against `arapuca.netlify.app` that amount to it being a static
-  page with no backend.
+* Findings against `carloszambonii.github.io/arapuca` that amount to it
+  being a static page with no backend.
 * Denial of service against the live sensor by volume. It is a single always
   free instance; flooding it proves nothing and takes the sensor off the air
   for everyone else.

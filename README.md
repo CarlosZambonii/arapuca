@@ -237,13 +237,13 @@ The page's link preview is `web/og.png`, rendered from
 [`web/card.html`](web/card.html) by `scripts/render_social_card.sh`.
 
 [`web/`](web/) is a public page showing where the attacks come from, deployed
-on Netlify. It exists so the honeypot can be shared with people who do not
+on GitHub Pages. It exists so the honeypot can be shared with people who do not
 have a New Relic account, and so anyone reading about it can try to get in and
 watch their own country appear.
 
 The New Relic key never reaches a browser. A scheduled job runs
-`tools/live_export.py`, commits `web/data/live.json`, and Netlify deploys on
-that push, so the key lives only in GitHub secrets.
+`tools/live_export.py`, commits `web/data/live.json`, and GitHub Pages deploys
+on that push, so the key lives only in GitHub secrets.
 
 What the page publishes is deliberately coarser than the IoC feed: source
 addresses are shown with the host part masked, because an attacker should

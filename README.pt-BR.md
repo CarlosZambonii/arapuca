@@ -236,13 +236,13 @@ para distinguir um bot de uma mão. A prévia do link é `web/og.png`, gerada a
 partir de [`web/card.html`](web/card.html) por `scripts/render_social_card.sh`.
 
 A pasta [`web/`](web/) é uma página pública que mostra de onde vêm os ataques,
-publicada no Netlify. Ela existe para o honeypot poder ser compartilhado com
+publicada no GitHub Pages. Ela existe para o honeypot poder ser compartilhado com
 quem não tem conta no New Relic, e para quem ler sobre ele poder tentar entrar
 e ver o próprio país aparecer.
 
 A chave do New Relic nunca chega ao navegador. Um job agendado roda o
-`tools/live_export.py`, commita o `web/data/live.json`, e o Netlify publica
-nesse push, então a chave vive só nos secrets do GitHub.
+`tools/live_export.py`, commita o `web/data/live.json`, e o GitHub Pages
+publica nesse push, então a chave vive só nos secrets do GitHub.
 
 O que a página publica é deliberadamente mais grosso que o feed de IoCs: os
 endereços de origem aparecem com a parte de host mascarada, porque o atacante

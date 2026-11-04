@@ -3045,7 +3045,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   }
 
   /* The export ships a list. A live.json written before it did carries one
-     session under its own key, and the page can reach Netlify an hour before
+     session under its own key, and the page can reach a visitor an hour before
      the next export runs, so both shapes are read. */
   function replaySessionsOf(data) {
     if (data.sessions && data.sessions.length) { return data.sessions; }
