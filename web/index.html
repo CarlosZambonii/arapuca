@@ -73,6 +73,14 @@
   --graticule: #1b2a3f;
   --origin-dot: #ffd591;
 
+  /* The terminal, in the colours Kali paints a prompt with: the frame and
+     user@host in blue, the path bright, and root's sigil in red. */
+  --term-bg: #0b0e15;
+  --term-frame: #3f8fd0;
+  --term-user: #5fb3ff;
+  --term-path: #e8eef7;
+  --term-sigil: #ff6b6b;
+
   --font-display: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -106,6 +114,12 @@
   --ocean-air: #5bff92;
   --graticule: #14432a;
   --origin-dot: #c9ffd6;
+
+  --term-bg: #03120a;
+  --term-frame: #1f9a4d;
+  --term-user: #5bff92;
+  --term-path: #b9ffbe;
+  --term-sigil: #8affd4;
 }
 :root[data-theme="phosphor"] body {
   text-shadow: 0 0 6px rgba(91, 255, 146, 0.2);
@@ -857,7 +871,8 @@ section { margin-block: 68px; }
   scrollbar-color: #243044 transparent;
   /* A faint glow from the top of the screen. A phosphor tube is not flat, and
      a flat rectangle is what made the panel read as a text box before. */
-  background: radial-gradient(130% 80% at 50% 0%, rgba(120, 170, 255, 0.05), transparent 72%), #05080e;
+  background: radial-gradient(130% 80% at 50% 0%, rgba(120, 170, 255, 0.05), transparent 72%),
+              var(--term-bg);
 }
 .replay-screen::-webkit-scrollbar { width: 9px; }
 .replay-screen::-webkit-scrollbar-thumb { background: #243044; border-radius: 6px; }
@@ -915,12 +930,28 @@ section { margin-block: 68px; }
   align-items: baseline;
   gap: 2px;
   padding: 11px 18px 15px;
-  background: #05080e;
+  background: var(--term-bg);
   border-top: 1px solid #141d29;
   font-family: var(--font-mono);
   font-size: 0.84rem;
 }
-.term-input .rps { color: #5fd38d; white-space: pre; }
+.term-input .rps { white-space: pre; }
+/* The prompt, in parts, so it is coloured the way a terminal colours it. */
+.pu { color: var(--term-user); font-weight: 600; }
+.pp { color: var(--term-path); }
+.pg { color: var(--term-sigil); }
+.pf { color: var(--term-frame); }
+#shell-screen .motd { color: var(--ink-faint); }
+/* A note from the page rather than from the shell, and marked as one: it is
+   the only text in this window that the honeypot would not have sent. */
+#shell-screen .hint {
+  color: var(--cyan);
+  border-left: 2px solid var(--line);
+  padding-left: 10px;
+  margin: 8px 0 2px;
+  opacity: 0.85;
+}
+#shell-screen .replay-line { color: var(--term-path); }
 .term-input input {
   flex: 1;
   min-width: 0;
@@ -1244,13 +1275,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     <div class="replay">
       <div class="replay-bar">
         <span class="dots"><i></i><i></i><i></i></span>
-        <span class="replay-title">bash - root@srv-web-03: ~</span>
+        <span class="replay-title">kali@kali: ~</span>
         <span class="replay-spacer"></span>
         <button type="button" class="replay-btn" id="shell-reset" data-i18n="shellReset">reset</button>
       </div>
       <div class="replay-screen" id="shell-screen" role="log" aria-live="polite"></div>
       <form class="term-input" id="shell-form">
-        <span class="rps" id="shell-prompt" aria-hidden="true">root@srv-web-03:~# </span>
+        <span class="rps" id="shell-prompt" aria-hidden="true"></span>
         <input id="shell-input" type="text" spellcheck="false" autocomplete="off"
                autocapitalize="off" autocorrect="off" aria-label="Shell command"
                data-i18n-ph="shellPlaceholder" placeholder="try: uname -a">
@@ -1429,8 +1460,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
                     "senha. Tente ls -la, cat /etc/passwd, cat /opt/app/.env, ps aux, " +
                     "uname -a. Digite help para a lista.",
       shellHelp: "comandos que esta p\u00e1gina responde:",
-      shellElsewhere: "Esse o sensor responde, mas a p\u00e1gina n\u00e3o carrega. " +
-                      "Experimente por ssh no endere\u00e7o l\u00e1 em cima.",
       shellNoFetch: "O sensor baixaria o arquivo numa thread separada, para uma " +
                     "quarentena cifrada que ele nunca abre. Esta p\u00e1gina n\u00e3o " +
                     "busca nada: ela n\u00e3o vai at\u00e9 a URL de um atacante pelo " +
@@ -1528,8 +1557,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
                   "would be. Try ls -la, cat /etc/passwd, cat /opt/app/.env, ps aux, " +
                   "uname -a. Type help for the list.",
     shellHelp: "commands this page answers:",
-    shellElsewhere: "The sensor answers that one; this page does not carry it. " +
-                    "Try it over ssh, at the address above.",
     shellNoFetch: "The sensor would fetch the file on a worker thread, into an " +
                   "encrypted quarantine it never opens. This page fetches nothing: " +
                   "it will not go to an attacker's URL from a reader's browser.",
@@ -3375,6 +3402,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     cwd: "/root",
     user: "root",
     host: "srv-web-03",
+    target: "",
+    env: {},
     history: [],
     cursor: 0,
     closed: false
@@ -3397,14 +3426,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     docker: "/usr/bin/docker", systemctl: "/usr/bin/systemctl",
     crontab: "/usr/bin/crontab", nc: "/usr/bin/nc"
   };
-
-  /* Verbs the daemon answers and this page does not carry. Saying so is
-     better than a false "command not found", and it points at the thing the
-     page is for: the sensor itself is on the internet, waiting. */
-  var TERM_ELSEWHERE = [
-    "top", "htop", "apt", "apt-get", "systemctl", "service", "ip", "ifconfig",
-    "export", "grep", "python", "python3", "perl", "php"
-  ];
 
   function termSplit(line) {
     var out = [];
@@ -3479,10 +3500,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   function termShortCwd() {
     return term.cwd === "/root" ? "~" : term.cwd;
-  }
-
-  function termPrompt() {
-    return term.user + "@" + term.host + ":" + termShortCwd() + "# ";
   }
 
   function termPad(value, width) {
@@ -3641,7 +3658,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     env: function () {
       var text = "";
       TERM_ENV.forEach(function (pair) {
-        text += pair[0] + "=" + (pair[0] === "PWD" ? term.cwd : pair[1]) + "\n";
+        var value = term.env[pair[0]];
+        if (value === undefined) { value = pair[0] === "PWD" ? term.cwd : pair[1]; }
+        text += pair[0] + "=" + value + "\n";
+      });
+      Object.keys(term.env).forEach(function (key) {
+        var known = TERM_ENV.some(function (pair) { return pair[0] === key; });
+        if (!known) { text += key + "=" + term.env[key] + "\n"; }
       });
       return out(text);
     },
@@ -3723,10 +3746,133 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       return out("logout\n");
     },
 
+    top: function () {
+      return out("top - 06:31:02 up 5 days,  3:14,  1 user,  load average: 0.08, 0.12, 0.09\n" +
+        "Tasks: 112 total,   1 running, 111 sleeping,   0 stopped,   0 zombie\n" +
+        "%Cpu(s):  1.3 us,  0.7 sy,  0.0 ni, 97.8 id,  0.2 wa,  0.0 hi,  0.0 si,  0.0 st\n" +
+        "MiB Mem :   3936.0 total,    793.3 free,   1102.4 used,   2040.3 buff/cache\n" +
+        "MiB Swap:      0.0 total,      0.0 free,      0.0 used.   2514.1 avail Mem\n" +
+        "\n" +
+        "    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND\n" +
+        "   2031 deploy    20   0  918244  68120  12044 S   0.7   1.7   4:02.11 app\n" +
+        "   1210 postgres  20   0  398124  46512  44120 S   0.3   1.2   1:47.80 postgres\n" +
+        "      1 root      20   0  168404  11820   8204 S   0.0   0.3   0:24.07 systemd\n");
+    },
+
+    apt: function (argv) {
+      var action = argv.length > 1 ? argv[1] : "";
+      if (action === "update") {
+        return out("Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease\n" +
+          "Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]\n" +
+          "Fetched 110 kB in 1s (142 kB/s)\n" +
+          "Reading package lists... Done\n");
+      }
+      if (action === "install" || action === "-y") {
+        return out("Reading package lists... Done\n" +
+          "Building dependency tree... Done\n" +
+          "Reading state information... Done\n" +
+          "E: Unable to locate package\n");
+      }
+      return out("apt 2.4.11 (amd64)\n");
+    },
+
+    systemctl: function (argv) {
+      var action = argv.length > 1 ? argv[1] : "";
+      if (action === "status") {
+        return out("* ssh.service - OpenBSD Secure Shell server\n" +
+          "     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)\n" +
+          "     Active: active (running) since Sat 2026-10-28 03:02:11 UTC; 5 days ago\n" +
+          "   Main PID: 655 (sshd)\n" +
+          "      Tasks: 1 (limit: 4617)\n");
+      }
+      if (action === "list-units" || action === "list-unit-files") {
+        return out("UNIT FILE                 STATE    VENDOR PRESET\n" +
+          "ssh.service               enabled  enabled\n" +
+          "nginx.service             enabled  enabled\n" +
+          "postgresql.service        enabled  enabled\n");
+      }
+      return out("");
+    },
+
+    service: function (argv) {
+      if (argv.length >= 3) { return out(" * " + argv[1] + " is running\n"); }
+      return out("");
+    },
+
+    ifconfig: function () {
+      return out("ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n" +
+        "        inet 10.0.3.14  netmask 255.255.255.0  broadcast 10.0.3.255\n" +
+        "        inet6 fe80::17ff:fe09:9267  prefixlen 64  scopeid 0x20<link>\n" +
+        "        ether 02:00:17:09:92:67  txqueuelen 1000  (Ethernet)\n" +
+        "        RX packets 8824119  bytes 2914884012 (2.9 GB)\n" +
+        "        TX packets 7120043  bytes 1884221904 (1.8 GB)\n" +
+        "\n" +
+        "lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536\n" +
+        "        inet 127.0.0.1  netmask 255.0.0.0\n" +
+        "        loop  txqueuelen 1000  (Local Loopback)\n");
+    },
+
+    ip: function (argv) {
+      var route = argv.slice(1).some(function (a) { return a === "r" || a === "route"; });
+      if (route) {
+        return out("default via 10.0.3.1 dev ens3 proto dhcp src 10.0.3.14 metric 100\n" +
+          "10.0.3.0/24 dev ens3 proto kernel scope link src 10.0.3.14\n");
+      }
+      return out("1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default\n" +
+        "    inet 127.0.0.1/8 scope host lo\n" +
+        "2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP\n" +
+        "    link/ether 02:00:17:09:92:67 brd ff:ff:ff:ff:ff:ff\n" +
+        "    inet 10.0.3.14/24 brd 10.0.3.255 scope global dynamic ens3\n");
+    },
+
+    "export": function (argv) {
+      // The daemon stores it in the session's environment and says nothing.
+      for (var i = 1; i < argv.length; i += 1) {
+        var equals = argv[i].indexOf("=");
+        if (equals > 0) { term.env[argv[i].slice(0, equals)] = argv[i].slice(equals + 1); }
+      }
+      return out("");
+    },
+
+    grep: function (argv) {
+      var targets = termOperands(argv);
+      if (targets.length < 2) { return err("usage: grep [OPTION]... PATTERNS [FILE]...\n"); }
+      var pattern = targets[0];
+      var text = "";
+      var matched = false;
+      for (var i = 1; i < targets.length; i += 1) {
+        var node = termFind(termResolve(targets[i]));
+        if (!node || node.dir) {
+          text += "grep: " + targets[i] + ": No such file or directory\n";
+          continue;
+        }
+        // A plain substring search, never a regular expression, for the
+        // reason the daemon gives: the pattern comes from an attacker, and a
+        // backtracking engine on attacker input is a denial of service.
+        node.content.split("\n").forEach(function (line) {
+          if (line.indexOf(pattern) >= 0) { text += line + "\n"; matched = true; }
+        });
+      }
+      return matched ? out(text) : err(text);
+    },
+
     help: function () {
       return hint(t("shellHelp") + "\n  " + Object.keys(TERM_COMMANDS).sort().join("  ") + "\n");
     }
   };
+
+  /* python, perl, sh, bash and php. Script content is never run, by the
+     daemon or here, and a quiet exit is what a short script looks like from
+     the outside. */
+  function termInterpreter(argv) {
+    if (argv.length > 1 && argv[1] === "--version") {
+      return out(argv[0] === "python3" ? "Python 3.10.12\n" : "v5.34.0\n");
+    }
+    return out("");
+  }
+  ["python", "python3", "perl", "sh", "bash", "php"].forEach(function (name) {
+    TERM_COMMANDS[name] = termInterpreter;
+  });
   TERM_COMMANDS.dir = TERM_COMMANDS.ls;
   TERM_COMMANDS.who = TERM_COMMANDS.w;
   TERM_COMMANDS.ss = TERM_COMMANDS.netstat;
@@ -3734,6 +3880,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   TERM_COMMANDS.whereis = TERM_COMMANDS.which;
   TERM_COMMANDS.chown = TERM_COMMANDS.chmod;
   TERM_COMMANDS.logout = TERM_COMMANDS.exit;
+  TERM_COMMANDS.htop = TERM_COMMANDS.top;
+  TERM_COMMANDS["apt-get"] = TERM_COMMANDS.apt;
 
   function out(text) { return { text: text, kind: "out" }; }
   function err(text) { return { text: text, kind: "err" }; }
@@ -3769,6 +3917,72 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     return hint(t("shellNoFetch") + "\n");
   }
 
+  /* The prompt as a terminal paints it: user@host in blue, the path bright,
+     root's # in red. The text is the one the honeypot prints, because that is
+     what an attacker sees; the colours are the terminal's, not the server's,
+     which is exactly how it works when you are logged in from one. */
+  function termPromptNodes() {
+    var frag = document.createDocumentFragment();
+    var user = document.createElement("span");
+    user.className = "pu";
+    user.textContent = term.user + "@" + term.host;
+    frag.appendChild(user);
+    var path = document.createElement("span");
+    path.className = "pp";
+    path.textContent = ":" + termShortCwd();
+    frag.appendChild(path);
+    var sigil = document.createElement("span");
+    sigil.className = "pg";
+    sigil.textContent = "# ";
+    frag.appendChild(sigil);
+    return frag;
+  }
+
+  /* How the session began. A visitor on Kali types this and reads exactly
+     this back, so the page shows it rather than dropping them at a prompt out
+     of nowhere: the local prompt, the ssh, and the message of the day the
+     honeypot really sends, copied from src/ssh/ssh_service.cpp. */
+  var TERM_MOTD = [
+    "Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-91-generic x86_64)",
+    "",
+    " * Documentation:  https://help.ubuntu.com",
+    " * Management:     https://landscape.canonical.com",
+    " * Support:        https://ubuntu.com/advantage",
+    "",
+    "Last login: Mon Nov  2 03:11:07 2026 from 10.0.3.9"
+  ];
+
+  function termOpening() {
+    var screen = el("shell-screen");
+    var host = term.target || "<host>";
+
+    var top = document.createElement("div");
+    top.className = "replay-line";
+    top.appendChild(termSpan("pf", "\u250c\u2500\u2500("));
+    top.appendChild(termSpan("pu", "kali\u327fkali"));
+    top.appendChild(termSpan("pf", ")-["));
+    top.appendChild(termSpan("pp", "~"));
+    top.appendChild(termSpan("pf", "]"));
+    screen.appendChild(top);
+
+    var bottom = document.createElement("div");
+    bottom.className = "replay-line";
+    bottom.appendChild(termSpan("pf", "\u2514\u2500"));
+    bottom.appendChild(termSpan("pg", "$ "));
+    bottom.appendChild(termSpan("rcmd", "ssh root@" + host));
+    screen.appendChild(bottom);
+
+    termWrite("root@" + host + "'s password: \n", "motd");
+    termWrite(TERM_MOTD.join("\n") + "\n", "motd");
+  }
+
+  function termSpan(className, text) {
+    var node = document.createElement("span");
+    node.className = className;
+    node.textContent = text;
+    return node;
+  }
+
   function termWrite(text, kind) {
     if (text === "") { return; }
     var screen = el("shell-screen");
@@ -3782,10 +3996,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var screen = el("shell-screen");
     var row = document.createElement("div");
     row.className = "replay-line";
-    var ps = document.createElement("span");
-    ps.className = "rps";
-    ps.textContent = termPrompt();
-    row.appendChild(ps);
+    row.appendChild(termPromptNodes());
     var typed = document.createElement("span");
     typed.className = "rcmd";
     typed.textContent = line;
@@ -3815,10 +4026,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       if (term.closed) { termWrite(t("shellClosed"), "hint"); }
       return;
     }
-    if (TERM_ELSEWHERE.indexOf(name) >= 0) {
-      termWrite(t("shellElsewhere"), "hint");
-      return;
-    }
     termWrite("bash: " + name + ": command not found\n", "err");
   }
 
@@ -3827,13 +4034,17 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     term.closed = false;
     term.history = [];
     term.cursor = 0;
+    term.env = {};
     el("shell-screen").textContent = "";
-    termWrite(t("shellWelcome"), "hint");
+    termOpening();
+    termWrite("\n" + t("shellWelcome"), "hint");
     termSyncPrompt();
   }
 
   function termSyncPrompt() {
-    el("shell-prompt").textContent = termPrompt();
+    var holder = el("shell-prompt");
+    holder.textContent = "";
+    holder.appendChild(termPromptNodes());
     var input = el("shell-input");
     input.disabled = term.closed;
   }
@@ -3850,6 +4061,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     }).then(function (payload) {
       term.fs = payload.files || null;
       term.host = payload.hostname || term.host;
+      term.target = (state.data && state.data.target) || "";
       section.hidden = false;
       termReset();
     }).catch(function () {
