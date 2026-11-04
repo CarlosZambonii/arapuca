@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- These used to be response headers in netlify.toml. GitHub Pages serves a
+     static bucket and cannot set a header, so the policy moves into the
+     document. Two things do not survive the move and are gone: frame-ancestors,
+     which a user agent ignores in a meta tag, and the Cache-Control that kept
+     data/live.json from being served stale, which is why the page fetches it
+     with cache: "no-store" instead. X-Content-Type-Options, X-Frame-Options
+     and Permissions-Policy are header only and have no meta equivalent. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <title>Arapuca, live honeypot</title>
 <meta name="description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
 
@@ -11,7 +20,7 @@
      link rel=icon is present. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0f17'/%3E%3Cpath d='M7 10l6 6-6 6' fill='none' stroke='%23f2a33c' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='17' y='20' width='9' height='3' rx='1.5' fill='%23f2a33c'/%3E%3C/svg%3E">
 
-<link rel="canonical" href="https://arapuca.netlify.app/">
+<link rel="canonical" href="https://carloszambonii.github.io/arapuca/">
 
 <!-- The link preview. og:image has to be an absolute URL and a file that
      exists before the page is opened: a scraper fetches once and does not run
@@ -23,10 +32,10 @@
 <meta property="og:site_name" content="Arapuca">
 <meta property="og:locale" content="en">
 <meta property="og:locale:alternate" content="pt_BR">
-<meta property="og:url" content="https://arapuca.netlify.app/">
+<meta property="og:url" content="https://carloszambonii.github.io/arapuca/">
 <meta property="og:title" content="Arapuca, live honeypot">
 <meta property="og:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
-<meta property="og:image" content="https://arapuca.netlify.app/og.png">
+<meta property="og:image" content="https://carloszambonii.github.io/arapuca/og.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="2400">
 <meta property="og:image:height" content="1260">
@@ -34,7 +43,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Arapuca, live honeypot">
 <meta name="twitter:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
-<meta name="twitter:image" content="https://arapuca.netlify.app/og.png">
+<meta name="twitter:image" content="https://carloszambonii.github.io/arapuca/og.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

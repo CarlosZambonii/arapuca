@@ -1,0 +1,52 @@
+name: Public page
+
+# The page used to be published by Netlify, which moved to credit based
+# pricing: 15 credits per production deploy out of 300 a month. That is 20
+# deploys, and the hourly live-map refresh alone wants 720. GitHub Pages has
+# no per deploy cost, and its ten builds an hour ceiling does not apply to a
+# workflow that publishes the artifact itself, which is what this does.
+on:
+  push:
+    branches: [main]
+    # Most pushes here cannot change the page: the C++ sources, the daily IoC
+    # feed and the weekly report all live outside web/. Netlify needed an
+    # ignore command to work that out after the fact; a path filter decides it
+    # before the job starts.
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel one in flight: the live-map commit
+# and a page edit can land seconds apart, and a cancelled deploy would leave
+# whichever finished first as the published site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publish web/
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # web/ is published verbatim. There is no build step: the page is one
+      # HTML file, its vendored d3 and topojson, and the JSON the live-map
+      # workflow commits.
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: web
+
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
