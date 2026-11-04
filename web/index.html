@@ -719,6 +719,10 @@ section { margin-block: 46px; }
 @media (max-width: 620px) {
   .ev { grid-template-columns: 1fr; gap: 2px; padding-block: 10px; }
 }
+/* The service chips filter by setting [hidden] on a row. An author rule for
+   display beats the user agent's [hidden] { display: none }, so the grid
+   above would keep a hidden row on screen without this line. */
+.ev[hidden] { display: none; }
 .ev .t { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .ev .who { color: var(--cyan); overflow: hidden; text-overflow: ellipsis; }
 .ev .what { color: var(--ink-dim); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
