@@ -400,7 +400,20 @@ h1 .quiet { color: var(--ink-faint); font-weight: 600; }
 
 /* ---------- sections ---------- */
 
-section { margin-block: 46px; }
+/* Room between sections, and a mark on each heading. Every section used to
+   be the same shape at the same distance, which read as one long list. */
+section { margin-block: 68px; }
+
+.section-head h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 0.78em;
+  margin-right: 9px;
+  vertical-align: baseline;
+  background: var(--amber);
+  border-radius: 1px;
+}
 
 .section-head {
   display: flex;
@@ -641,6 +654,24 @@ section { margin-block: 46px; }
   color: var(--ink-dim);
 }
 
+/* A dropper's command line is three hundred characters and the column is a
+   third of a third of the page, so the list showed every one of them as the
+   same ellipsis. A row opens on a click and shows the whole thing: it is the
+   most interesting text on the page and it was the least readable. */
+.row.openable { cursor: zoom-in; }
+.row.openable:hover { background: var(--surface-high); }
+.row.open {
+  align-items: start;
+  cursor: zoom-out;
+}
+.row.open .label {
+  white-space: pre-wrap;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-all;
+  line-height: 1.55;
+}
+
 .cols {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -677,12 +708,31 @@ section { margin-block: 46px; }
   letter-spacing: 0.03em;
 }
 .tech .nm { font-size: 0.88rem; color: var(--ink); margin-top: 2px; }
+.tech {
+  display: flex;
+  flex-direction: column;
+}
 .tech .ct {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 0.75rem;
   color: var(--ink-faint);
   margin-top: 6px;
+}
+/* Eight cards of equal size said nothing about proportion, and the top
+   technique here outweighs the bottom one by three orders of magnitude. The
+   ramp is logarithmic for the reason the map's is. */
+.tech .weight {
+  margin-top: auto;
+  padding-top: 10px;
+  height: 2px;
+  box-sizing: content-box;
+}
+.tech .weight i {
+  display: block;
+  height: 2px;
+  background: var(--amber-deep);
+  border-radius: 1px;
 }
 
 /* ---------- feed ---------- */
@@ -1774,6 +1824,16 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       label.title = row.label;
       line.appendChild(label);
 
+      // A row that does not already mean something when clicked opens
+      // instead, because the text that gets cut off here is the most
+      // interesting on the page: a dropper's whole command line.
+      if (!onPick || !row.key) {
+        line.classList.add("openable");
+        line.addEventListener("click", function () {
+          line.classList.toggle("open");
+        });
+      }
+
       var value = document.createElement("span");
       value.className = "value";
       value.textContent = num(row.value);
@@ -2482,6 +2542,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       el("tech-section").hidden = true;
       return;
     }
+    // Logarithmic, for the reason the globe's shading is: the busiest
+    // technique here outweighs the quietest by three orders of magnitude, and
+    // a linear bar would leave seven of the eight cards blank.
+    var top = rows.reduce(function (max, row) { return Math.max(max, row.events || 0); }, 0) || 1;
+    var span = Math.log1p(top) || 1;
+
     rows.forEach(function (row) {
       var card = document.createElement("div");
       card.className = "tech";
@@ -2497,6 +2563,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       card.appendChild(id);
       card.appendChild(name);
       card.appendChild(count);
+
+      var weight = document.createElement("div");
+      weight.className = "weight";
+      var fill = document.createElement("i");
+      fill.style.width =
+        Math.max(3, Math.min(100, (Math.log1p(row.events || 0) / span) * 100)).toFixed(1) + "%";
+      weight.appendChild(fill);
+      card.appendChild(weight);
+
       holder.appendChild(card);
     });
   }
