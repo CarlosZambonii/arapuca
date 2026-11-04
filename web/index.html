@@ -62,6 +62,17 @@
   --cyan: #4fd2c2;
   --red: #e5634d;
 
+  /* The globe is drawn, not styled, so the colours it mixes have to be
+     readable from the stylesheet or a theme could never reach them. */
+  --map-low: #1b2433;
+  --map-high: #7a5a2c;
+  --ocean-lit: #18283f;
+  --ocean-mid: #0d1420;
+  --ocean-deep: #060a11;
+  --ocean-air: #4fd2c2;
+  --graticule: #1b2a3f;
+  --origin-dot: #ffd591;
+
   --font-display: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -69,6 +80,117 @@
   --gutter: max(18px, env(safe-area-inset-left, 0px));
   --gutter-right: max(18px, env(safe-area-inset-right, 0px));
 }
+
+/* Phosphor mode: the whole page as one green tube. Only the tokens change,
+   so every component follows without being told, including the globe, which
+   reads these same values out of the stylesheet when it redraws. A monochrome
+   display had no second colour, so amber and cyan become two greens. */
+:root[data-theme="phosphor"] {
+  --ground: #03120a;
+  --surface: #071d10;
+  --surface-high: #0c2b18;
+  --line: #12522c;
+  --ink: #b9ffbe;
+  --ink-dim: #5fd07e;
+  --ink-faint: #2e8f50;
+  --amber: #5bff92;
+  --amber-deep: #1f9a4d;
+  --cyan: #8affd4;
+  --red: #ff8a74;
+
+  --map-low: #0a2a17;
+  --map-high: #37a85c;
+  --ocean-lit: #0a2718;
+  --ocean-mid: #05160d;
+  --ocean-deep: #020a06;
+  --ocean-air: #5bff92;
+  --graticule: #14432a;
+  --origin-dot: #c9ffd6;
+}
+:root[data-theme="phosphor"] body {
+  text-shadow: 0 0 6px rgba(91, 255, 146, 0.2);
+}
+
+/* The tube itself: scan lines and a corner vignette, over everything and in
+   the way of nothing. */
+.crt { display: none; }
+:root[data-theme="phosphor"] .crt {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+.crt::before, .crt::after { content: ""; position: absolute; inset: 0; }
+.crt::before {
+  background: repeating-linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.26) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+}
+.crt::after {
+  background: radial-gradient(118% 88% at 50% 50%, rgba(0, 0, 0, 0) 56%, rgba(1, 22, 9, 0.6) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="phosphor"] body { text-shadow: none; }
+}
+
+.topline-right { display: flex; align-items: center; gap: 8px; }
+
+/* The boot sequence. display is set here, so [hidden] has to be said too or
+   the author rule would win and the overlay would never go away. */
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--ground);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(18px, 7vw, 120px);
+}
+.boot[hidden] { display: none; }
+.boot.done { opacity: 0; pointer-events: none; transition: opacity 0.45s ease; }
+.boot-log {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+  line-height: 1.8;
+  color: var(--ink-dim);
+  white-space: pre-wrap;
+  max-width: 92ch;
+}
+.boot-log .ok { color: var(--cyan); }
+.boot-log .hi { color: var(--ink); }
+.boot-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  vertical-align: text-bottom;
+  background: var(--amber);
+  animation: replay-blink 1.1s steps(1) infinite;
+}
+.boot-skip {
+  margin: 28px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+/* The passwords attackers actually tried, falling behind the headline. It is
+   the Matrix shot, with the one difference that matters: every word on it was
+   typed at this sensor by somebody trying to get in. */
+.hero-text { position: relative; }
+.rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.hero-text > h1, .hero-text > p { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .rain { display: none; } }
 
 * { box-sizing: border-box; }
 
@@ -114,7 +236,7 @@ body {
 .uptime:empty { display: none; }
 
 .lang { display: flex; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; }
-.lang-btn {
+.lang-btn, .theme-btn {
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -125,8 +247,12 @@ body {
   cursor: pointer;
   transition: color .15s, background .15s;
 }
-.lang-btn:hover { color: var(--ink-dim); }
-.lang-btn[aria-pressed="true"] { background: var(--surface-high); color: var(--amber); }
+.lang-btn:hover, .theme-btn:hover { color: var(--ink-dim); }
+.lang-btn[aria-pressed="true"], .theme-btn[aria-pressed="true"] {
+  background: var(--surface-high);
+  color: var(--amber);
+}
+.theme-btn { border: 1px solid var(--line); border-radius: 3px; }
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -349,7 +475,7 @@ section { margin-block: 46px; }
 /* The ocean is lit from the top left, so the sphere reads as a sphere rather
    than a circle with countries printed on it. */
 #map .atmosphere { fill: url(#globe-air); }
-#map .graticule { fill: none; stroke: #1b2a3f; stroke-width: 0.4; stroke-opacity: 0.75; }
+#map .graticule { fill: none; stroke: var(--graticule); stroke-width: 0.4; stroke-opacity: 0.75; }
 
 /* The map zooms, the page does not. touch-action: pan-y leaves one finger to
    the page and refuses the browser's own pinch on this element, so a pinch
@@ -428,7 +554,9 @@ section { margin-block: 46px; }
 #map .arc { fill: none; stroke: var(--amber); stroke-linecap: round; pointer-events: none; }
 #map .pulse-dot { fill: var(--amber); pointer-events: none; }
 
-#map .origin { fill: #ffd591; stroke: #0b0f17; stroke-width: 0.9; cursor: pointer; }
+/* A token, not a literal: in phosphor mode a warm dot is the one thing on
+   the globe that gives the tube away. */
+#map .origin { fill: var(--origin-dot); stroke: var(--ground); stroke-width: 0.9; cursor: pointer; }
 #map .origin:hover { stroke: var(--ink); stroke-width: 1.4; }
 
 /* The sensor itself. Cyan, because everything attacking is amber and the
@@ -907,13 +1035,18 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   <header class="masthead">
     <div class="topline">
       <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="status">live sensor</span><span id="uptime" class="uptime"></span></p>
+      <div class="topline-right">
+      <button type="button" class="theme-btn" id="theme-btn" aria-pressed="false"
+              data-i18n-label="themeLabel" aria-label="Phosphor mode">CRT</button>
       <div class="lang" role="group" aria-label="Language">
         <button type="button" class="lang-btn" data-lang="en">EN</button>
         <button type="button" class="lang-btn" data-lang="pt">PT</button>
       </div>
+      </div>
     </div>
     <div class="hero">
       <div class="hero-text">
+        <canvas class="rain" id="rain" aria-hidden="true"></canvas>
         <h1>Arapuca<span class="quiet" data-i18n="tagline">, a honeypot you are invited to attack</span></h1>
         <p class="lede" data-i18n-html="lede">
           A fake SSH, Telnet and HTTP server sitting on a public address, accepting
@@ -1080,6 +1213,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
      script-src 'self'. Provenance and refresh instructions: web/data/README.md
      and web/vendor/README.md. Only d3-geo is used, not the full d3 bundle,
      which keeps this at 60 KB rather than 280 KB. -->
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- The daemon starting up, typed out. Hidden unless the script shows it,
+       so a page whose JavaScript never runs is never covered by it. -->
+  <div class="boot" id="boot" hidden>
+    <pre class="boot-log" id="boot-log"></pre>
+    <p class="boot-skip" data-i18n="bootSkip">press any key to skip</p>
+  </div>
+
 <script src="vendor/d3-array.min.js"></script>
 <script src="vendor/d3-geo.min.js"></script>
 <script src="vendor/topojson-client.min.js"></script>
@@ -1171,6 +1313,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       addresses: " endere\u00e7os",
       mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
       mapHint: "arraste para girar, role ou pince para aproximar",
+      bootSkip: "qualquer tecla para pular",
+      themeLabel: "modo f\u00f3sforo verde",
       zoomIn: "Aproximar",
       zoomOut: "Afastar",
       zoomReset: "Voltar \u00e0 vis\u00e3o inicial",
@@ -1249,6 +1393,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     addresses: " addresses",
     mapUnavailable: "map geometry could not be loaded",
     mapHint: "drag to spin, scroll or pinch to zoom",
+    bootSkip: "press any key to skip",
+    themeLabel: "phosphor mode",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     zoomReset: "Reset the view",
@@ -1603,6 +1749,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         Math.round(a[1] + (b[1] - a[1]) * x) + "," +
         Math.round(a[2] + (b[2] - a[2]) * x) + ")";
     };
+  }
+
+  /* One custom property, as a string. The themes move colours that are not
+     only applied by the stylesheet: the globe mixes its own shades and has to
+     be able to ask what the current palette says. */
+  function token(name, fallback) {
+    var value = getComputedStyle(document.documentElement).getPropertyValue(name);
+    return (value || "").trim() || fallback;
   }
 
   function showTip(frame, event, lines) {
@@ -1960,7 +2114,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
             return Math.min(1, Math.log1p(Math.max(0, value)) / span);
         };
     }
-    var shade = mixer("#1b2433", "#7a5a2c");
+    var shade = mixer(token("--map-low", "#1b2433"), token("--map-high", "#7a5a2c"));
     var countryWeight = ramp(topCountry);
     var originWeight = ramp(topOrigin);
     function colour(attacks) { return shade(countryWeight(attacks)); }
@@ -2212,15 +2366,16 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       });
       defs.appendChild(node);
     }
+    var air = token("--ocean-air", "#4fd2c2");
     gradient("globe-ocean", [
-      ["0%", "#18283f", "1"],
-      ["58%", "#0d1420", "1"],
-      ["100%", "#060a11", "1"]
+      ["0%", token("--ocean-lit", "#18283f"), "1"],
+      ["58%", token("--ocean-mid", "#0d1420"), "1"],
+      ["100%", token("--ocean-deep", "#060a11"), "1"]
     ], { cx: "34%", cy: "26%", r: "82%" });
     gradient("globe-air", [
-      ["76%", "#4fd2c2", "0"],
-      ["93%", "#4fd2c2", "0.13"],
-      ["100%", "#4fd2c2", "0"]
+      ["76%", air, "0"],
+      ["93%", air, "0.13"],
+      ["100%", air, "0"]
     ], { cx: "50%", cy: "50%", r: "50%" });
     return defs;
   }
@@ -3034,7 +3189,284 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     });
   }
 
+  /* ---------- the boot sequence ---------- */
+
+  /* The daemon coming up, typed out before the page appears. It is theatre,
+     but the lines are the real surfaces and the real enrichment, and it buys
+     the thing underneath the time it needs to fetch its data. Skipped whole
+     under reduced motion, and skipped for the rest of the session once
+     somebody has dismissed it, because the second viewing is an obstacle. */
+  var BOOT_LINES = [
+    ["arapuca 0.1.0", "c++20, libssh, cpp-httplib"],
+    ["bind ssh :22", "ok"],
+    ["bind telnet :23", "ok"],
+    ["bind http :80 :8080", "ok"],
+    ["load geoip city database", "ok"],
+    ["load mitre att&ck rules", "ok"],
+    ["mount quarantine, read only", "ok"],
+    ["exec disabled at compile time", "ok"],
+    ["", ""],
+    ["listening. everything below this line was typed by someone else.", ""]
+  ];
+  var BOOT_SKIPPED = "arapuca-boot-skipped";
+
+  function runBoot() {
+    var overlay = el("boot");
+    var log = el("boot-log");
+    if (!overlay || !log) { return; }
+    if (reducedMotion) { return; }
+    try { if (sessionStorage.getItem(BOOT_SKIPPED) === "1") { return; } } catch (error) { /* private window */ }
+
+    overlay.hidden = false;
+
+    // The schedule is wall clock, not a chain of six millisecond timeouts:
+    // a browser is free to stretch a short timer, and on a throttled tab the
+    // chain ran three times slower than it reads here. Asking the clock where
+    // we should be means the sequence takes the same two seconds everywhere,
+    // and it ends on its own even if a frame is missed.
+    var CHAR_MS = 6;
+    var LINE_MS = 95;
+    var plan = [];
+    var total = 0;
+    BOOT_LINES.forEach(function (entry) {
+      plan.push({ start: total, chars: entry[0].length });
+      total += entry[0].length * CHAR_MS + LINE_MS;
+    });
+
+    var started = null;
+    var frame = null;
+    var line = 0;
+    var column = 0;
+    var painted = "";
+    var finished = false;
+
+    function text() {
+      var out = "";
+      for (var i = 0; i < line && i < BOOT_LINES.length; i += 1) {
+        out += bootLine(BOOT_LINES[i], BOOT_LINES[i][0].length);
+      }
+      if (line < BOOT_LINES.length) { out += bootLine(BOOT_LINES[line], column); }
+      return out;
+    }
+
+    function paint() {
+      var next = text();
+      if (next === painted) { return; }
+      painted = next;
+      log.textContent = "";
+      // Built as nodes rather than innerHTML: the lines are ours, but the
+      // habit of handing strings to the parser is not one to keep.
+      next.split("\n").forEach(function (row, index) {
+        if (index > 0) { log.appendChild(document.createTextNode("\n")); }
+        var mark = row.indexOf("\u0000");
+        if (mark < 0) {
+          log.appendChild(document.createTextNode(row));
+          return;
+        }
+        log.appendChild(document.createTextNode(row.slice(0, mark)));
+        var tag = document.createElement("span");
+        tag.className = "ok";
+        tag.textContent = row.slice(mark + 1);
+        log.appendChild(tag);
+      });
+      var cursor = document.createElement("span");
+      cursor.className = "boot-cursor";
+      log.appendChild(cursor);
+    }
+
+    function tick(now) {
+      if (finished) { return; }
+      if (started === null) { started = now; }
+      var elapsed = now - started;
+      if (elapsed >= total) { return done(false); }
+
+      for (var i = 0; i < plan.length; i += 1) {
+        var typing = plan[i].start + plan[i].chars * CHAR_MS;
+        if (elapsed >= typing + LINE_MS) { line = i + 1; column = 0; continue; }
+        if (elapsed >= plan[i].start) {
+          line = i;
+          column = Math.min(plan[i].chars, Math.floor((elapsed - plan[i].start) / CHAR_MS));
+          break;
+        }
+      }
+      paint();
+      frame = requestAnimationFrame(tick);
+    }
+
+    function done(skipped) {
+      if (finished) { return; }
+      finished = true;
+      if (frame) { cancelAnimationFrame(frame); }
+      line = BOOT_LINES.length;
+      paint();
+      if (skipped) {
+        try { sessionStorage.setItem(BOOT_SKIPPED, "1"); } catch (error) { /* private window */ }
+      }
+      overlay.classList.add("done");
+      setTimeout(function () { overlay.hidden = true; }, 480);
+      document.removeEventListener("keydown", onSkip, true);
+      document.removeEventListener("pointerdown", onSkip, true);
+    }
+
+    function onSkip() { done(true); }
+    document.addEventListener("keydown", onSkip, true);
+    document.addEventListener("pointerdown", onSkip, true);
+    frame = requestAnimationFrame(tick);
+  }
+
+  // A line as "name .... tag", with a null byte marking where the tag starts
+  // so the painter can colour it without parsing anything back.
+  function bootLine(entry, upto) {
+    var name = entry[0].slice(0, upto);
+    if (!entry[0]) { return "\n"; }
+    // A line still being typed carries no newline, or the cursor would blink
+    // on the row below the words it belongs to.
+    if (upto < entry[0].length) { return name; }
+    if (!entry[1]) { return name + "\n"; }
+    var dots = Math.max(2, 58 - name.length);
+    return name + " " + new Array(dots).join(".") + " \u0000" + entry[1] + "\n";
+  }
+
+  /* ---------- the password rain ---------- */
+
+  /* Real passwords, falling behind the headline. The list comes from the
+     export, so what drifts past is what the sensor was actually offered in
+     the last thirty days. Throttled to twenty frames and paused with the
+     tab, because decoration that costs a laptop its battery is not free. */
+  var rain = { timer: null, words: [], columns: [], canvas: null, ctx: null, width: 0, height: 0, last: 0 };
+  var RAIN_FALLBACK = ["123456", "root", "admin", "password", "12345678", "qwerty", "xc3511", "1234"];
+
+  function startRain(data) {
+    var canvas = el("rain");
+    if (!canvas || reducedMotion || !canvas.getContext) { return; }
+    rain.canvas = canvas;
+    rain.ctx = canvas.getContext("2d");
+
+    var words = [];
+    (((data || {}).passwords) || []).forEach(function (row) {
+      if (row.label && row.label !== "(empty)") { words.push(row.label); }
+    });
+    (((data || {}).usernames) || []).forEach(function (row) {
+      if (row.label) { words.push(row.label); }
+    });
+    rain.words = words.length ? words : RAIN_FALLBACK;
+
+    sizeRain();
+    if (!rain.bound) {
+      rain.bound = true;
+      window.addEventListener("resize", sizeRain);
+    }
+    if (rain.timer) { cancelAnimationFrame(rain.timer); }
+    rain.last = 0;
+    rain.timer = requestAnimationFrame(rainFrame);
+  }
+
+  function sizeRain() {
+    var canvas = rain.canvas;
+    if (!canvas) { return; }
+    var rect = canvas.getBoundingClientRect();
+    var ratio = Math.min(2, window.devicePixelRatio || 1);
+    rain.width = Math.max(1, Math.round(rect.width));
+    rain.height = Math.max(1, Math.round(rect.height));
+    canvas.width = Math.round(rain.width * ratio);
+    canvas.height = Math.round(rain.height * ratio);
+    rain.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    var step = 13;
+    var count = Math.max(1, Math.floor(rain.width / 15));
+    rain.columns = [];
+    for (var i = 0; i < count; i += 1) {
+      rain.columns.push(newRainColumn(i, count, step, true));
+    }
+  }
+
+  function newRainColumn(index, count, step, scatter) {
+    // Several passwords chained into one falling strand. One word on its own
+    // is six characters in a four hundred pixel column, which reads as
+    // scattered litter rather than rain.
+    var strand = "";
+    while (strand.length < 22) {
+      var word = rain.words[Math.floor(Math.random() * rain.words.length)] || "root";
+      strand += (strand ? "/" : "") + word;
+    }
+    strand = strand.slice(0, 30);
+    return {
+      x: Math.round((index + 0.5) * (rain.width / count)),
+      // On the first fill the columns are spread over the whole height, so
+      // the rain is already falling when the page appears rather than taking
+      // half a minute to drift into view.
+      y: scatter ? Math.random() * (rain.height + 200) - 100 : -strand.length * step - Math.random() * 260,
+      word: strand,
+      speed: 16 + Math.random() * 30,
+      step: step
+    };
+  }
+
+  function rainFrame(now) {
+    rain.timer = requestAnimationFrame(rainFrame);
+    if (document.hidden || !rain.ctx) { rain.last = now; return; }
+    if (rain.last && now - rain.last < 50) { return; }
+    var dt = rain.last ? Math.min(200, now - rain.last) : 50;
+    rain.last = now;
+
+    var ctx = rain.ctx;
+    ctx.clearRect(0, 0, rain.width, rain.height);
+    ctx.font = "11px " + token("--font-mono", "monospace");
+    ctx.textBaseline = "top";
+    var head = token("--cyan", "#4fd2c2");
+    var body = token("--ink-faint", "#5e6e86");
+    var count = rain.columns.length;
+
+    rain.columns.forEach(function (column, index) {
+      column.y += column.speed * dt / 1000;
+      var letters = column.word.length;
+      for (var i = 0; i < letters; i += 1) {
+        var y = column.y - (letters - 1 - i) * column.step;
+        if (y < -column.step || y > rain.height) { continue; }
+        var fromHead = letters - 1 - i;
+        ctx.globalAlpha = fromHead === 0 ? 0.9 : Math.max(0.1, 0.46 - fromHead * 0.022);
+        ctx.fillStyle = fromHead === 0 ? head : body;
+        ctx.fillText(column.word.charAt(i), column.x, y);
+      }
+      if (column.y - letters * column.step > rain.height) {
+        rain.columns[index] = newRainColumn(index, count, column.step, false);
+      }
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  /* ---------- phosphor mode ---------- */
+
+  /* A monochrome green tube, for a page that gets shown to a room. It is a
+     palette swap and nothing more: every component reads tokens, so none of
+     them needs to know a second theme exists. The globe is the exception,
+     because it mixes its own shades, so it is redrawn. */
+  var THEME_KEY = "arapuca-theme";
+
+  function applyTheme(name) {
+    var phosphor = name === "phosphor";
+    document.documentElement.setAttribute("data-theme", phosphor ? "phosphor" : "slate");
+    var button = el("theme-btn");
+    if (button) { button.setAttribute("aria-pressed", phosphor ? "true" : "false"); }
+    try { localStorage.setItem(THEME_KEY, phosphor ? "phosphor" : "slate"); } catch (error) { /* private window */ }
+    if (state.data && state.world) { renderMap(); }
+  }
+
+  function initialTheme() {
+    try { return localStorage.getItem(THEME_KEY) === "phosphor" ? "phosphor" : "slate"; }
+    catch (error) { return "slate"; }
+  }
+
   function boot() {
+    runBoot();
+    applyTheme(initialTheme());
+    var themeButton = el("theme-btn");
+    if (themeButton) {
+      themeButton.addEventListener("click", function () {
+        applyTheme(themeButton.getAttribute("aria-pressed") === "true" ? "slate" : "phosphor");
+      });
+    }
+
     document.querySelectorAll(".lang-btn").forEach(function (button) {
       button.addEventListener("click", function () { applyLanguage(button.dataset.lang); });
     });
@@ -3072,6 +3504,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
       state.world = settled[1].status === "fulfilled" ? settled[1].value : null;
       render();
+      startRain(state.data);
       if (state.data && state.data.totals && state.data.totals.events > 0) { startLive(); }
     });
 
@@ -3085,5 +3518,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   boot();
 })();
 </script>
+
 </body>
 </html>
