@@ -1,6 +1,6 @@
 # Alerts as code.
 #
-# Three conditions, chosen because each one means something different and
+# Four conditions, chosen because each one means something different and
 # each one is actionable. A honeypot generates constant noise by design, so
 # an alert that fires on "attack detected" is useless: everything here is an
 # attack. These fire on changes in character, not on volume.

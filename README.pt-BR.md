@@ -193,11 +193,11 @@ Um objeto JSON por linha, documentado campo a campo em
 
 ### Dashboards
 
-<!-- Os prints entram aqui quando o sensor tiver coletado uma semana
-     representativa. Placeholders em vez de imagens inventadas: um dashboard
-     com números fabricados representaria mal o que o projeto produz. -->
+<!-- Os prints entram aqui, capturados do real e com a janela de tempo dita
+     na legenda. Nada de imagem inventada: um dashboard com números
+     fabricados representaria mal o que o projeto produz. -->
 
-Dois dashboards e uma política de alertas com oito condições, definidos em
+Dois dashboards e uma política de alertas com quatro condições, definidos em
 [`deploy/terraform/newrelic/`](deploy/terraform/newrelic/) e criados por
 `terraform apply`, nunca na mão pelo console.
 
@@ -217,8 +217,8 @@ vistos antes, e a saúde do próprio honeypot.
 As capturas de tela estão ausentes de propósito, em vez de inventadas: um
 dashboard com números fabricados representaria mal o que o projeto produz, que
 é justamente o que uma peça de portfólio não pode fazer. Elas vão para
-[`docs/images/`](docs/images/README.md) quando o sensor tiver coletado uma
-semana representativa.
+[`docs/images/`](docs/images/README.md), capturadas do real e com a janela de
+tempo que cobrem dita na legenda.
 
 ### Mapa ao vivo
 

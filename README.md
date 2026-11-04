@@ -199,7 +199,7 @@ One JSON object per line, documented field by field in
 
 ### Dashboards
 
-Two dashboards and an alert policy with eight conditions, defined in
+Two dashboards and an alert policy with four conditions, defined in
 [`deploy/terraform/newrelic/`](deploy/terraform/newrelic/) and created by
 `terraform apply`, never by hand in the console.
 
@@ -218,8 +218,8 @@ between commands, commands never seen before, and the honeypot's own health.
 Screenshots are deliberately absent rather than invented: a dashboard of
 fabricated numbers would misrepresent what this produces, which is the one
 thing a portfolio piece must not do. They go in
-[`docs/images/`](docs/images/README.md) once the sensor has collected a
-representative week.
+[`docs/images/`](docs/images/README.md), captured from the real thing and
+labelled with the window they cover.
 
 ### Live map
 
