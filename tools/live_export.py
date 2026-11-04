@@ -78,9 +78,18 @@ QUERIES = {
     "usernames": f"SELECT count(*) AS tries FROM Log WHERE {SCOPE} AND event_type "
     f"IN ('ssh.auth_attempt', 'telnet.auth_attempt', 'http.login_attempt') "
     f"FACET username LIMIT 12 SINCE 30 days ago",
+    # Faceted by the technique as well, so the page can group the commands by
+    # what the sensor decided they were for. The classification is the
+    # sensor's own, out of config/mitre.yaml, rather than a second set of
+    # rules living in the page and drifting from it.
     "commands": f"SELECT count(*) AS seen FROM Log WHERE {SCOPE} AND "
     f"event_type IN ('ssh.command', 'telnet.command') "
-    f"FACET command LIMIT 12 SINCE 30 days ago",
+    f"FACET command, mitre.technique_id, mitre.technique LIMIT 14 SINCE 30 days ago",
+    # The pair, not two lists. A bot tries root/123456, and the username and
+    # the password on their own are each half of what it actually sent.
+    "pairs": f"SELECT count(*) AS tries FROM Log WHERE {SCOPE} AND event_type "
+    f"IN ('ssh.auth_attempt', 'telnet.auth_attempt', 'http.login_attempt') "
+    f"FACET username, password LIMIT 14 SINCE 30 days ago",
     "techniques": f"SELECT count(*) AS events FROM Log WHERE {SCOPE} AND "
     f"mitre.technique_id IS NOT NULL FACET mitre.technique_id, mitre.technique "
     f"LIMIT 10 SINCE 30 days ago",
@@ -158,7 +167,7 @@ def collect_session(api: ApiSettings, session_id: str) -> dict[str, Any] | None:
 
     rows = run_nrql(
         f"SELECT command, seq, since_prev_ms, src_ip, event_type, geo.country_iso, "
-        f"timestamp FROM Log WHERE {SCOPE} "
+        f"mitre.technique_id, mitre.technique, timestamp FROM Log WHERE {SCOPE} "
         f"AND event_type IN ('ssh.command', 'telnet.command') "
         f"AND session_id = '{session_id}' SINCE 30 days ago LIMIT 200",
         **api,
@@ -168,14 +177,21 @@ def collect_session(api: ApiSettings, session_id: str) -> dict[str, Any] | None:
         text = (row.get("command") or "").strip()
         if not text:
             continue
-        commands.append(
-            {
-                "seq": int(row.get("seq") or 0),
-                "command": text[:200],
-                "since_prev_ms": max(0, int(row.get("since_prev_ms") or 0)),
-                "at": iso_timestamp(row.get("timestamp")),
-            }
-        )
+        entry = {
+            "seq": int(row.get("seq") or 0),
+            "command": text[:200],
+            "since_prev_ms": max(0, int(row.get("since_prev_ms") or 0)),
+            "at": iso_timestamp(row.get("timestamp")),
+        }
+        # What the sensor decided this command was for. The page builds its
+        # playbook out of these, so the stages are the sensor's reading of the
+        # session rather than a second guess made in the browser.
+        technique = row.get("mitre.technique_id")
+        if technique and technique != "None":
+            entry["technique_id"] = str(technique)
+            name = row.get("mitre.technique")
+            entry["technique"] = str(name) if name and name != "None" else str(technique)
+        commands.append(entry)
     if len(commands) < 4:
         return None
     commands.sort(key=lambda item: item["seq"])
@@ -317,6 +333,36 @@ def build(
     first = (results["first_event"] or [{}])[0].get("first")
     collecting_since = iso_timestamp(first) if first else ""
 
+    # A command carries the technique the sensor mapped it to, when it mapped
+    # one. The facet is [command, id, name], and a command the rules did not
+    # match comes back with "None" in the last two.
+    commands: list[dict[str, Any]] = []
+    for row in results["commands"]:
+        names = facet(row)
+        label = names[0] if names else ""
+        if label in ("", "None"):
+            label = "(empty)"
+        entry: dict[str, Any] = {"label": label, "value": int(row.get("seen") or 0)}
+        if len(names) > 2 and names[1] not in ("", "None"):
+            entry["technique_id"] = names[1]
+            entry["technique"] = names[2] if names[2] != "None" else names[1]
+        commands.append(entry)
+    commands.sort(key=lambda item: item["value"], reverse=True)
+
+    pairs: list[dict[str, Any]] = []
+    for row in results["pairs"]:
+        names = facet(row)
+        if not names:
+            continue
+        pairs.append(
+            {
+                "username": names[0] if names[0] != "None" else "",
+                "password": (names[1] if len(names) > 1 and names[1] != "None" else ""),
+                "tries": int(row.get("tries") or 0),
+            }
+        )
+    pairs.sort(key=lambda item: item["tries"], reverse=True)
+
     daily = [
         {
             "at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000),
@@ -344,7 +390,8 @@ def build(
         "collecting_since": collecting_since,
         "passwords": simple("passwords", "tries"),
         "usernames": simple("usernames", "tries"),
-        "commands": simple("commands", "seen"),
+        "commands": commands,
+        "pairs": pairs,
         "techniques": techniques,
         "recent": recent[:30],
         "daily": daily,
@@ -368,6 +415,7 @@ REQUIRED_RESULTS = (
     "passwords",
     "usernames",
     "commands",
+    "pairs",
     "techniques",
     "recent",
     "daily",

@@ -159,7 +159,14 @@ def _results_for_build():
         "countries": [{"facet": ["FR", "France"], "attacks": 718, "attackers": 1}],
         "passwords": [{"facet": "123456", "tries": 40}],
         "usernames": [{"facet": "root", "tries": 30}],
-        "commands": [{"facet": "uname -a", "seen": 4}],
+        "commands": [
+            {"facet": ["uname -a", "T1082", "System Information Discovery"], "seen": 4},
+            {"facet": ["ls", "None", "None"], "seen": 2},
+        ],
+        "pairs": [
+            {"facet": ["root", "123456"], "tries": 31},
+            {"facet": ["admin", "None"], "tries": 4},
+        ],
         "techniques": [{"facet": ["T1105", "Ingress Tool Transfer"], "events": 9}],
         "recent": [
             {
@@ -198,6 +205,24 @@ def test_build_shapes_the_payload():
     assert payload["recent"][0]["ip"] == "203.0.113.x"  # masked
     assert payload["session"] is None
     assert payload["sessions"] == []
+
+
+def test_build_carries_the_technique_the_sensor_mapped_each_command_to():
+    # The grouping on the page is the sensor's own classification, not a
+    # second set of rules in the browser.
+    commands = live_export.build(_results_for_build(), "t", None)["commands"]
+    assert commands[0]["label"] == "uname -a"
+    assert commands[0]["technique_id"] == "T1082"
+    assert commands[0]["technique"] == "System Information Discovery"
+    # A command no rule matched carries no technique rather than a "None".
+    assert "technique_id" not in commands[1]
+
+
+def test_build_pairs_a_username_with_the_password_sent_beside_it():
+    pairs = live_export.build(_results_for_build(), "t", None)["pairs"]
+    assert pairs[0] == {"username": "root", "password": "123456", "tries": 31}
+    # An empty password comes back as the facet "None" and is not a password.
+    assert pairs[1] == {"username": "admin", "password": "", "tries": 4}
 
 
 def test_build_masks_every_recent_address():

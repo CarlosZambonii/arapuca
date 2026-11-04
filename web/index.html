@@ -686,6 +686,145 @@ section { margin-block: 68px; }
   line-height: 1.55;
 }
 
+/* ---------- what they try ---------- */
+
+.guess {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 22px;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--amber-deep);
+  border-radius: 3px;
+  padding: 16px 18px;
+  margin-bottom: 26px;
+}
+@media (max-width: 760px) { .guess { grid-template-columns: 1fr; } }
+.guess-ask label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.guess-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.guess-row input {
+  flex: 1 1 180px;
+  min-width: 0;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  padding: 8px 10px;
+}
+.guess-row input:focus-visible { outline: 1px solid var(--amber); }
+.guess-row button {
+  background: var(--surface-high);
+  border: 1px solid var(--amber-deep);
+  border-radius: 3px;
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.guess-row button:hover { background: var(--amber-deep); color: var(--ground); }
+.guess-note { font-size: 0.74rem; color: var(--ink-faint); margin: 10px 0 0; max-width: 46ch; }
+
+.guess-out { min-height: 1px; font-family: var(--font-mono); font-size: 0.84rem; }
+.guess-out .verdict { font-size: 0.95rem; letter-spacing: 0.04em; }
+.guess-out .verdict.hit { color: var(--red); }
+.guess-out .verdict.miss { color: var(--cyan); }
+.guess-out .detail { color: var(--ink-dim); margin-top: 7px; line-height: 1.6; }
+.guess-out .detail b { color: var(--ink); font-weight: 500; }
+.guess-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+.guess-tags span {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+  background: var(--surface-high);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 3px 8px;
+}
+.guess-pairs { margin-top: 11px; color: var(--ink-faint); font-size: 0.78rem; line-height: 1.7; }
+.guess-pairs b { color: var(--amber); font-weight: 500; }
+
+h3.sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 30px 0 12px;
+}
+
+/* The passwords as area rather than as a list: one address shouting the same
+   dozen words is a very different picture from twelve words shared out. */
+.treemap { background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 4px; }
+#pwmap { display: block; width: 100%; height: auto; }
+#pwmap rect { stroke: var(--ground); stroke-width: 1.5; }
+#pwmap text { font-family: var(--font-mono); pointer-events: none; }
+#pwmap .cell { cursor: pointer; }
+#pwmap .cell:hover rect { stroke: var(--ink); }
+
+/* Commands under the technique the sensor mapped them to. */
+.intent { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.intent .group {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.intent .group .id { font-family: var(--font-mono); font-size: 0.76rem; color: var(--amber); }
+.intent .group .nm { font-size: 0.86rem; color: var(--ink); margin: 1px 0 9px; }
+.intent .group code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-dim);
+  padding: 4px 0;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.intent .group code b { color: var(--ink-faint); font-weight: 400; float: right; margin-left: 10px; }
+
+/* The stages of an attack, in the order the sensor saw them. */
+.playbook-head { display: flex; align-items: baseline; gap: 14px; }
+.playbook-head h3.sub { margin-bottom: 12px; }
+.playbook { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.playbook li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  background: var(--surface);
+  padding: 11px 13px;
+  transition: opacity 0.3s;
+}
+.playbook li.dim { opacity: 0.22; }
+.playbook .step {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--amber-deep);
+  line-height: 1;
+}
+.playbook .what { font-size: 0.88rem; color: var(--ink); }
+.playbook .pb-tech { font-family: var(--font-mono); font-size: 0.72rem; color: var(--amber); margin-top: 2px; }
+.playbook code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  margin-top: 6px;
+  word-break: break-all;
+}
+
 .cols {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1299,11 +1438,56 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       <h2 data-i18n="triesTitle">What they try</h2>
       <span class="note" data-i18n="triesNote">credentials and commands</span>
     </div>
-    <div class="cols">
-      <div class="col"><h3 data-i18n="passwords">Passwords</h3><div class="rank" id="passwords"></div></div>
-      <div class="col"><h3 data-i18n="usernames">Usernames</h3><div class="rank" id="usernames"></div></div>
-      <div class="col"><h3 data-i18n="commandsTyped">Commands typed</h3><div class="rank" id="commands-rank"></div></div>
+    <!-- Type a password and see whether this sensor has already been offered
+         it. The list is the one published on this page, the comparison runs
+         in the browser, and nothing is sent anywhere. -->
+    <div class="guess">
+      <div class="guess-ask">
+        <label for="guess-input" data-i18n="guessTitle">Has your password been tried here?</label>
+        <div class="guess-row">
+          <input type="text" id="guess-input" spellcheck="false" autocomplete="off"
+                 autocapitalize="off" data-i18n-ph="guessPlaceholder" placeholder="type a password">
+          <button type="button" id="guess-go" data-i18n="guessGo">check</button>
+        </div>
+        <p class="guess-note" data-i18n="guessPrivacy">
+          The check runs in your browser against the list on this page. What you
+          type is not sent anywhere and is not recorded.
+        </p>
+      </div>
+      <div class="guess-out" id="guess-out" aria-live="polite"></div>
     </div>
+
+    <div class="cols">
+      <div class="col">
+        <h3 data-i18n="pairsTitle">Pairs tried</h3>
+        <div class="rank" id="pairs"></div>
+      </div>
+      <div class="col">
+        <h3 data-i18n="usernames">Usernames</h3>
+        <div class="rank" id="usernames"></div>
+      </div>
+      <div class="col">
+        <h3 data-i18n="passwords">Passwords</h3>
+        <div class="treemap"><svg id="pwmap" role="img" aria-label="Passwords by how often they were tried"></svg></div>
+        <p class="legend-note" data-i18n="treemapNote">
+          Area is how often each was tried. The biggest rectangle is what the
+          sensor hears most.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="sub" data-i18n="intentTitle">Commands, by what they were for</h3>
+    <div class="intent" id="intent"></div>
+
+    <div class="playbook-head">
+      <h3 class="sub" data-i18n="playbookTitle">The script they run</h3>
+      <button type="button" class="replay-btn" id="playbook-play" data-i18n="playbookPlay">play</button>
+    </div>
+    <ol class="playbook" id="playbook"></ol>
+    <p class="legend-note" data-i18n="playbookNote">
+      Stage by stage, in the order the sensor saw it, from the sessions it
+      captured. Each stage is what the rules in yaml made of those commands.
+    </p>
   </section>
 
   <section id="tech-section">
@@ -1452,6 +1636,43 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
       mapHint: "arraste para girar, role ou pince para aproximar",
       bootSkip: "qualquer tecla para pular",
+      guessTitle: "A sua senha j\u00e1 foi tentada aqui?",
+      guessPlaceholder: "digite uma senha",
+      guessGo: "verificar",
+      guessPrivacy: "A compara\u00e7\u00e3o roda no seu navegador, contra a lista que " +
+                    "est\u00e1 nesta p\u00e1gina. O que voc\u00ea digitar n\u00e3o \u00e9 " +
+                    "enviado a lugar nenhum e n\u00e3o fica registrado.",
+      guessHit: "J\u00c1 TENTARAM",
+      guessMiss: "N\u00c3O APARECEU",
+      guessTried: "Tentaram essa senha ",
+      guessTimes: " vezes nos \u00faltimos 30 dias, a ",
+      guessRank: "\u00aa mais tentada aqui.",
+      guessTimesPlain: " vezes nos \u00faltimos 30 dias.",
+      guessNotInList: "Essa n\u00e3o est\u00e1 entre as mais tentadas neste sensor. " +
+                      "Isso n\u00e3o quer dizer que ela seja boa: quer dizer que estes " +
+                      "bots, nestes 30 dias, n\u00e3o chegaram nela.",
+      guessAgainst: "enviada contra: ",
+      pairsTitle: "Combina\u00e7\u00f5es tentadas",
+      treemapNote: "A \u00e1rea \u00e9 quantas vezes cada uma foi tentada. Clique numa " +
+                   "para test\u00e1-la acima. A tentativa sem senha nenhuma fica de fora " +
+                   "daqui: ela est\u00e1 na lista de combina\u00e7\u00f5es, que \u00e9 onde " +
+                   "ela quer dizer alguma coisa.",
+      triesSuffix: " tentativas",
+      intentTitle: "Comandos, pelo que serviam",
+      intentUnmapped: "Nenhuma regra bateu",
+      playbookTitle: "O roteiro que eles rodam",
+      playbookPlay: "tocar",
+      playbookNote: "Etapa por etapa, na ordem em que o sensor viu, a partir das " +
+                    "sess\u00f5es que ele capturou. Cada etapa \u00e9 o que as regras em " +
+                    "yaml fizeram daqueles comandos.",
+      tagDigits: "s\u00f3 d\u00edgitos",
+      tagSequence: "sequ\u00eancia num\u00e9rica",
+      tagKeyboard: "sequ\u00eancia de teclado",
+      tagFactory: "padr\u00e3o de f\u00e1brica",
+      tagShort: "curta demais",
+      tagWord: "palavra de dicion\u00e1rio",
+      tagWordDigits: "palavra com n\u00fameros no fim",
+      tagLeet: "substitui\u00e7\u00e3o \u00f3bvia de letra",
       shellTitle: "Experimente voc\u00ea mesmo",
       shellNote: "as respostas que o honeypot d\u00e1",
       shellReset: "reiniciar",
@@ -1549,6 +1770,40 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     mapUnavailable: "map geometry could not be loaded",
     mapHint: "drag to spin, scroll or pinch to zoom",
     bootSkip: "press any key to skip",
+    guessTitle: "Has your password been tried here?",
+    guessPlaceholder: "type a password",
+    guessGo: "check",
+    guessPrivacy: "The check runs in your browser against the list on this page. What " +
+                  "you type is not sent anywhere and is not recorded.",
+    guessHit: "ALREADY TRIED",
+    guessMiss: "NOT SEEN",
+    guessTried: "This one was tried ",
+    guessTimes: " times in the last 30 days, the ",
+    guessRank: " most tried here.",
+    guessTimesPlain: " times in the last 30 days.",
+    guessNotInList: "It is not among the most tried at this sensor. That does not make " +
+                    "it a good password: it means these bots, in these 30 days, did not " +
+                    "get to it.",
+    guessAgainst: "sent against: ",
+    pairsTitle: "Pairs tried",
+    treemapNote: "Area is how often each was tried. Click one to check it above. The " +
+                 "attempt with no password at all is left out of here: it is in the " +
+                 "pairs list, which is where it means something.",
+    triesSuffix: " tries",
+    intentTitle: "Commands, by what they were for",
+    intentUnmapped: "No rule matched",
+    playbookTitle: "The script they run",
+    playbookPlay: "play",
+    playbookNote: "Stage by stage, in the order the sensor saw it, from the sessions it " +
+                  "captured. Each stage is what the rules in yaml made of those commands.",
+    tagDigits: "digits only",
+    tagSequence: "a counting sequence",
+    tagKeyboard: "a row of the keyboard",
+    tagFactory: "a factory default",
+    tagShort: "shorter than eight",
+    tagWord: "a dictionary word",
+    tagWordDigits: "a word with digits after it",
+    tagLeet: "an obvious letter swap",
     shellTitle: "Try it yourself",
     shellNote: "the answers the honeypot gives",
     shellReset: "reset",
@@ -2199,6 +2454,16 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       }
       if (handled) { event.preventDefault(); }
     });
+
+    var guess = el("guess-input");
+    if (guess) {
+      el("guess-go").addEventListener("click", checkGuess);
+      guess.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") { event.preventDefault(); checkGuess(); }
+      });
+    }
+    var play = el("playbook-play");
+    if (play) { play.addEventListener("click", playPlaybook); }
 
     el("zoom-in").addEventListener("click", function () { zoomCentre(1.6); });
     el("zoom-out").addEventListener("click", function () { zoomCentre(1 / 1.6); });
@@ -3337,9 +3602,369 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         key: originKey(origin)
       };
     }), false, focusOrigin);
-    renderRank("passwords", data.passwords);
     renderRank("usernames", data.usernames);
-    renderRank("commands-rank", data.commands, true);
+    renderPairs(data.pairs, data.passwords);
+    renderTreemap(data.passwords);
+    renderIntent(data.commands);
+    renderPlaybook(replaySessionsOf(data));
+  }
+
+  /* ---------- what they try ---------- */
+
+  /* The pair, not two lists. A bot sends root and 123456 together, and
+     splitting them into a column each threw away the only part anybody
+     recognises: the combination that opens their own router. */
+  function renderPairs(pairs, passwords) {
+    var rows = (pairs || []).map(function (pair) {
+      return {
+        label: (pair.username || t("empty")) + "  /  " + (pair.password || t("empty")),
+        value: pair.tries
+      };
+    });
+    if (!rows.length) {
+      // An export written before pairs existed still has the two lists.
+      rows = (passwords || []).slice(0, 12).map(function (row) {
+        return { label: "?  /  " + row.label, value: row.value };
+      });
+    }
+    renderRank("pairs", rows);
+  }
+
+  /* A treemap, because the shape of this data is the point: one brute forcer
+     repeating a dozen words looks nothing like a dozen words shared out, and
+     a list of twelve rows draws both the same way. Split the rectangle along
+     its longer side into two groups of roughly equal weight, recursively: it
+     is a handful of lines and it keeps the cells close to square, which is
+     what makes the areas comparable by eye. */
+  function renderTreemap(rows) {
+    var svg = el("pwmap");
+    if (!svg) { return; }
+    svg.textContent = "";
+    // The blank one is not a password, and at four times the next entry it
+    // left every other cell too small to label. It is in the pairs list
+    // beside it, where it reads as what it is.
+    var items = (rows || []).filter(function (row) {
+      return row.value > 0 && row.label !== "(empty)" && row.label !== t("empty");
+    }).slice(0, 12);
+    if (!items.length) { return; }
+
+    var width = 400;
+    var height = 300;
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+    // Normalised between the smallest and the largest rather than from zero:
+    // from 32 tries to 323 a log ramp off zero only spans its own top forty
+    // per cent, and every cell came out the same orange.
+    var top = items[0].value || 1;
+    var low = items[items.length - 1].value || 0;
+    var floor = Math.log1p(low);
+    var span = Math.max(0.0001, Math.log1p(top) - floor);
+    var shade = mixer(token("--surface-high", "#1a2230"), token("--amber-deep", "#b4651a"));
+
+    function place(list, x, y, w, h) {
+      if (!list.length || w <= 0 || h <= 0) { return; }
+      if (list.length === 1) { return cell(list[0], x, y, w, h); }
+
+      var total = list.reduce(function (sum, row) { return sum + row.value; }, 0);
+      var half = 0;
+      var cut = 0;
+      // The split that comes closest to half the weight.
+      for (var i = 0; i < list.length - 1; i += 1) {
+        half += list[i].value;
+        cut = i + 1;
+        if (half >= total / 2) { break; }
+      }
+      var share = half / total;
+      if (w >= h) {
+        place(list.slice(0, cut), x, y, w * share, h);
+        place(list.slice(cut), x + w * share, y, w * (1 - share), h);
+      } else {
+        place(list.slice(0, cut), x, y, w, h * share);
+        place(list.slice(cut), x, y + h * share, w, h * (1 - share));
+      }
+    }
+
+    function cell(row, x, y, w, h) {
+      var group = svgEl("g", { class: "cell" });
+      group.appendChild(svgEl("rect", {
+        x: x.toFixed(1), y: y.toFixed(1),
+        width: Math.max(0, w).toFixed(1), height: Math.max(0, h).toFixed(1),
+        fill: shade(0.16 + 0.84 * ((Math.log1p(row.value) - floor) / span))
+      }));
+
+      // A label only where it fits. A clipped word is worse than none.
+      if (w > 46 && h > 20) {
+        var label = svgEl("text", {
+          x: (x + 6).toFixed(1), y: (y + 16).toFixed(1),
+          fill: token("--ink", "#e8edf5"), "font-size": "11"
+        });
+        label.textContent = row.label.length > Math.floor(w / 7)
+          ? row.label.slice(0, Math.max(1, Math.floor(w / 7) - 1)) + "\u2026"
+          : row.label;
+        group.appendChild(label);
+        if (h > 34) {
+          var count = svgEl("text", {
+            x: (x + 6).toFixed(1), y: (y + 30).toFixed(1),
+            fill: token("--ink-faint", "#5e6e86"), "font-size": "10"
+          });
+          count.textContent = num(row.value);
+          group.appendChild(count);
+        }
+      }
+
+      var caption = svgEl("title", {});
+      caption.textContent = row.label + " \u00b7 " + num(row.value) + t("triesSuffix");
+      group.appendChild(caption);
+
+      group.addEventListener("click", function () {
+        el("guess-input").value = row.label;
+        checkGuess();
+        el("guess-out").scrollIntoView({ block: "center", behavior: "smooth" });
+      });
+      svg.appendChild(group);
+    }
+
+    place(items, 0, 0, width, height);
+  }
+
+  /* The commands under the technique the sensor mapped them to. The grouping
+     is its classification, carried on the export, not a second set of rules
+     in the browser that could disagree with the daemon. */
+  function renderIntent(commands) {
+    var holder = el("intent");
+    if (!holder) { return; }
+    holder.textContent = "";
+
+    var groups = [];
+    var byId = {};
+    (commands || []).forEach(function (row) {
+      var id = row.technique_id || "";
+      var key = id || "none";
+      if (!byId[key]) {
+        byId[key] = { id: id, name: row.technique || t("intentUnmapped"), rows: [], total: 0 };
+        groups.push(byId[key]);
+      }
+      byId[key].rows.push(row);
+      byId[key].total += row.value || 0;
+    });
+    groups.sort(function (a, b) { return b.total - a.total; });
+
+    groups.forEach(function (group) {
+      var card = document.createElement("div");
+      card.className = "group";
+      var id = document.createElement("div");
+      id.className = "id";
+      id.textContent = group.id || "\u2014";
+      card.appendChild(id);
+      var name = document.createElement("div");
+      name.className = "nm";
+      name.textContent = group.name;
+      card.appendChild(name);
+      group.rows.slice(0, 6).forEach(function (row) {
+        var line = document.createElement("code");
+        line.title = row.label;
+        var count = document.createElement("b");
+        count.textContent = num(row.value);
+        line.appendChild(count);
+        line.appendChild(document.createTextNode(row.label));
+        card.appendChild(line);
+      });
+      holder.appendChild(card);
+    });
+  }
+
+  /* The stages of an attack, in the order the sensor saw them. Built by
+     walking the captured sessions and collapsing a run of commands the rules
+     put under one technique into a single step, which is what makes it read
+     as a plan rather than as a transcript. */
+  var playbook = { steps: [], timer: null, at: 0 };
+
+  function renderPlaybook(sessions) {
+    var holder = el("playbook");
+    if (!holder) { return; }
+    holder.textContent = "";
+    if (playbook.timer) { clearTimeout(playbook.timer); playbook.timer = null; }
+
+    var steps = [];
+    var seen = {};
+    (sessions || []).forEach(function (session) {
+      var last = "";
+      (session.commands || []).forEach(function (entry) {
+        var id = entry.technique_id || "";
+        if (!id) { return; }
+        if (id === last) {
+          // Same stage, another command in it.
+          if (seen[id] && seen[id].commands.indexOf(entry.command) < 0 && seen[id].commands.length < 4) {
+            seen[id].commands.push(entry.command);
+          }
+          return;
+        }
+        last = id;
+        if (seen[id]) {
+          if (seen[id].commands.indexOf(entry.command) < 0 && seen[id].commands.length < 4) {
+            seen[id].commands.push(entry.command);
+          }
+          return;
+        }
+        seen[id] = { id: id, name: entry.technique || id, commands: [entry.command] };
+        steps.push(seen[id]);
+      });
+    });
+
+    var section = el("playbook-play");
+    if (!steps.length) {
+      holder.hidden = true;
+      if (section) { section.hidden = true; }
+      return;
+    }
+    holder.hidden = false;
+    if (section) { section.hidden = false; }
+    playbook.steps = steps;
+
+    steps.forEach(function (step, index) {
+      var item = document.createElement("li");
+      var number = document.createElement("span");
+      number.className = "step";
+      number.textContent = index + 1;
+      item.appendChild(number);
+
+      var body = document.createElement("div");
+      var what = document.createElement("div");
+      what.className = "what";
+      what.textContent = step.name;
+      body.appendChild(what);
+      var tech = document.createElement("div");
+      tech.className = "pb-tech";
+      tech.textContent = step.id;
+      body.appendChild(tech);
+      step.commands.forEach(function (command) {
+        var code = document.createElement("code");
+        code.textContent = "$ " + command;
+        body.appendChild(code);
+      });
+      item.appendChild(body);
+      holder.appendChild(item);
+    });
+  }
+
+  // Walk the stages one at a time, so a room can follow what is happening.
+  function playPlaybook() {
+    var items = el("playbook").querySelectorAll("li");
+    if (!items.length) { return; }
+    if (playbook.timer) { clearTimeout(playbook.timer); playbook.timer = null; }
+    playbook.at = 0;
+    items.forEach(function (item) { item.classList.add("dim"); });
+
+    function step() {
+      if (playbook.at >= items.length) {
+        items.forEach(function (item) { item.classList.remove("dim"); });
+        playbook.timer = null;
+        return;
+      }
+      items[playbook.at].classList.remove("dim");
+      playbook.at += 1;
+      playbook.timer = setTimeout(step, 900);
+    }
+    step();
+  }
+
+  /* ---------- has your password been tried here? ---------- */
+
+  /* Rules over the string itself, not a strength meter: what matters on this
+     page is the shape of the thing, because that is the shape the lists above
+     are full of. */
+  function passwordAnatomy(value) {
+    var tags = [];
+    var lower = value.toLowerCase();
+    if (!value) { return tags; }
+    if (/^\d+$/.test(value)) { tags.push(t("tagDigits")); }
+    if (/^(0123456789|123456789|12345678|1234567|123456|12345|1234|123)$/.test(value)) {
+      tags.push(t("tagSequence"));
+    }
+    if (/^(qwerty|asdf|zxcv|1qaz2wsx|qazwsx|q1w2e3)/.test(lower)) { tags.push(t("tagKeyboard")); }
+    if (DEFAULTS.indexOf(lower) >= 0) { tags.push(t("tagFactory")); }
+    if (value.length < 8) { tags.push(t("tagShort")); }
+    if (/^[a-z]+$/.test(lower) && value.length >= 4) { tags.push(t("tagWord")); }
+    if (/[0-9]$/.test(value) && /^[a-z]+/i.test(value)) { tags.push(t("tagWordDigits")); }
+    // A swap inside a word, not merely a digit somewhere: xc3511 is a
+    // factory default, not somebody being clever with P@ssw0rd.
+    if (/[a-z][@04315$][a-z]/i.test(value)) { tags.push(t("tagLeet")); }
+    return tags;
+  }
+
+  // Factory credentials, from the lists the sensor itself accepts.
+  var DEFAULTS = [
+    "xc3511", "vizxv", "admin", "root", "1234", "support", "default", "password",
+    "888888", "666666", "54321", "juantech", "anko", "zlxx", "7ujmko0admin",
+    "system", "guest", "service", "supervisor", "ubnt", "klv123", "zte521"
+  ];
+
+  function checkGuess() {
+    var holder = el("guess-out");
+    var value = el("guess-input").value.trim();
+    holder.textContent = "";
+    if (!value) { return; }
+
+    var data = state.data || {};
+    var passwords = data.passwords || [];
+    var pairs = (data.pairs || []).filter(function (pair) { return pair.password === value; });
+    var rank = -1;
+    var tries = 0;
+    passwords.forEach(function (row, index) {
+      if (row.label === value) { rank = index + 1; tries = row.value; }
+    });
+    // The two lists are cut at twelve rows each, so a password can be in the
+    // pairs and not in the ranking. Saying "not seen" above "sent against
+    // root" would be the page contradicting itself in two lines.
+    if (rank < 0 && pairs.length) {
+      tries = pairs.reduce(function (sum, pair) { return sum + (pair.tries || 0); }, 0);
+    }
+    var seen = rank > 0 || pairs.length > 0;
+
+    var verdict = document.createElement("div");
+    verdict.className = "verdict " + (seen ? "hit" : "miss");
+    verdict.textContent = seen ? t("guessHit") : t("guessMiss");
+    holder.appendChild(verdict);
+
+    var detail = document.createElement("div");
+    detail.className = "detail";
+    if (seen) {
+      detail.appendChild(document.createTextNode(t("guessTried")));
+      var count = document.createElement("b");
+      count.textContent = num(tries);
+      detail.appendChild(count);
+      detail.appendChild(document.createTextNode(
+        rank > 0 ? t("guessTimes") + rank + t("guessRank") : t("guessTimesPlain")));
+    } else {
+      detail.textContent = t("guessNotInList");
+    }
+    holder.appendChild(detail);
+
+    var tags = passwordAnatomy(value);
+    if (tags.length) {
+      var row = document.createElement("div");
+      row.className = "guess-tags";
+      tags.forEach(function (tag) {
+        var chip = document.createElement("span");
+        chip.textContent = tag;
+        row.appendChild(chip);
+      });
+      holder.appendChild(row);
+    }
+
+    // Which accounts it was sent against, which is the part people recognise.
+    if (pairs.length) {
+      var line = document.createElement("div");
+      line.className = "guess-pairs";
+      line.appendChild(document.createTextNode(t("guessAgainst")));
+      pairs.slice(0, 4).forEach(function (pair, index) {
+        if (index > 0) { line.appendChild(document.createTextNode(", ")); }
+        var who = document.createElement("b");
+        who.textContent = (pair.username || t("empty")) + " (" + num(pair.tries) + ")";
+        line.appendChild(who);
+      });
+      holder.appendChild(line);
+    }
   }
 
   /* The counters count every event; the map can only draw the ones the GeoIP

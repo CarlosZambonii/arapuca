@@ -69,6 +69,15 @@ is bumped only on a breaking change to the envelope and is documented in
   rather than a thousand pixels below it.
 * Phosphor mode, a boot sequence typed out before the page appears, and the
   passwords attackers tried falling behind the headline.
+* "What they try" is no longer three tables. The credential pairs are shown
+  as pairs, because a bot sends `root` and `123456` together; the passwords
+  are a treemap, because one address repeating a dozen words looks nothing
+  like a dozen words shared out; the commands are grouped under the ATT&CK
+  technique the sensor mapped them to; and the stages of an attack are laid
+  out in the order the sensor saw them, playable one step at a time. There is
+  also a box to type a password into, which says whether this sensor has
+  already been offered it and what shape it is. The comparison runs in the
+  browser and nothing typed is sent anywhere.
 * A terminal on the public page. A visitor types `ls -la` or
   `cat /opt/app/.env` and gets the answer the honeypot itself would give: the
   filesystem under it is generated from `config/filesystem.yaml` by
