@@ -99,6 +99,11 @@ QUERIES = {
     f"'telnet.command', 'http.login_attempt') "
     f"LIMIT 40 SINCE 2 days ago",
     "daily": f"SELECT count(*) FROM Log WHERE {SCOPE} TIMESERIES 1 day SINCE 30 days ago",
+    # By the hour as well. A sensor that has been public for two days has
+    # twenty eight empty columns in a thirty day chart, which reads as a
+    # broken chart rather than a young one; the page draws this one instead
+    # until there are enough days to be worth a column each.
+    "hourly": f"SELECT count(*) FROM Log WHERE {SCOPE} TIMESERIES 1 hour SINCE 2 days ago",
     # The attack map needs a point, not a country: the city facet carries the
     # coordinates, and latest() is enough because every event from one city
     # resolves to the same place.
@@ -363,14 +368,18 @@ def build(
         )
     pairs.sort(key=lambda item: item["tries"], reverse=True)
 
-    daily = [
-        {
-            "at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000),
-            "count": int(row.get("count") or 0),
-        }
-        for row in results["daily"]
-        if row.get("beginTimeSeconds")
-    ]
+    def series(key: str) -> list[dict[str, Any]]:
+        return [
+            {
+                "at": iso_timestamp(row.get("beginTimeSeconds", 0) * 1000),
+                "count": int(row.get("count") or 0),
+            }
+            for row in results[key]
+            if row.get("beginTimeSeconds")
+        ]
+
+    daily = series("daily")
+    hourly = series("hourly")
 
     return {
         "generated_at": datetime.now(tz=UTC).isoformat().replace("+00:00", "Z"),
@@ -395,6 +404,7 @@ def build(
         "techniques": techniques,
         "recent": recent[:30],
         "daily": daily,
+        "hourly": hourly,
         "sessions": sessions or [],
         # The busiest one on its own as well. The page and this file deploy
         # together, but the data does not: a freshly deployed page can be read
@@ -419,6 +429,7 @@ REQUIRED_RESULTS = (
     "techniques",
     "recent",
     "daily",
+    "hourly",
     "top_sessions",
     "first_event",
 )

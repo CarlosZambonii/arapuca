@@ -1718,6 +1718,9 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       finderMiss: "nada desse endere\u00e7o por aqui ainda. ataque e tente de novo.",
       finderBad: "digite um endere\u00e7o IPv4, ex. 203.0.113.45",
       timelineCaption: "ataques por dia, \u00faltimos 30 dias",
+      timelineCaptionHours: "ataques por hora, \u00faltimas 48 horas",
+      timelineCaptionSince: "ataques por dia, desde que o sensor ligou",
+      timelineAt: " ataques \u00e0s ",
       timelineDay: " ataques em ",
       liveOn: "ao vivo, atualizando sozinho",
       focusCleared: "clique numa origem no mapa para focar",
@@ -1846,6 +1849,9 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     finderMiss: "nothing from that address yet. attack it and try again.",
     finderBad: "type an IPv4 address, e.g. 203.0.113.45",
     timelineCaption: "attacks per day, last 30 days",
+    timelineCaptionHours: "attacks per hour, last 48 hours",
+    timelineCaptionSince: "attacks per day, since the sensor came up",
+    timelineAt: " attacks at ",
     timelineDay: " attacks on ",
     liveOn: "live, refreshing on its own",
     focusCleared: "click an origin on the map to focus it",
@@ -3338,9 +3344,31 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   /* ---------- timeline ---------- */
 
-  function renderTimeline(daily) {
+  /* Which series to draw. A sensor public for two days inside a thirty day
+     chart is twenty eight empty columns and one bar jammed against the right
+     edge, which reads as a chart that failed rather than a sensor that is
+     young. While there are too few days to be worth a column each, the hours
+     are drawn instead, and the chart grows into the daily one by itself. */
+  function timelineSeries(data) {
+    var daily = (data && data.daily) || [];
+    var hourly = (data && data.hourly) || [];
+    var busyDays = daily.filter(function (day) { return (day.count || 0) > 0; }).length;
+
+    if (busyDays < 5 && hourly.length >= 6) {
+      return { rows: hourly, hours: true };
+    }
+    // Nothing before the first day that saw anything: those days are not
+    // quiet, they are days the sensor did not exist for.
+    var first = 0;
+    while (first < daily.length && !(daily[first].count > 0)) { first += 1; }
+    return { rows: daily.slice(first), hours: false };
+  }
+
+  function renderTimeline(data) {
     var holder = el("timeline");
     var svg = el("timeline-svg");
+    var chosen = timelineSeries(data);
+    var daily = chosen.rows;
     if (!daily || daily.length < 2) { holder.hidden = true; return; }
     holder.hidden = false;
     svg.textContent = "";
@@ -3393,16 +3421,23 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         height: String(height)
       });
       hit.addEventListener("mouseenter", function () {
-        el("timeline-caption").textContent = num(count) + t("timelineDay") + date;
+        el("timeline-caption").textContent = chosen.hours
+          ? num(count) + t("timelineAt") + (day.at || "").slice(11, 16) + ", " + date
+          : num(count) + t("timelineDay") + date;
         if (rect) { rect.classList.add("on"); }
       });
       hit.addEventListener("mouseleave", function () {
         if (rect) { rect.classList.remove("on"); }
-        el("timeline-caption").textContent = t("timelineCaption");
+        el("timeline-caption").textContent = timelineLabel(chosen);
       });
       svg.appendChild(hit);
     });
-    el("timeline-caption").textContent = t("timelineCaption");
+    el("timeline-caption").textContent = timelineLabel(chosen);
+  }
+
+  function timelineLabel(chosen) {
+    if (chosen.hours) { return t("timelineCaptionHours"); }
+    return chosen.rows.length >= 28 ? t("timelineCaption") : t("timelineCaptionSince");
   }
 
   /* ---------- map focus (drill-down) ---------- */
@@ -3555,7 +3590,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
     renderRankPair(fresh);
     renderTechniques(fresh.techniques);
-    renderTimeline(fresh.daily);
+    renderTimeline(fresh);
     renderMap();
     renderReplay(replaySessionsOf(fresh));
     renderCaveat();
@@ -3583,7 +3618,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     renderRankPair(data);
     renderTechniques(data.techniques);
     renderFeed(data.recent);
-    renderTimeline(data.daily);
+    renderTimeline(data);
     renderReplay(replaySessionsOf(data));
     renderMap();
     renderCaveat();

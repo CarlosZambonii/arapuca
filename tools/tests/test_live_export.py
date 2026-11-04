@@ -180,6 +180,10 @@ def _results_for_build():
             }
         ],
         "daily": [{"beginTimeSeconds": 1_700_000_000, "count": 5}],
+        "hourly": [
+            {"beginTimeSeconds": 1_700_000_000, "count": 2},
+            {"beginTimeSeconds": 1_700_003_600, "count": 3},
+        ],
         "origins": [
             {
                 "facet": ["Paris", "FR", "France"],
@@ -205,6 +209,14 @@ def test_build_shapes_the_payload():
     assert payload["recent"][0]["ip"] == "203.0.113.x"  # masked
     assert payload["session"] is None
     assert payload["sessions"] == []
+
+
+def test_build_keeps_an_hourly_series_beside_the_daily_one():
+    # A sensor two days old has twenty eight empty columns in a thirty day
+    # chart, so the page needs something denser to draw while it is young.
+    payload = live_export.build(_results_for_build(), "t", None)
+    assert [row["count"] for row in payload["hourly"]] == [2, 3]
+    assert payload["hourly"][0]["at"] == "2023-11-14T22:13:20Z"
 
 
 def test_build_carries_the_technique_the_sensor_mapped_each_command_to():
