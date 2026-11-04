@@ -25,7 +25,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="2400">
 <meta property="og:image:height" content="1260">
-<meta property="og:image:alt" content="Arapuca, a medium interaction SSH and HTTP honeypot. A world map with attack lines converging on the sensor in Brazil.">
+<meta property="og:image:alt" content="Arapuca, a medium interaction SSH, Telnet and HTTP honeypot. A world map with attack lines converging on the sensor in Brazil.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Arapuca, live honeypot">
 <meta name="twitter:description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
@@ -775,8 +775,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     </div>
     <h1>Arapuca<span class="quiet" data-i18n="tagline">, a honeypot you are invited to attack</span></h1>
     <p class="lede" data-i18n-html="lede">
-      A fake SSH and HTTP server sitting on a public address, accepting weak
-      passwords on purpose and recording everything that happens next.
+      A fake SSH, Telnet and HTTP server sitting on a public address, accepting
+      weak passwords on purpose and recording everything that happens next.
       <strong>Nothing you send is ever executed.</strong> The shell is
       fabricated, the filesystem is in memory, and the credentials you will
       find in it open nothing.
@@ -785,9 +785,10 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     <div class="invite">
       <h2 data-i18n="inviteTitle">Try to get in</h2>
       <p data-i18n="inviteBody">
-        It answers on the standard ports. Guess a weak password, look around,
-        and watch your country light up on the map below once the next export
-        runs. Your address appears with the last octet masked.
+        It answers on four doors: SSH on 22, Telnet on 23 as a BusyBox device,
+        and the same HTTP panel on 80 and on 8080. Guess a weak password, look
+        around, and watch your country light up on the map below once the next
+        export runs. Your address appears with the last octet masked.
       </p>
       <div class="cmd-list" id="commands"></div>
       <div class="finder">
@@ -953,16 +954,17 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     en: {},
     pt: {
       tagline: ", um honeypot que convida voc\u00ea a atacar",
-      lede: "Um servidor SSH e HTTP falso num endere\u00e7o p\u00fablico, aceitando senhas " +
-            "fracas de prop\u00f3sito e registrando tudo o que acontece depois. " +
+      lede: "Um servidor SSH, Telnet e HTTP falso num endere\u00e7o p\u00fablico, aceitando " +
+            "senhas fracas de prop\u00f3sito e registrando tudo o que acontece depois. " +
             "<strong>Nada do que voc\u00ea enviar \u00e9 executado.</strong> O shell \u00e9 " +
             "fabricado, o sistema de arquivos vive em mem\u00f3ria, e as credenciais que " +
             "voc\u00ea encontrar nele n\u00e3o abrem nada.",
       inviteTitle: "Tente entrar",
-      inviteBody: "Ele responde nas portas padr\u00e3o. Chute uma senha fraca, d\u00ea uma " +
-                  "olhada, e veja seu pa\u00eds acender no mapa abaixo na pr\u00f3xima " +
-                  "atualiza\u00e7\u00e3o. Seu endere\u00e7o aparece com o \u00faltimo octeto " +
-                  "mascarado.",
+      inviteBody: "Ele responde em quatro portas: SSH na 22, Telnet na 23 como um " +
+                  "aparelho BusyBox, e o mesmo painel HTTP na 80 e na 8080. Chute uma " +
+                  "senha fraca, d\u00ea uma olhada, e veja seu pa\u00eds acender no mapa " +
+                  "abaixo na pr\u00f3xima atualiza\u00e7\u00e3o. Seu endere\u00e7o aparece " +
+                  "com o \u00faltimo octeto mascarado.",
       fineprint: "Atacar este host \u00e9 convidado. Atacar qualquer outra coisa a partir " +
                  "dele n\u00e3o \u00e9: nenhum canal alcan\u00e7a algo real, encaminhamento " +
                  "de porta e SFTP s\u00e3o recusados, e um download apontado para faixa " +
@@ -1225,10 +1227,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // Before the first export the address is unknown. A placeholder that
     // reads as a template is clearer than prose inside a shell command.
     var host = target || "<host>";
+    // One line per door the sensor keeps open, in the order the invitation
+    // names them: SSH on 22, Telnet on 23, and the HTTP panel on both 80 and
+    // 8080. A visitor who copies all four has knocked on every surface.
     var lines = [
       { parts: ["ssh ", "root@" + host], hint: "try 123456, admin, root" },
+      { parts: ["telnet ", host], hint: "a busybox device, try root / xc3511" },
       { parts: ["curl ", "http://" + host + "/.env"], hint: "a decoy file" },
-      { parts: ["curl -d ", "'user=admin&pass=admin' http://" + host + "/admin"], hint: "the fake panel" }
+      { parts: ["curl -d ", "'user=admin&pass=admin' http://" + host + ":8080/admin"], hint: "the fake panel, second door" }
     ];
 
     var holder = el("commands");
