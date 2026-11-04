@@ -104,35 +104,51 @@ QUERIES = {
     # When the sensor first spoke. A wide window so a sensor up longer than
     # the map's 30 days is still dated from its real start, not clipped to it.
     "first_event": f"SELECT min(timestamp) AS first FROM Log WHERE {SCOPE} SINCE 180 days ago",
-    # The busiest session, for the replay. A facet is ordered by its
-    # aggregate descending, so LIMIT 1 is the one that typed the most.
-    "top_session": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "
+    # The busiest sessions, for the replay picker. A facet is ordered by its
+    # aggregate descending, so the first rows are the ones that typed the most.
+    # More are asked for than the page offers, because a session can still
+    # fall out below on its id or on blank commands.
+    "top_sessions": f"SELECT count(*) AS commands FROM Log WHERE {SCOPE} AND "
     f"event_type IN ('ssh.command', 'telnet.command') AND since_prev_ms IS NOT NULL "
-    f"FACET session_id LIMIT 1 SINCE 30 days ago",
+    f"FACET session_id LIMIT 8 SINCE 30 days ago",
 }
 
 
-# A session's commands, in order, for the replay on the page. Separate from
-# QUERIES because it depends on which session QUERIES['top_session'] found:
-# there is nothing to ask until the first query has answered.
-def collect_session(
+# How many sessions the page offers in its replay picker. A visitor is there
+# to watch an attack, not to browse a list, so this is a handful rather than
+# everything the sensor holds.
+REPLAY_SESSIONS = 5
+
+
+# The sessions worth replaying, busiest first. Separate from QUERIES because
+# it depends on which sessions QUERIES['top_sessions'] found: there is nothing
+# to ask until the first query has answered.
+def collect_sessions(
     api: ApiSettings, results: dict[str, list[dict[str, Any]]]
-) -> dict[str, Any] | None:
-    picked = results.get("top_session") or []
-    if not picked:
-        return None
+) -> list[dict[str, Any]]:
+    sessions: list[dict[str, Any]] = []
+    for picked in results.get("top_sessions") or []:
+        if len(sessions) >= REPLAY_SESSIONS:
+            break
 
-    # A bot is worth replaying; a human's three commands are not, and a single
-    # command is not a session. The floor keeps the panel off the page until
-    # there is something that reads as an attack.
-    if int(picked[0].get("commands") or 0) < 4:
-        return None
+        # A bot is worth replaying; a human's three commands are not, and a
+        # single command is not a session. The facet is ordered by count, so
+        # the first row under the floor ends the list rather than skipping on.
+        if int(picked.get("commands") or 0) < 4:
+            break
 
-    names = facet(picked[0])
-    if not names or not names[0] or names[0] == "None":
-        return None
-    session_id = names[0]
+        names = facet(picked)
+        if not names or not names[0] or names[0] == "None":
+            continue
 
+        session = collect_session(api, names[0])
+        if session:
+            sessions.append(session)
+    return sessions
+
+
+# One session's commands, in order, for a replay on the page.
+def collect_session(api: ApiSettings, session_id: str) -> dict[str, Any] | None:
     # The id is interpolated, not parameterised, so it is constrained to the
     # shape the id generator produces (Crockford base32) before it reaches the
     # query. An id from the telemetry that is not that shape is not trusted
@@ -141,8 +157,9 @@ def collect_session(
         return None
 
     rows = run_nrql(
-        f"SELECT command, seq, since_prev_ms, geo.country_iso, timestamp "
-        f"FROM Log WHERE {SCOPE} AND event_type IN ('ssh.command', 'telnet.command') "
+        f"SELECT command, seq, since_prev_ms, src_ip, event_type, geo.country_iso, "
+        f"timestamp FROM Log WHERE {SCOPE} "
+        f"AND event_type IN ('ssh.command', 'telnet.command') "
         f"AND session_id = '{session_id}' SINCE 30 days ago LIMIT 200",
         **api,
     )
@@ -163,8 +180,15 @@ def collect_session(
         return None
     commands.sort(key=lambda item: item["seq"])
     first = commands[0]
+
+    # Which honeypot the attacker was typing into. The picker labels a session
+    # with it, because an Ubuntu bash session and a BusyBox one read as two
+    # different attacks and a visitor should be able to pick between them.
+    kind = str(rows[0].get("event_type") or "")
     return {
         "country": rows[0].get("geo.country_iso") or "",
+        "ip": mask(str(rows[0].get("src_ip") or "")),
+        "service": kind.split(".")[0] if "." in kind else "",
         "started_at": first.get("at", ""),
         "commands": commands,
     }
@@ -205,7 +229,7 @@ def build(
     results: dict[str, list[dict[str, Any]]],
     target: str,
     sensor: dict[str, Any] | None,
-    session: dict[str, Any] | None = None,
+    sessions: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     totals = (results["totals"] or [{}])[0]
     captures = (results["captures"] or [{}])[0]
@@ -324,7 +348,12 @@ def build(
         "techniques": techniques,
         "recent": recent[:30],
         "daily": daily,
-        "session": session,
+        "sessions": sessions or [],
+        # The busiest one on its own as well. The page and this file deploy
+        # together, but the data does not: a freshly deployed page can be read
+        # against a live.json the hourly job has not rewritten yet, and the
+        # older page reads this key.
+        "session": sessions[0] if sessions else None,
     }
 
 
@@ -342,7 +371,7 @@ REQUIRED_RESULTS = (
     "techniques",
     "recent",
     "daily",
-    "top_session",
+    "top_sessions",
     "first_event",
 )
 
@@ -389,8 +418,8 @@ def main() -> int:
             except ValueError:
                 print("ignoring an unparseable sensor location", file=sys.stderr)
 
-    session = collect_session(api, results)
-    payload = build(results, arguments.target, sensor, session)
+    sessions = collect_sessions(api, results)
+    payload = build(results, arguments.target, sensor, sessions)
 
     path = pathlib.Path(arguments.output)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -401,8 +430,11 @@ def main() -> int:
         f"{payload['located_events']} located, {len(payload['countries'])} countries, "
         f"{len(payload['origins'])} origin cities"
     )
-    if session:
-        print(f"replay session: {len(session['commands'])} commands")
+    for session in sessions:
+        print(
+            f"replay session: {len(session['commands'])} commands, "
+            f"{session['service'] or '?'} from {session['country'] or '?'}"
+        )
     return 0
 
 

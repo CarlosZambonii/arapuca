@@ -530,32 +530,94 @@ section { margin-block: 46px; }
 /* ---------- session replay ---------- */
 
 /* A terminal, because the audience this page is for reads one without a
-   caption. The chrome is cosmetic: three dots, a title bar, a dark screen. */
-.replay {
+   caption. The chrome is cosmetic, but it is what tells a visitor at a glance
+   that the thing below is a shell somebody else was typing into. */
+
+/* The picker. More than one session is kept, so a visitor can choose which
+   attacker to watch rather than being given whoever typed the most. */
+.replay-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+/* The holder is hidden when there is only one session, and an author display
+   beats the user agent's [hidden], so it has to be said here. */
+.replay-picker[hidden] { display: none; }
+.replay-picker .lbl {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  margin-right: 2px;
+}
+.replay-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 3px;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+.replay-tab:hover, .replay-tab:focus-visible { border-color: var(--amber-deep); color: var(--ink); }
+.replay-tab .svc { color: var(--cyan); }
+.replay-tab .n { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.replay-tab[aria-pressed="true"] {
+  background: var(--surface-high);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.replay-tab[aria-pressed="true"] .svc { color: var(--amber); }
+
+.replay {
+  border: 1px solid #1b2433;
+  border-radius: 8px;
   overflow: hidden;
-  background: #090d14;
+  background: #05080e;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 .replay-bar {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 9px 12px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: linear-gradient(#1b2231, #141a26);
+  border-bottom: 1px solid #0b0f17;
 }
-.replay-bar .dots { display: flex; gap: 6px; }
-.replay-bar .dots i { width: 11px; height: 11px; border-radius: 50%; background: #2c3a4e; display: block; }
-.replay-meta {
+.replay-bar .dots { display: flex; gap: 7px; flex: none; }
+.replay-bar .dots i {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.replay-bar .dots i:nth-child(1) { background: #ff5f57; }
+.replay-bar .dots i:nth-child(2) { background: #febc2e; }
+.replay-bar .dots i:nth-child(3) { background: #28c840; }
+/* Centred the way a terminal centres its title, and absolute so the buttons
+   on the right do not shove it off centre. */
+.replay-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 46%;
   font-family: var(--font-mono);
   font-size: 0.74rem;
-  color: var(--ink-faint);
-  margin-right: auto;
+  color: var(--ink-dim);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  pointer-events: none;
 }
+@media (max-width: 640px) { .replay-title { display: none; } }
+.replay-spacer { margin-right: auto; }
 .replay-btn {
   flex: none;
   background: transparent;
@@ -571,27 +633,42 @@ section { margin-block: 46px; }
 
 .replay-screen {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.6;
-  padding: 16px 16px 18px;
-  min-height: 190px;
-  max-height: 340px;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  padding: 18px 18px 20px;
+  min-height: 210px;
+  max-height: 360px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   white-space: pre-wrap;
   word-break: break-word;
   color: var(--ink);
+  scrollbar-width: thin;
+  scrollbar-color: #243044 transparent;
+  /* A faint glow from the top of the screen. A phosphor tube is not flat, and
+     a flat rectangle is what made the panel read as a text box before. */
+  background: radial-gradient(130% 80% at 50% 0%, rgba(120, 170, 255, 0.05), transparent 72%), #05080e;
 }
+.replay-screen::-webkit-scrollbar { width: 9px; }
+.replay-screen::-webkit-scrollbar-thumb { background: #243044; border-radius: 6px; }
+.replay-screen::-webkit-scrollbar-track { background: transparent; }
+
 .replay-line { display: block; }
-/* The prompt is generic on purpose: the sensor's real hostname is not the
-   page's to publish, and a neutral prompt reads as any compromised box. */
-.replay-line .rps { color: var(--cyan); }
-.replay-line .rcmd { color: var(--ink); }
+/* The prompt is the one the honeypot itself printed: bash with user@host on
+   the SSH persona, BusyBox ash with the bare directory on the Telnet one.
+   Both hostnames are fabricated and already sit in config/ in this
+   repository, so showing what the attacker saw publishes nothing real. */
+.replay-line .rps { color: #5fd38d; }
+.replay-line .rps .rpath { color: var(--cyan); }
+.replay-line .rps .rsig { color: var(--ink-dim); }
+.replay-line .rcmd { color: #e9eff8; text-shadow: 0 0 9px rgba(190, 220, 255, 0.16); }
 .replay-cursor {
   display: inline-block;
   width: 8px;
   height: 1.05em;
   vertical-align: text-bottom;
   background: var(--amber);
+  box-shadow: 0 0 8px rgba(255, 176, 60, 0.45);
   margin-left: 2px;
   animation: replay-blink 1.1s steps(1) infinite;
 }
@@ -599,6 +676,28 @@ section { margin-block: 46px; }
 @media (prefers-reduced-motion: reduce) {
   .replay-cursor { animation: none; }
 }
+
+/* How far through the session the playback is, as a line under the screen. */
+.replay-progress { height: 2px; background: #161d29; }
+.replay-progress i { display: block; height: 100%; width: 0; background: var(--amber); transition: width 0.25s linear; }
+.replay-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: #0c111a;
+  border-top: 1px solid #151c28;
+  font-family: var(--font-mono);
+  font-size: 0.71rem;
+  color: var(--ink-faint);
+}
+.replay-status .where {
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.replay-status .count { flex: none; font-variant-numeric: tabular-nums; }
 .replay-caveat {
   font-size: 0.8rem;
   color: var(--ink-faint);
@@ -855,21 +954,28 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       <h2 data-i18n="replayTitle">Watch an attacker</h2>
       <span class="note" data-i18n="replayNote">a real session, at its real pace</span>
     </div>
+    <div class="replay-picker" id="replay-picker" hidden></div>
     <div class="replay">
       <div class="replay-bar">
         <span class="dots"><i></i><i></i><i></i></span>
-        <span class="replay-meta" id="replay-meta"></span>
+        <span class="replay-title" id="replay-title"></span>
+        <span class="replay-spacer"></span>
         <button type="button" class="replay-btn" id="replay-toggle"
                 data-i18n="replayPause">pause</button>
         <button type="button" class="replay-btn" id="replay-restart"
                 data-i18n="replayRestart">restart</button>
       </div>
       <div class="replay-screen" id="replay-screen" role="log" aria-live="off"></div>
+      <div class="replay-progress"><i id="replay-progress"></i></div>
+      <div class="replay-status">
+        <span class="where" id="replay-where"></span>
+        <span class="count" id="replay-count"></span>
+      </div>
     </div>
     <p class="replay-caveat" data-i18n="replayCaveat">
-      One captured session, played back at the gaps the attacker actually left
-      between commands. Nothing here ran: every command was recorded and
-      answered with a fabricated result.
+      The sessions the sensor saw most of, played back at the gaps the
+      attacker actually left between commands. Nothing here ran: every command
+      was recorded and answered with a fabricated result.
     </p>
   </section>
 
@@ -1029,11 +1135,13 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       replayPause: "pausar",
       replayPlay: "tocar",
       replayRestart: "recome\u00e7ar",
-      replayCaveat: "Uma sess\u00e3o capturada, reproduzida com os intervalos que " +
-                    "o atacante realmente deixou entre os comandos. Nada aqui foi " +
-                    "executado: cada comando foi registrado e respondido com um " +
-                    "resultado fabricado.",
+      replayCaveat: "As sess\u00f5es de que o sensor mais viu, reproduzidas com os " +
+                    "intervalos que o atacante realmente deixou entre os comandos. " +
+                    "Nada aqui foi executado: cada comando foi registrado e " +
+                    "respondido com um resultado fabricado.",
       replayFrom: "sess\u00e3o de ",
+      replayPick: "sess\u00f5es:",
+      replayOf: " de ",
       replayCommands: " comandos",
       chipAll: "todos",
       svcSsh: "ssh",
@@ -1105,10 +1213,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     replayPause: "pause",
     replayPlay: "play",
     replayRestart: "restart",
-    replayCaveat: "One captured session, played back at the gaps the attacker " +
-                  "actually left between commands. Nothing here ran: every command " +
-                  "was recorded and answered with a fabricated result.",
+    replayCaveat: "The sessions the sensor saw most of, played back at the gaps " +
+                  "the attacker actually left between commands. Nothing here ran: " +
+                  "every command was recorded and answered with a fabricated result.",
     replayFrom: "session from ",
+    replayPick: "sessions:",
+    replayOf: " of ",
     replayCommands: " commands",
     chipAll: "all",
     svcSsh: "ssh",
@@ -2078,56 +2188,180 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
 
   /* ---------- session replay ---------- */
 
-  /* One captured session, replayed at the rhythm it was typed. The gaps are
+  /* Captured sessions, replayed at the rhythm they were typed. The gaps are
      the attacker's own since_prev_ms, which is the field the classifier reads
      to tell a bot from a human: a bot fires commands milliseconds apart, a
      person pauses to think. Clamped so a dropper that paused five minutes
      does not stall the panel, and floored so a burst still reads. */
 
-  var replay = { timer: null, playing: false, session: null, step: 0 };
+  var replay = { timer: null, playing: false, sessions: [], index: 0, session: null, step: 0, key: "" };
 
   function replayClear() {
     if (replay.timer) { clearTimeout(replay.timer); replay.timer = null; }
   }
 
-  function replayPrompt() {
+  /* The export ships a list. A live.json written before it did carries one
+     session under its own key, and the page can reach Netlify an hour before
+     the next export runs, so both shapes are read. */
+  function replaySessionsOf(data) {
+    if (data.sessions && data.sessions.length) { return data.sessions; }
+    return data.session ? [data.session] : [];
+  }
+
+  /* The prompt the honeypot actually printed. BusyBox ash shows the working
+     directory and a bare #, with none of bash's user@host: that difference is
+     exactly what the bots fingerprint a device by, so the replay of a Telnet
+     session should not show an Ubuntu prompt. Both hostnames are fabricated
+     and already in config/ in this repository. */
+  function replayPrompt(session) {
     var ps = document.createElement("span");
     ps.className = "rps";
-    ps.textContent = "root@server:~# ";
+    var path = document.createElement("span");
+    path.className = "rpath";
+    var sig = document.createElement("span");
+    sig.className = "rsig";
+    if (session && session.service === "telnet") {
+      path.textContent = "/";
+      sig.textContent = " # ";
+      ps.appendChild(path);
+      ps.appendChild(sig);
+      return ps;
+    }
+    ps.appendChild(document.createTextNode("root@srv-web-03"));
+    path.textContent = ":~";
+    sig.textContent = "# ";
+    ps.appendChild(path);
+    ps.appendChild(sig);
     return ps;
   }
 
-  function renderReplay(session) {
-    var section = el("replay-section");
-    replayClear();
-    replay.playing = false;
-    replay.session = null;
+  function replayWindowTitle(session) {
+    return session && session.service === "telnet"
+      ? "ash - root@router: /"
+      : "bash - root@srv-web-03: ~";
+  }
 
-    // A session has to read as an attack before it is worth a panel: the
-    // export already refuses anything under four commands, this is the guard
-    // on the page's own side.
-    if (!session || !session.commands || session.commands.length < 4) {
+  // A session is only worth a panel if it reads as an attack. The export
+  // already refuses anything under four commands; this is the page's own side
+  // of that guard, for a live.json written by an older export.
+  function replayUsable(sessions) {
+    return (sessions || []).filter(function (item) {
+      return item && item.commands && item.commands.length >= 4;
+    });
+  }
+
+  // What the panel is showing, as one string. The live refresh runs every
+  // ninety seconds and a language switch redraws everything; neither should
+  // restart a replay the visitor is in the middle of watching, so an
+  // unchanged list only has its labels redrawn.
+  function replayKey(sessions) {
+    return sessions.map(function (item) {
+      return [item.service || "", item.ip || "", item.started_at || "", item.commands.length].join("|");
+    }).join(",");
+  }
+
+  function renderReplay(sessions) {
+    var section = el("replay-section");
+    var usable = replayUsable(sessions);
+
+    if (!usable.length) {
+      replayClear();
+      replay.playing = false;
+      replay.session = null;
+      replay.sessions = [];
+      replay.key = "";
       section.hidden = true;
       return;
     }
     section.hidden = false;
-    replay.session = session;
+    replay.sessions = usable;
 
-    var parts = [];
-    if (session.country) { parts.push(session.country); }
-    if (session.started_at) { parts.push(session.started_at.slice(0, 10)); }
-    el("replay-meta").textContent =
-      t("replayFrom") + (parts.join(", ") || "?") + " · " +
-      session.commands.length + t("replayCommands");
-
-    // Bound once: render() runs again on a language switch and on the hourly
-    // refresh, and a listener added each time would fire many times per click.
-    var bar = el("replay-section");
-    if (bar.dataset.bound !== "1") {
-      bar.dataset.bound = "1";
+    // Bound once: this function runs again on a language switch and on the
+    // hourly refresh, and a listener added each time would fire many times
+    // per click.
+    if (section.dataset.bound !== "1") {
+      section.dataset.bound = "1";
       el("replay-toggle").addEventListener("click", replayToggle);
       el("replay-restart").addEventListener("click", function () { replayStart(true); });
     }
+
+    var key = replayKey(usable);
+    if (key === replay.key && replay.session) {
+      renderReplayPicker();
+      renderReplayLabels();
+      return;
+    }
+    replay.key = key;
+    if (replay.index >= usable.length) { replay.index = 0; }
+    replaySelect(replay.index);
+  }
+
+  function renderReplayPicker() {
+    var holder = el("replay-picker");
+    holder.textContent = "";
+
+    // One session needs no picker; the panel already is that session.
+    if (replay.sessions.length < 2) { holder.hidden = true; return; }
+    holder.hidden = false;
+
+    var label = document.createElement("span");
+    label.className = "lbl";
+    label.textContent = t("replayPick");
+    holder.appendChild(label);
+
+    replay.sessions.forEach(function (session, index) {
+      var tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "replay-tab";
+      tab.setAttribute("aria-pressed", index === replay.index ? "true" : "false");
+
+      var who = document.createElement("span");
+      who.textContent = session.country || session.ip || "?";
+      tab.appendChild(who);
+
+      var service = document.createElement("span");
+      service.className = "svc";
+      service.textContent = session.service === "telnet" ? t("svcTelnet") : t("svcSsh");
+      tab.appendChild(service);
+
+      var count = document.createElement("span");
+      count.className = "n";
+      count.textContent = session.commands.length;
+      tab.appendChild(count);
+
+      tab.addEventListener("click", function () { replaySelect(index); });
+      holder.appendChild(tab);
+    });
+  }
+
+  // The title bar, the status line and the progress bar, for whatever session
+  // is loaded. Separate from the playback so a language switch can redraw the
+  // words without touching what is on screen.
+  function renderReplayLabels() {
+    var session = replay.session;
+    if (!session) { return; }
+    el("replay-title").textContent = replayWindowTitle(session);
+
+    var parts = [];
+    if (session.country) { parts.push(session.country); }
+    if (session.ip && session.ip !== "unknown") { parts.push(session.ip); }
+    if (session.started_at) { parts.push(session.started_at.slice(0, 10)); }
+    el("replay-where").textContent = t("replayFrom") + (parts.join(" \u00b7 ") || "?");
+
+    var total = session.commands.length;
+    var done = Math.min(replay.step, total);
+    el("replay-count").textContent = done + t("replayOf") + total + t("replayCommands");
+    el("replay-progress").style.width = total ? (done / total) * 100 + "%" : "0";
+  }
+
+  function replaySelect(index) {
+    replayClear();
+    replay.index = index;
+    replay.session = replay.sessions[index];
+    replay.step = 0;
+    el("replay-screen").textContent = "";
+    renderReplayPicker();
+    renderReplayLabels();
     el("replay-toggle").hidden = false;
 
     var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2145,13 +2379,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     replay.session.commands.forEach(function (entry) {
       var line = document.createElement("div");
       line.className = "replay-line";
-      line.appendChild(replayPrompt());
+      line.appendChild(replayPrompt(replay.session));
       var cmd = document.createElement("span");
       cmd.className = "rcmd";
       cmd.textContent = entry.command;
       line.appendChild(cmd);
       screen.appendChild(line);
     });
+    replay.step = replay.session.commands.length;
+    renderReplayLabels();
     el("replay-toggle").hidden = true;
   }
 
@@ -2160,6 +2396,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     if (fromTop) {
       replay.step = 0;
       el("replay-screen").textContent = "";
+      renderReplayLabels();
     }
     replay.playing = true;
     setToggleLabel();
@@ -2201,7 +2438,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var screen = el("replay-screen");
     var line = document.createElement("div");
     line.className = "replay-line";
-    line.appendChild(replayPrompt());
+    line.appendChild(replayPrompt(replay.session));
     var cmd = document.createElement("span");
     cmd.className = "rcmd";
     line.appendChild(cmd);
@@ -2224,6 +2461,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       } else {
         line.removeChild(cursor);
         replay.step += 1;
+        renderReplayLabels();
         replayNext();
       }
     }
@@ -2461,7 +2699,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     renderTechniques(fresh.techniques);
     renderTimeline(fresh.daily);
     renderMap();
-    renderReplay(fresh.session);
+    renderReplay(replaySessionsOf(fresh));
     renderCaveat();
   }
 
@@ -2488,7 +2726,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     renderTechniques(data.techniques);
     renderFeed(data.recent);
     renderTimeline(data.daily);
-    renderReplay(data.session);
+    renderReplay(replaySessionsOf(data));
     renderMap();
     renderCaveat();
   }

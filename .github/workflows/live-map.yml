@@ -1,7 +1,8 @@
 name: Live map data
 
 # Hourly. The page says "live sensor", so the data behind it should not be a
-# day old. The export is cheap: eight NRQL queries and a commit.
+# day old. The export is cheap: a dozen NRQL queries, one more for each
+# session the replay picker offers, and a commit.
 on:
   schedule:
     - cron: "7 * * * *"

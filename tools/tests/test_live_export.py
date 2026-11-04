@@ -34,6 +34,8 @@ def _session_rows():
             "command": "uname -a",
             "seq": 1,
             "since_prev_ms": 0,
+            "src_ip": "203.0.113.5",
+            "event_type": "ssh.command",
             "geo.country_iso": "FR",
             "timestamp": 1_700_000_000_000,
         },
@@ -67,29 +69,31 @@ def _api():
 
 def test_collect_session_returns_commands_in_order(monkeypatch):
     monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows())
-    results = {"top_session": [{"facet": "01JBQ3ABCDEF", "commands": 4}]}
-    session = live_export.collect_session(_api(), results)
+    session = live_export.collect_session(_api(), "01JBQ3ABCDEF")
     assert session is not None
     assert session["country"] == "FR"
     assert [c["seq"] for c in session["commands"]] == [1, 2, 3, 4]
     assert session["commands"][0]["command"] == "uname -a"
 
 
-def test_collect_session_refuses_a_short_session():
-    # Under four commands is not an attack worth a panel.
-    results = {"top_session": [{"facet": "abc", "commands": 2}]}
-    assert live_export.collect_session(_api(), results) is None
+def test_collect_session_labels_the_service_and_masks_the_address(monkeypatch):
+    # The picker labels a session with where it came from and which honeypot
+    # it typed into, and the address on a public page is never the whole one.
+    monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows())
+    session = live_export.collect_session(_api(), "01JBQ3ABCDEF")
+    assert session["service"] == "ssh"
+    assert session["ip"] == "203.0.113.x"
 
 
 def test_collect_session_refuses_an_id_outside_the_alphabet():
     # The id is interpolated into NRQL, so a value that is not the id
     # generator's own shape is never let into the query.
-    results = {"top_session": [{"facet": "bad'; DROP TABLE", "commands": 9}]}
-    assert live_export.collect_session(_api(), results) is None
+    assert live_export.collect_session(_api(), "bad'; DROP TABLE") is None
 
 
-def test_collect_session_handles_no_session():
-    assert live_export.collect_session(_api(), {"top_session": []}) is None
+def test_collect_session_refuses_a_session_of_under_four_commands(monkeypatch):
+    monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows()[:3])
+    assert live_export.collect_session(_api(), "01JBQ3ABCDEF") is None
 
 
 def test_collect_session_drops_blank_commands(monkeypatch):
@@ -99,14 +103,53 @@ def test_collect_session_drops_blank_commands(monkeypatch):
             "command": "   ",
             "seq": 5,
             "since_prev_ms": 10,
+            "src_ip": "203.0.113.5",
+            "event_type": "ssh.command",
             "geo.country_iso": "FR",
             "timestamp": 1_700_000_002_000,
         },
     ]
     monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: rows)
-    results = {"top_session": [{"facet": "01JBQ3ABCDEF", "commands": 5}]}
-    session = live_export.collect_session(_api(), results)
+    session = live_export.collect_session(_api(), "01JBQ3ABCDEF")
     assert len(session["commands"]) == 4  # the blank one is gone
+
+
+def test_collect_sessions_returns_one_entry_per_busy_session(monkeypatch):
+    monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows())
+    results = {
+        "top_sessions": [
+            {"facet": "01JBQ3ABCDEF", "commands": 9},
+            {"facet": "01JBQ3GHJKMN", "commands": 7},
+        ]
+    }
+    sessions = live_export.collect_sessions(_api(), results)
+    assert len(sessions) == 2
+    assert all(len(item["commands"]) == 4 for item in sessions)
+
+
+def test_collect_sessions_stops_at_the_first_short_session(monkeypatch):
+    # The facet comes back ordered by count, so everything after a session
+    # under the floor is shorter still.
+    monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows())
+    results = {
+        "top_sessions": [
+            {"facet": "01JBQ3ABCDEF", "commands": 9},
+            {"facet": "01JBQ3GHJKMN", "commands": 2},
+            {"facet": "01JBQ3PQRSTV", "commands": 2},
+        ]
+    }
+    assert len(live_export.collect_sessions(_api(), results)) == 1
+
+
+def test_collect_sessions_caps_the_list(monkeypatch):
+    monkeypatch.setattr(live_export, "run_nrql", lambda *a, **k: _session_rows())
+    results = {"top_sessions": [{"facet": "01JBQ3ABCDEF", "commands": 9} for _ in range(8)]}
+    sessions = live_export.collect_sessions(_api(), results)
+    assert len(sessions) == live_export.REPLAY_SESSIONS
+
+
+def test_collect_sessions_handles_no_session():
+    assert live_export.collect_sessions(_api(), {"top_sessions": []}) == []
 
 
 def _results_for_build():
@@ -141,7 +184,7 @@ def _results_for_build():
         ],
         "located": [{"located": 756}],
         "first_event": [{"first": 1_699_000_000_000}],
-        "top_session": [],
+        "top_sessions": [],
     }
 
 
@@ -154,6 +197,7 @@ def test_build_shapes_the_payload():
     assert payload["collecting_since"] == "2023-11-03T08:26:40Z"
     assert payload["recent"][0]["ip"] == "203.0.113.x"  # masked
     assert payload["session"] is None
+    assert payload["sessions"] == []
 
 
 def test_build_masks_every_recent_address():

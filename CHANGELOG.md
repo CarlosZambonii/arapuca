@@ -53,9 +53,23 @@ is bumped only on a breaking change to the envelope and is documented in
   GitHub release whose notes are the changelog section for that version.
 * `SECURITY.md`, `CONTRIBUTING.md`, this changelog, issue forms and a pull
   request template.
+* The session replay is now a picker: the export ships the five busiest
+  sessions rather than only the busiest one, each labelled with its country,
+  its masked address and which honeypot it typed into, and the panel plays
+  back whichever one the visitor chooses.
+* The replay panel is a terminal window: a title bar carrying the shell and
+  host the attacker actually saw, the prompt the honeypot itself printed
+  (bash on SSH, BusyBox ash on Telnet), a status line with where the session
+  came from, and a progress bar through its commands.
+* The invitation on the public page names all four doors and offers a
+  `telnet` command with the factory default those bots spray, after three of
+  the four surfaces had gone unmentioned since the Telnet honeypot landed.
 
 ### Fixed
 
+* The service filter chips on the public page did nothing. They set `hidden`
+  on a feed row, but the row's own `display: grid` beat the user agent's
+  `[hidden]` rule, so every row stayed on screen.
 * A release tag built a container image and then threw it away: the publish
   job was triggered by `v*` tags but its condition only ever allowed `main`.
   Tags now publish `:v1.2.3`, `:1.2.3` and `:latest`.
