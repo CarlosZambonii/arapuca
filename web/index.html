@@ -302,9 +302,29 @@ section { margin-block: 46px; }
 
 /* ---------- map ---------- */
 
+/* The hero: the headline on one side, the globe on the other. The globe used
+   to sit a thousand pixels down the page, under the invitation, which meant a
+   visitor arriving from a link read three paragraphs before seeing the one
+   thing that explains the project at a glance. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 32px;
+  align-items: center;
+  margin: 0 0 22px;
+}
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 16px; }
+}
+.hero-text h1 { margin-top: 0; }
+.hero-globe { min-width: 0; }
+
+/* Two lists of equal weight, side by side. They used to be stacked in a
+   narrow right hand column beside the map, which left a hole the height of
+   both of them under the map once the map moved out. */
 .map-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 22px;
   align-items: start;
 }
@@ -326,6 +346,10 @@ section { margin-block: 46px; }
   position: relative;
 }
 #map { display: block; width: 100%; height: auto; cursor: grab; }
+/* The ocean is lit from the top left, so the sphere reads as a sphere rather
+   than a circle with countries printed on it. */
+#map .atmosphere { fill: url(#globe-air); }
+#map .graticule { fill: none; stroke: #1b2a3f; stroke-width: 0.4; stroke-opacity: 0.75; }
 
 /* The map zooms, the page does not. touch-action: pan-y leaves one finger to
    the page and refuses the browser's own pinch on this element, so a pinch
@@ -335,6 +359,9 @@ section { margin-block: 46px; }
 #map { touch-action: pan-y; }
 #map.zoomed { touch-action: none; }
 #map.grabbing { cursor: grabbing; }
+/* The browser's own focus ring is a white box around the whole frame, which
+   a click on the globe is enough to raise. The amber one is for a keyboard. */
+#map:focus { outline: none; }
 #map:focus-visible { outline: 1px solid var(--amber); outline-offset: 2px; }
 
 /* Stroke widths are screen units, not map units. Without this every border
@@ -394,7 +421,7 @@ section { margin-block: 46px; }
 #map .land:not(.hit) { fill: var(--surface-high); }
 #map .land.hit { cursor: pointer; }
 #map .land.hit:hover { stroke: var(--ink); stroke-width: 0.8; }
-#map .sphere { fill: #0d1420; stroke: var(--line); stroke-width: 0.6; }
+#map .sphere { fill: url(#globe-ocean); stroke: var(--line); stroke-width: 0.6; }
 
 /* Attack lines. Drawn under the markers, so a dot is never hidden by a line
    arriving at it. */
@@ -443,8 +470,8 @@ section { margin-block: 46px; }
 }
 .ramp { height: 7px; flex: 1; border-radius: 2px; min-width: 60px; }
 .legend-note {
-  margin: 2px 4px 0;
-  max-width: 62ch;
+  margin: 14px 4px 0;
+  max-width: 86ch;
   font-size: 11px;
   line-height: 1.6;
   color: var(--ink-faint);
@@ -885,14 +912,39 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         <button type="button" class="lang-btn" data-lang="pt">PT</button>
       </div>
     </div>
-    <h1>Arapuca<span class="quiet" data-i18n="tagline">, a honeypot you are invited to attack</span></h1>
-    <p class="lede" data-i18n-html="lede">
-      A fake SSH, Telnet and HTTP server sitting on a public address, accepting
-      weak passwords on purpose and recording everything that happens next.
-      <strong>Nothing you send is ever executed.</strong> The shell is
-      fabricated, the filesystem is in memory, and the credentials you will
-      find in it open nothing.
-    </p>
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Arapuca<span class="quiet" data-i18n="tagline">, a honeypot you are invited to attack</span></h1>
+        <p class="lede" data-i18n-html="lede">
+          A fake SSH, Telnet and HTTP server sitting on a public address, accepting
+          weak passwords on purpose and recording everything that happens next.
+          <strong>Nothing you send is ever executed.</strong> The shell is
+          fabricated, the filesystem is in memory, and the credentials you will
+          find in it open nothing.
+        </p>
+      </div>
+
+      <div class="hero-globe">
+        <div class="map-frame">
+          <svg id="map" role="img" tabindex="0"
+               aria-label="A globe of attack origins. Drag to spin it, scroll or pinch to zoom."></svg>
+          <div class="map-zoom">
+            <button type="button" id="zoom-in" aria-label="Zoom in" data-i18n-label="zoomIn">+</button>
+            <button type="button" id="zoom-out" aria-label="Zoom out" data-i18n-label="zoomOut">−</button>
+            <button type="button" id="zoom-reset" aria-label="Reset the view" data-i18n-label="zoomReset">⟲</button>
+          </div>
+          <div class="map-hint" data-i18n="mapHint">drag to spin, scroll or pinch to zoom</div>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="legend">
+          <span data-i18n="fewer">fewer</span>
+          <div class="ramp" id="ramp"></div>
+          <span data-i18n="more">more</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
 
     <div class="invite">
       <h2 data-i18n="inviteTitle">Try to get in</h2>
@@ -919,8 +971,6 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     </div>
   </header>
 
-  <div class="stats" id="stats"></div>
-
   <section>
     <div class="section-head">
       <h2 data-i18n="originTitle">Where it comes from</h2>
@@ -932,34 +982,15 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     </div>
     <p class="map-caveat" id="map-caveat" hidden></p>
     <div class="map-layout">
-      <div>
-        <div class="map-frame">
-          <svg id="map" role="img" tabindex="0"
-               aria-label="World map of attack origins. Scroll or pinch to zoom, drag to pan."></svg>
-          <div class="map-zoom">
-            <button type="button" id="zoom-in" aria-label="Zoom in" data-i18n-label="zoomIn">+</button>
-            <button type="button" id="zoom-out" aria-label="Zoom out" data-i18n-label="zoomOut">−</button>
-            <button type="button" id="zoom-reset" aria-label="Reset the view" data-i18n-label="zoomReset" disabled>⟲</button>
-          </div>
-          <div class="map-hint" data-i18n="mapHint">scroll or pinch to zoom, drag to pan</div>
-          <div class="tip" id="tip" hidden></div>
-        </div>
-        <div class="legend">
-          <span data-i18n="fewer">fewer</span>
-          <div class="ramp" id="ramp"></div>
-          <span data-i18n="more">more</span>
-        </div>
-        <p class="legend-note" data-i18n="legendNote">
-          The colour is per country and covers the whole territory, overseas
-          departments included: France shaded here means Paris, not Cayenne.
-          The dots mark the city each attempt actually came from.
-        </p>
-      </div>
-      <div>
-        <div class="col"><h3 data-i18n="topCountries">Top countries</h3><div class="rank" id="countries"></div></div>
-        <div class="col" style="margin-top:18px"><h3 data-i18n="topCities">Top cities</h3><div class="rank" id="cities"></div></div>
+      <div class="col"><h3 data-i18n="topCountries">Top countries</h3><div class="rank" id="countries"></div></div>
+      <div class="col"><h3 data-i18n="topCities">Top cities</h3><div class="rank" id="cities"></div>
       </div>
     </div>
+    <p class="legend-note" data-i18n="legendNote">
+      The colour on the globe is per country and covers the whole territory,
+      overseas departments included: France shaded there means Paris, not
+      Cayenne. The dots mark the city each attempt actually came from.
+    </p>
   </section>
 
   <section id="replay-section" hidden>
@@ -1139,7 +1170,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       attacksAddresses: " ataques, ",
       addresses: " endere\u00e7os",
       mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
-      mapHint: "role ou pince para aproximar, arraste para mover",
+      mapHint: "arraste para girar, role ou pince para aproximar",
       zoomIn: "Aproximar",
       zoomOut: "Afastar",
       zoomReset: "Voltar \u00e0 vis\u00e3o inicial",
@@ -1175,17 +1206,17 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       topCities: "Cidades de origem",
       sensorHere: "O sensor fica aqui",
       attacksReceived: " ataques recebidos",
-      mapCaveatA: "O mapa mostra ",
+      mapCaveatA: "O globo mostra ",
       mapCaveatB: " dos ",
       mapCaveatC: " eventos (",
       mapCaveatD: "). O resto vem de endere\u00e7os que a base de GeoIP n\u00e3o " +
                   "localiza at\u00e9 a cidade, ent\u00e3o os n\u00fameros acima s\u00e3o " +
-                  "maiores do que a soma do mapa.",
+                  "maiores do que a soma do globo.",
       geoCredit: "Dados de IP para localiza\u00e7\u00e3o por ",
-      legendNote: "A cor \u00e9 por pa\u00eds e cobre o territ\u00f3rio inteiro, " +
-                  "inclusive departamentos ultramarinos: a Fran\u00e7a acesa aqui " +
-                  "quer dizer Paris, n\u00e3o Caiena. As bolinhas marcam a cidade de " +
-                  "onde cada tentativa realmente veio."
+      legendNote: "A cor no globo \u00e9 por pa\u00eds e cobre o territ\u00f3rio " +
+                  "inteiro, inclusive departamentos ultramarinos: a Fran\u00e7a acesa " +
+                  "l\u00e1 quer dizer Paris, n\u00e3o Caiena. As bolinhas marcam a " +
+                  "cidade de onde cada tentativa realmente veio."
     }
   };
 
@@ -1217,7 +1248,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     attacksAddresses: " attacks, ",
     addresses: " addresses",
     mapUnavailable: "map geometry could not be loaded",
-    mapHint: "scroll or pinch to zoom, drag to pan",
+    mapHint: "drag to spin, scroll or pinch to zoom",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     zoomReset: "Reset the view",
@@ -1252,12 +1283,12 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     topCities: "Top cities",
     sensorHere: "The sensor lives here",
     attacksReceived: " attacks received",
-    mapCaveatA: "The map places ",
+    mapCaveatA: "The globe places ",
     mapCaveatB: " of ",
     mapCaveatC: " events (",
     mapCaveatD: "). The rest come from addresses the GeoIP database cannot " +
                 "resolve to a city, so the figures above are larger than the " +
-                "map adds up to.",
+                "globe adds up to.",
     geoCredit: "IP geolocation data by "
   };
 
@@ -1531,7 +1562,9 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
   function sizeMap(svg) {
     var frame = document.querySelector(".map-frame");
     var width = Math.max(280, frame.clientWidth - 16);
-    var height = Math.round(width * 0.52);
+    // A globe wants a square, within reason: capped so it cannot push the
+    // headline beside it off a laptop screen.
+    var height = Math.round(Math.max(260, Math.min(width * 0.98, 520)));
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
@@ -1647,8 +1680,8 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var zoomed = view.k > 1.001;
     var svg = el("map");
     if (svg) { svg.classList.toggle("zoomed", zoomed); }
-    var reset = el("zoom-reset");
-    if (reset) { reset.disabled = !zoomed; }
+    // The reset also puts the rotation back, so it is useful even at a
+    // zoom of one and is never disabled.
   }
 
   /* A point in the coordinates the map is drawn in, from a pointer event.
@@ -1677,10 +1710,20 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     zoomAbout(factor, mapBox.width / 2, mapBox.height / 2);
   }
 
+  /* Pixels of drag into degrees of rotation. Divided by the zoom, so that
+     magnified the globe still turns at the speed the hand expects. */
+  function dragDegrees(pixels) {
+    var across = mapBox.width || 1;
+    return (pixels / across) * 200 / Math.max(1, view.k);
+  }
+
   function resetView() {
     view.k = 1;
     view.x = 0;
     view.y = 0;
+    globe.rotate = [26, -8];
+    globe.spin = true;
+    if (globe.draw) { globe.draw(); }
     applyView();
   }
 
@@ -1706,14 +1749,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       // a Firefox wheel moves many times further than the same notch in
       // Chrome.
       var unit = event.deltaMode === 1 ? 16 : (event.deltaMode === 2 ? 100 : 1);
-      zoomAbout(Math.exp(-event.deltaY * unit * 0.002), at.x, at.y);
+      // About the centre, not the pointer: on a sphere you bring a place to
+      // the middle by spinning it, and zooming into a corner would leave the
+      // globe half out of the frame with the drag still rotating it.
+      zoomCentre(Math.exp(-event.deltaY * unit * 0.002));
       hideTip();
     }, { passive: false });
 
-    svg.addEventListener("dblclick", function (event) {
-      var at = mapPoint(svg, event.clientX, event.clientY);
-      if (at) { zoomAbout(1.8, at.x, at.y); }
-    });
+    svg.addEventListener("dblclick", function () { zoomCentre(1.8); });
 
     // Pointer events rather than mouse plus touch, so one code path covers a
     // mouse, a trackpad, a pen and two fingers.
@@ -1735,6 +1778,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     }
 
     svg.addEventListener("pointerdown", function (event) {
+      globeInteracted();
       // One finger belongs to the page until the visitor has zoomed in. Two
       // fingers are always ours, and a mouse is always ours.
       if (event.pointerType === "touch" && count === 0 && view.k <= 1) {
@@ -1769,18 +1813,20 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         active[event.pointerId] = at;
         var now = midpoint();
         if (pinch.distance > 0 && now.distance > 0) {
-          zoomAbout(now.distance / pinch.distance, now.x, now.y);
-          panBy(now.x - pinch.x, now.y - pinch.y);
+          zoomCentre(now.distance / pinch.distance);
+          rotateBy(dragDegrees(now.x - pinch.x), -dragDegrees(now.y - pinch.y));
         }
         pinch = now;
         return;
       }
 
       if (dragging) {
-        panBy(at.x - tracked.x, at.y - tracked.y);
-        // The pointer is read again after the pan: the transform moved the
-        // map under it, and reusing the stale point would accelerate away.
-        active[event.pointerId] = mapPoint(svg, event.clientX, event.clientY) || at;
+        globeInteracted();
+        // Dragging spins the sphere rather than sliding a picture: across
+        // the full width of the frame is a bit over half a turn, which is
+        // the rate that feels like a hand on a physical globe.
+        rotateBy(dragDegrees(at.x - tracked.x), -dragDegrees(at.y - tracked.y));
+        active[event.pointerId] = at;
       } else {
         active[event.pointerId] = at;
       }
@@ -1804,13 +1850,14 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // Keyboard, because a map that only answers to a mouse is a map half the
     // visitors cannot use.
     svg.addEventListener("keydown", function (event) {
-      var step = 40;
+      var step = 8;
       var handled = true;
+      globeInteracted();
       switch (event.key) {
-        case "ArrowLeft": panBy(step, 0); break;
-        case "ArrowRight": panBy(-step, 0); break;
-        case "ArrowUp": panBy(0, step); break;
-        case "ArrowDown": panBy(0, -step); break;
+        case "ArrowLeft": rotateBy(-step, 0); break;
+        case "ArrowRight": rotateBy(step, 0); break;
+        case "ArrowUp": rotateBy(0, step); break;
+        case "ArrowDown": rotateBy(0, -step); break;
         case "+": case "=": zoomCentre(1.4); break;
         case "-": case "_": zoomCentre(1 / 1.4); break;
         case "0": resetView(); break;
@@ -1824,9 +1871,44 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     el("zoom-reset").addEventListener("click", resetView);
   }
 
+  /* ---------- the globe ---------- */
+
+  /* An orthographic projection rather than a flat map. The page is meant to
+     be shown to a room, and a sphere that spins under the pointer says "the
+     whole planet is knocking on one box in Sao Paulo" in a way a rectangle
+     never did. The cost is real: rotating reprojects every outline, where a
+     flat map could transform one group and be done. So the redraw is
+     throttled while it spins, and the zoom stays a transform on the group. */
+
+  var globe = {
+    // d3 rotate is [lambda, phi]: the centre of the disc is at lon -lambda,
+    // lat -phi. The default puts the Atlantic in the middle, which is where
+    // the sensor and most of its traffic both are.
+    rotate: [26, -8],
+    spin: true,
+    lastInput: 0,
+    draw: null,
+    frontOf: null
+  };
+  var SPIN_PER_SECOND = 3.2;   // degrees
+  var SPIN_RESUME_MS = 7000;
+
+  function globeInteracted() {
+    globe.spin = false;
+    globe.lastInput = Date.now();
+  }
+
+  function rotateBy(dLambda, dPhi) {
+    globe.rotate[0] = (globe.rotate[0] + dLambda) % 360;
+    // Stop short of the poles: past them the globe flips over and the
+    // gesture reverses under the hand.
+    globe.rotate[1] = Math.max(-82, Math.min(82, globe.rotate[1] + dPhi));
+    if (globe.draw) { globe.draw(); }
+  }
+
   function renderMap() {
     var svg = el("map");
-    if (!window.d3 || !d3.geoNaturalEarth1 || !window.topojson || !state.world) {
+    if (!window.d3 || !d3.geoOrthographic || !window.topojson || !state.world) {
       mapUnavailable();
       return;
     }
@@ -1850,11 +1932,20 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var box = sizeMap(svg);
     mapBox = { width: box.width, height: box.height };
     zoomables = [];
+
+    svg.appendChild(globeDefs());
     viewport = svgEl("g", { class: "viewport" });
     svg.appendChild(viewport);
 
     var countries = topojson.feature(state.world, state.world.objects.countries);
-    var projection = d3.geoNaturalEarth1().fitSize([box.width, box.height], { type: "Sphere" });
+    // Room for the halo outside the limb, which is drawn at radius + 9 and
+    // was being clipped by the frame.
+    var radius = Math.min(box.width, box.height) / 2 - 14;
+    var projection = d3.geoOrthographic()
+      .translate([box.width / 2, box.height / 2])
+      .scale(radius)
+      .rotate(globe.rotate)
+      .clipAngle(90);
     var path = d3.geoPath(projection);
 
     // Logarithmic, not linear and not square root. Real traffic is one
@@ -1874,14 +1965,31 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     var originWeight = ramp(topOrigin);
     function colour(attacks) { return shade(countryWeight(attacks)); }
 
-    viewport.appendChild(svgEl("path", { class: "sphere", d: path({ type: "Sphere" }) }));
+    // Whether a point is on the half of the sphere facing us. d3 clips the
+    // outlines for us; a circle positioned by hand has to be asked.
+    function front(coords) {
+      var r = projection.rotate();
+      return d3.geoDistance(coords, [-r[0], -r[1]]) < Math.PI / 2 - 0.02;
+    }
+    globe.frontOf = front;
+
+    // --- the sphere itself ------------------------------------------------
+    viewport.appendChild(svgEl("circle", {
+      class: "atmosphere",
+      cx: box.width / 2, cy: box.height / 2, r: radius + 9
+    }));
+    var sphere = svgEl("path", { class: "sphere" });
+    viewport.appendChild(sphere);
+    var graticule = svgEl("path", { class: "graticule" });
+    viewport.appendChild(graticule);
+    var grid = d3.geoGraticule().step([20, 20])();
 
     // --- countries, as context under the lines ---------------------------
     var land = svgEl("g", {});
+    var lands = [];
     countries.features.forEach(function (feature) {
       var hit = byId[String(Number(feature.id))];
       var shape = svgEl("path", {
-        d: path(feature),
         class: "land" + (hit ? " hit" : ""),
         fill: hit ? colour(hit.attacks) : null
       });
@@ -1894,102 +2002,87 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         });
         shape.addEventListener("mouseleave", hideTip);
       }
+      lands.push({ node: shape, feature: feature });
       land.appendChild(shape);
     });
     viewport.appendChild(land);
 
-    if (!sensor || !origins.length) {
-      el("ramp").style.background = "linear-gradient(to right, " +
-        shade(0) + ", " + shade(0.5) + ", " + shade(1) + ")";
-      applyView();
-      return;
-    }
-
-    var home = [sensor.lon, sensor.lat];
-    var homeXY = projection(home);
-
-    // --- attack lines -----------------------------------------------------
-    var arcs = svgEl("g", {});
     var drawn = [];
+    var arcNodes = [];
+    var dotNodes = [];
+    var homeNode = null;
+    var home = sensor ? [sensor.lon, sensor.lat] : null;
     mapIndex = {};
-    origins.forEach(function (origin, index) {
-      var from = [origin.lon, origin.lat];
-      var d = arcBetween(path, from, home);
-      if (!d) { return; }
-      var weight = originWeight(origin.attacks);
-      var arcPath = svgEl("path", {
-        class: "arc",
-        d: d,
-        "stroke-width": (0.55 + weight * 1.5).toFixed(2),
-        "stroke-opacity": (0.3 + weight * 0.45).toFixed(2)
-      });
-      arcs.appendChild(arcPath);
-      var key = originKey(origin);
-      mapIndex[key] = { arc: arcPath, dot: null, iso: (origin.iso2 || origin.country_iso || "") };
-      drawn.push({
-        origin: origin,
-        along: d3.geoInterpolate(from, home),
-        // Spread the starting points, or every pulse leaves at the same
-        // instant and the map blinks instead of flowing.
-        phase: (index * 0.137) % 1,
-        weight: weight
-      });
-    });
-    viewport.appendChild(arcs);
 
-    // --- origin cities ----------------------------------------------------
-    var dots = svgEl("g", {});
-    origins.forEach(function (origin) {
-      var xy = projection([origin.lon, origin.lat]);
-      if (!xy) { return; }
-      var weight = originWeight(origin.attacks);
-      var radius = 2.2 + weight * 4.3;
-      var dot = svgEl("circle", {
-        class: "origin",
-        cx: xy[0], cy: xy[1],
-        r: radius.toFixed(2),
-        "fill-opacity": (0.62 + weight * 0.38).toFixed(2)
+    if (sensor && origins.length) {
+      // --- attack lines ---------------------------------------------------
+      var arcs = svgEl("g", {});
+      origins.forEach(function (origin, index) {
+        var from = [origin.lon, origin.lat];
+        var weight = originWeight(origin.attacks);
+        var arcPath = svgEl("path", {
+          class: "arc",
+          "stroke-width": (0.55 + weight * 1.5).toFixed(2),
+          "stroke-opacity": (0.3 + weight * 0.45).toFixed(2)
+        });
+        arcs.appendChild(arcPath);
+        arcNodes.push({ node: arcPath, from: from });
+        var key = originKey(origin);
+        mapIndex[key] = { arc: arcPath, dot: null, iso: (origin.iso2 || origin.country_iso || "") };
+        drawn.push({
+          origin: origin,
+          along: d3.geoInterpolate(from, home),
+          // Spread the starting points, or every pulse leaves at the same
+          // instant and the map blinks instead of flowing.
+          phase: (index * 0.137) % 1,
+          weight: weight
+        });
       });
-      zoomables.push({ node: dot, r: radius });
-      var key = originKey(origin);
-      if (mapIndex[key]) { mapIndex[key].dot = dot; }
-      else { mapIndex[key] = { arc: null, dot: dot, iso: (origin.iso2 || origin.country_iso || "") }; }
-      var lines = [
-        origin.city + ", " + countryName(origin),
-        num(origin.attacks) + t("attacksAddresses") + num(origin.attackers) + t("addresses")
-      ];
-      dot.addEventListener("mousemove", function (event) { showTip(box.frame, event, lines); });
-      dot.addEventListener("mouseleave", hideTip);
-      // A click drills into this origin: its line and dot light, the rest
-      // recede, and the cities list marks the same row.
-      dot.addEventListener("click", function (event) { event.stopPropagation(); focusOrigin(key); });
-      dot.style.cursor = "pointer";
-      dots.appendChild(dot);
-    });
-    viewport.appendChild(dots);
+      viewport.appendChild(arcs);
 
-    // --- the sensor -------------------------------------------------------
-    if (homeXY) {
+      // --- origin cities ----------------------------------------------------
+      var dots = svgEl("g", {});
+      origins.forEach(function (origin) {
+        var weight = originWeight(origin.attacks);
+        var r = 2.2 + weight * 4.3;
+        var dot = svgEl("circle", {
+          class: "origin",
+          r: r.toFixed(2),
+          "fill-opacity": (0.62 + weight * 0.38).toFixed(2)
+        });
+        zoomables.push({ node: dot, r: r });
+        dotNodes.push({ node: dot, coords: [origin.lon, origin.lat] });
+        var key = originKey(origin);
+        if (mapIndex[key]) { mapIndex[key].dot = dot; }
+        else { mapIndex[key] = { arc: null, dot: dot, iso: (origin.iso2 || origin.country_iso || "") }; }
+        var lines = [
+          origin.city + ", " + countryName(origin),
+          num(origin.attacks) + t("attacksAddresses") + num(origin.attackers) + t("addresses")
+        ];
+        dot.addEventListener("mousemove", function (event) { showTip(box.frame, event, lines); });
+        dot.addEventListener("mouseleave", hideTip);
+        // A click drills into this origin: its line and dot light, the rest
+        // recede, and the cities list marks the same row.
+        dot.addEventListener("click", function (event) { event.stopPropagation(); focusOrigin(key); });
+        dot.style.cursor = "pointer";
+        dots.appendChild(dot);
+      });
+      viewport.appendChild(dots);
+
+      // --- the sensor -------------------------------------------------------
+      // Two nested groups: the outer one is moved by the rotation, the inner
+      // one is counter scaled by the zoom, and neither fights the other for
+      // the transform attribute.
+      var place = svgEl("g", {});
       var marker = svgEl("g", {});
-      marker.appendChild(svgEl("circle", { class: "home-glow", cx: homeXY[0], cy: homeXY[1], r: 13 }));
-      marker.appendChild(svgEl("circle", { class: "home-ring", cx: homeXY[0], cy: homeXY[1], r: 8 }));
+      marker.appendChild(svgEl("circle", { class: "home-glow", cx: 0, cy: 0, r: 13 }));
+      marker.appendChild(svgEl("circle", { class: "home-ring", cx: 0, cy: 0, r: 8 }));
 
       // A house, drawn rather than an emoji: an emoji renders as a different
       // picture on every platform and some of them have no colour at all.
-      var x = homeXY[0], y = homeXY[1];
       var house = svgEl("path", {
         class: "home-icon",
-        d: "M" + (x - 4.5) + "," + (y + 0.4) +
-           "L" + x + "," + (y - 4.2) +
-           "L" + (x + 4.5) + "," + (y + 0.4) +
-           "L" + (x + 3.1) + "," + (y + 0.4) +
-           "L" + (x + 3.1) + "," + (y + 4.2) +
-           "L" + (x + 1.1) + "," + (y + 4.2) +
-           "L" + (x + 1.1) + "," + (y + 1.2) +
-           "L" + (x - 1.1) + "," + (y + 1.2) +
-           "L" + (x - 1.1) + "," + (y + 4.2) +
-           "L" + (x - 3.1) + "," + (y + 4.2) +
-           "L" + (x - 3.1) + "," + (y + 0.4) + "Z"
+        d: "M-4.5,0.4L0,-4.2L4.5,0.4L3.1,0.4L3.1,4.2L1.1,4.2L1.1,1.2L-1.1,1.2L-1.1,4.2L-3.1,4.2L-3.1,0.4Z"
       });
       var homeLines = [
         t("sensorHere"),
@@ -1999,15 +2092,18 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       house.addEventListener("mousemove", function (event) { showTip(box.frame, event, homeLines); });
       house.addEventListener("mouseleave", hideTip);
       marker.appendChild(house);
-      viewport.appendChild(marker);
-      zoomables.push({ node: marker, cx: x, cy: y });
+      place.appendChild(marker);
+      viewport.appendChild(place);
+      zoomables.push({ node: marker, cx: 0, cy: 0 });
+      homeNode = place;
     }
 
     // --- pulses travelling in -------------------------------------------
     var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var pulseNodes = [];
     if (!reduced && drawn.length) {
       var pulses = svgEl("g", {});
-      var nodes = drawn.map(function (arc) {
+      pulseNodes = drawn.map(function (arc) {
         var pulseRadius = 1 + arc.weight * 1.8;
         var dot = svgEl("circle", { class: "pulse-dot", r: pulseRadius.toFixed(2), cx: -10, cy: -10 });
         zoomables.push({ node: dot, r: pulseRadius });
@@ -2015,25 +2111,83 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
         return dot;
       });
       viewport.appendChild(pulses);
+    }
 
-      var started = null;
-      var travel = 5200; // milliseconds for one trip, slow enough to follow
-      function step(now) {
-        if (started === null) { started = now; }
-        var base = ((now - started) / travel);
-        drawn.forEach(function (arc, index) {
-          var k = (base + arc.phase) % 1;
-          var xy = projection(arc.along(k));
-          var node = nodes[index];
-          if (!xy) { node.setAttribute("opacity", "0"); return; }
-          node.setAttribute("cx", xy[0]);
-          node.setAttribute("cy", xy[1]);
-          // Fade in on departure and out on arrival, so a dot never pops.
-          node.setAttribute("opacity", (Math.sin(k * Math.PI) * 0.9).toFixed(2));
-        });
-        animation = requestAnimationFrame(step);
+    // --- one redraw, for every rotation ----------------------------------
+    function draw() {
+      projection.rotate(globe.rotate);
+      sphere.setAttribute("d", path({ type: "Sphere" }) || "");
+      graticule.setAttribute("d", path(grid) || "");
+      lands.forEach(function (item) {
+        item.node.setAttribute("d", path(item.feature) || "");
+      });
+      arcNodes.forEach(function (item) {
+        item.node.setAttribute("d", home ? (arcBetween(path, item.from, home) || "") : "");
+      });
+      dotNodes.forEach(function (item) {
+        var xy = projection(item.coords);
+        var show = xy && front(item.coords);
+        item.node.style.display = show ? "" : "none";
+        if (show) {
+          item.node.setAttribute("cx", xy[0].toFixed(1));
+          item.node.setAttribute("cy", xy[1].toFixed(1));
+        }
+      });
+      if (homeNode && home) {
+        var hxy = projection(home);
+        var show = hxy && front(home);
+        homeNode.style.display = show ? "" : "none";
+        if (show) {
+          homeNode.setAttribute("transform",
+            "translate(" + hxy[0].toFixed(1) + "," + hxy[1].toFixed(1) + ")");
+        }
       }
-      animation = requestAnimationFrame(step);
+    }
+    globe.draw = draw;
+    draw();
+
+    // --- the loop: the spin, and the pulses along the lines ---------------
+    if (!reduced) {
+      var previous = null;
+      var sinceDraw = 0;
+      var travel = 5200; // milliseconds for one trip, slow enough to follow
+      var elapsed = 0;
+
+      function tick(now) {
+        if (previous === null) { previous = now; }
+        var dt = Math.min(100, now - previous);
+        previous = now;
+
+        // The spin stops the moment anyone touches the globe, and comes back
+        // a few seconds after they stop, so a page left open keeps moving
+        // without fighting the hand that is holding it.
+        if (!globe.spin && Date.now() - globe.lastInput > SPIN_RESUME_MS) { globe.spin = true; }
+        if (globe.spin) {
+          globe.rotate[0] = (globe.rotate[0] + SPIN_PER_SECOND * dt / 1000) % 360;
+          sinceDraw += dt;
+          // Redrawing 170 outlines sixty times a second is wasted work for a
+          // three degree a second drift. Twenty five frames reads as smooth.
+          if (sinceDraw >= 40) { sinceDraw = 0; draw(); }
+        }
+
+        if (pulseNodes.length) {
+          elapsed += dt;
+          var base = elapsed / travel;
+          drawn.forEach(function (arc, index) {
+            var k = (base + arc.phase) % 1;
+            var at = arc.along(k);
+            var node = pulseNodes[index];
+            var xy = front(at) ? projection(at) : null;
+            if (!xy) { node.setAttribute("opacity", "0"); return; }
+            node.setAttribute("cx", xy[0].toFixed(1));
+            node.setAttribute("cy", xy[1].toFixed(1));
+            // Fade in on departure and out on arrival, so a dot never pops.
+            node.setAttribute("opacity", (Math.sin(k * Math.PI) * 0.9).toFixed(2));
+          });
+        }
+        animation = requestAnimationFrame(tick);
+      }
+      animation = requestAnimationFrame(tick);
     }
 
     el("ramp").style.background = "linear-gradient(to right, " +
@@ -2042,6 +2196,33 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     // A redraw must not throw the visitor back out to the whole world: the
     // data reloads on a schedule and the window resizes while they read.
     applyView();
+  }
+
+  /* The ocean lit from the top left and a thin halo outside the limb. Without
+     them the globe is a circle with countries printed on it. */
+  function globeDefs() {
+    var defs = svgEl("defs", {});
+    function gradient(id, stops, attrs) {
+      attrs.id = id;
+      var node = svgEl("radialGradient", attrs);
+      stops.forEach(function (stop) {
+        node.appendChild(svgEl("stop", {
+          offset: stop[0], "stop-color": stop[1], "stop-opacity": stop[2]
+        }));
+      });
+      defs.appendChild(node);
+    }
+    gradient("globe-ocean", [
+      ["0%", "#18283f", "1"],
+      ["58%", "#0d1420", "1"],
+      ["100%", "#060a11", "1"]
+    ], { cx: "34%", cy: "26%", r: "82%" });
+    gradient("globe-air", [
+      ["76%", "#4fd2c2", "0"],
+      ["93%", "#4fd2c2", "0.13"],
+      ["100%", "#4fd2c2", "0"]
+    ], { cx: "50%", cy: "50%", r: "50%" });
+    return defs;
   }
 
   /* ---------- techniques and feed ---------- */
