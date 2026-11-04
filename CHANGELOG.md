@@ -64,6 +64,17 @@ is bumped only on a breaking change to the envelope and is documented in
 * The invitation on the public page names all four doors and offers a
   `telnet` command with the factory default those bots spray, after three of
   the four surfaces had gone unmentioned since the Telnet honeypot landed.
+* The attack map is a globe: an orthographic projection that spins on its own
+  and turns under the pointer, at the top of the page beside the headline
+  rather than a thousand pixels below it.
+* Phosphor mode, a boot sequence typed out before the page appears, and the
+  passwords attackers tried falling behind the headline.
+* A terminal on the public page. A visitor types `ls -la` or
+  `cat /opt/app/.env` and gets the answer the honeypot itself would give: the
+  filesystem under it is generated from `config/filesystem.yaml` by
+  `tools/shell_export.py`, and a test fails the build if the two drift. The
+  page fetches nothing, so `wget` says what the sensor would do rather than
+  doing it from a reader's browser.
 
 ### Fixed
 

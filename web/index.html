@@ -858,6 +858,36 @@ section { margin-block: 46px; }
   white-space: nowrap;
 }
 .replay-status .count { flex: none; font-variant-numeric: tabular-nums; }
+/* The prompt a visitor types at. The input is the terminal: no border, no
+   background, the caret in the amber the cursor uses above it. */
+.term-input {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 11px 18px 15px;
+  background: #05080e;
+  border-top: 1px solid #141d29;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+}
+.term-input .rps { color: #5fd38d; white-space: pre; }
+.term-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: var(--amber);
+  padding: 0;
+}
+.term-input input:focus { outline: none; }
+.term-input input::placeholder { color: var(--ink-faint); }
+#shell-screen .out { color: var(--ink-dim); }
+#shell-screen .err { color: var(--red); }
+#shell-screen .hint { color: var(--ink-faint); }
+
 .replay-caveat {
   font-size: 0.8rem;
   color: var(--ink-faint);
@@ -1156,6 +1186,33 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     </p>
   </section>
 
+  <section id="shell-section" hidden>
+    <div class="section-head">
+      <h2 data-i18n="shellTitle">Try it yourself</h2>
+      <span class="note" data-i18n="shellNote">the answers the honeypot gives</span>
+    </div>
+    <div class="replay">
+      <div class="replay-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="replay-title">bash - root@srv-web-03: ~</span>
+        <span class="replay-spacer"></span>
+        <button type="button" class="replay-btn" id="shell-reset" data-i18n="shellReset">reset</button>
+      </div>
+      <div class="replay-screen" id="shell-screen" role="log" aria-live="polite"></div>
+      <form class="term-input" id="shell-form">
+        <span class="rps" id="shell-prompt" aria-hidden="true">root@srv-web-03:~# </span>
+        <input id="shell-input" type="text" spellcheck="false" autocomplete="off"
+               autocapitalize="off" autocorrect="off" aria-label="Shell command"
+               data-i18n-ph="shellPlaceholder" placeholder="try: uname -a">
+      </form>
+    </div>
+    <p class="replay-caveat" data-i18n="shellCaveat">
+      Nothing here reaches a machine. The filesystem under this prompt is
+      generated from the one the honeypot carries, so what you read is what an
+      attacker reads, and every credential in it is fabricated.
+    </p>
+  </section>
+
   <section>
     <div class="section-head">
       <h2 data-i18n="triesTitle">What they try</h2>
@@ -1314,6 +1371,25 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       mapUnavailable: "n\u00e3o foi poss\u00edvel carregar a geometria do mapa",
       mapHint: "arraste para girar, role ou pince para aproximar",
       bootSkip: "qualquer tecla para pular",
+      shellTitle: "Experimente voc\u00ea mesmo",
+      shellNote: "as respostas que o honeypot d\u00e1",
+      shellReset: "reiniciar",
+      shellPlaceholder: "tente: uname -a",
+      shellWelcome: "Voc\u00ea est\u00e1 no shell falso, como um atacante que acertou a " +
+                    "senha. Tente ls -la, cat /etc/passwd, cat /opt/app/.env, ps aux, " +
+                    "uname -a. Digite help para a lista.",
+      shellHelp: "comandos que esta p\u00e1gina responde:",
+      shellElsewhere: "Esse o sensor responde, mas a p\u00e1gina n\u00e3o carrega. " +
+                      "Experimente por ssh no endere\u00e7o l\u00e1 em cima.",
+      shellNoFetch: "O sensor baixaria o arquivo numa thread separada, para uma " +
+                    "quarentena cifrada que ele nunca abre. Esta p\u00e1gina n\u00e3o " +
+                    "busca nada: ela n\u00e3o vai at\u00e9 a URL de um atacante pelo " +
+                    "navegador de quem est\u00e1 lendo.",
+      shellClosed: "sess\u00e3o encerrada. use reiniciar para abrir outra.",
+      shellCaveat: "Nada aqui alcan\u00e7a uma m\u00e1quina. O sistema de arquivos sob " +
+                   "este prompt \u00e9 gerado a partir do que o honeypot carrega, ent\u00e3o " +
+                   "o que voc\u00ea l\u00ea \u00e9 o que um atacante l\u00ea, e toda " +
+                   "credencial nele \u00e9 fabricada.",
       themeLabel: "modo f\u00f3sforo verde",
       zoomIn: "Aproximar",
       zoomOut: "Afastar",
@@ -1394,6 +1470,23 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     mapUnavailable: "map geometry could not be loaded",
     mapHint: "drag to spin, scroll or pinch to zoom",
     bootSkip: "press any key to skip",
+    shellTitle: "Try it yourself",
+    shellNote: "the answers the honeypot gives",
+    shellReset: "reset",
+    shellPlaceholder: "try: uname -a",
+    shellWelcome: "You are in the fake shell, as an attacker who guessed the password " +
+                  "would be. Try ls -la, cat /etc/passwd, cat /opt/app/.env, ps aux, " +
+                  "uname -a. Type help for the list.",
+    shellHelp: "commands this page answers:",
+    shellElsewhere: "The sensor answers that one; this page does not carry it. " +
+                    "Try it over ssh, at the address above.",
+    shellNoFetch: "The sensor would fetch the file on a worker thread, into an " +
+                  "encrypted quarantine it never opens. This page fetches nothing: " +
+                  "it will not go to an attacker's URL from a reader's browser.",
+    shellClosed: "session closed. use reset to open another.",
+    shellCaveat: "Nothing here reaches a machine. The filesystem under this prompt is " +
+                 "generated from the one the honeypot carries, so what you read is what " +
+                 "an attacker reads, and every credential in it is fabricated.",
     themeLabel: "phosphor mode",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
@@ -3189,6 +3282,537 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
     });
   }
 
+  /* ---------- the terminal a visitor can type in ---------- */
+
+  /* The same answers the honeypot gives, in the page. Watching a replay shows
+     what an attack looks like; typing `cat /opt/app/.env` yourself is what
+     makes people understand what the box is offering and why none of it is
+     real. The filesystem is generated from config/filesystem.yaml by
+     tools/shell_export.py and a test fails the build if the two drift, so the
+     claim on the page stays true. The command outputs below are ported from
+     src/ssh/command_registry.cpp, string for string.
+
+     Nothing is evaluated. Every branch here returns a literal or something
+     read out of that map. */
+
+  var term = {
+    fs: null,
+    cwd: "/root",
+    user: "root",
+    host: "srv-web-03",
+    history: [],
+    cursor: 0,
+    closed: false
+  };
+
+  var TERM_ENV = [
+    ["HOME", "/root"],
+    ["USER", "root"],
+    ["SHELL", "/bin/bash"],
+    ["PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"],
+    ["TERM", "xterm-256color"],
+    ["LANG", "en_US.UTF-8"],
+    ["PWD", "/root"]
+  ];
+
+  var TERM_WHICH = {
+    bash: "/bin/bash", sh: "/bin/sh", ls: "/bin/ls", cat: "/bin/cat",
+    wget: "/usr/bin/wget", curl: "/usr/bin/curl", python3: "/usr/bin/python3",
+    perl: "/usr/bin/perl", gcc: "/usr/bin/gcc", git: "/usr/bin/git",
+    docker: "/usr/bin/docker", systemctl: "/usr/bin/systemctl",
+    crontab: "/usr/bin/crontab", nc: "/usr/bin/nc"
+  };
+
+  /* Verbs the daemon answers and this page does not carry. Saying so is
+     better than a false "command not found", and it points at the thing the
+     page is for: the sensor itself is on the internet, waiting. */
+  var TERM_ELSEWHERE = [
+    "top", "htop", "apt", "apt-get", "systemctl", "service", "ip", "ifconfig",
+    "export", "grep", "python", "python3", "perl", "php"
+  ];
+
+  function termSplit(line) {
+    var out = [];
+    var current = "";
+    var quote = "";
+    var has = false;
+    for (var i = 0; i < line.length; i += 1) {
+      var ch = line.charAt(i);
+      if (quote) {
+        if (ch === quote) { quote = ""; } else { current += ch; }
+        has = true;
+      } else if (ch === "'" || ch === "\"") {
+        quote = ch;
+        has = true;
+      } else if (ch === " " || ch === "\t") {
+        if (has) { out.push(current); current = ""; has = false; }
+      } else {
+        current += ch;
+        has = true;
+      }
+    }
+    if (has) { out.push(current); }
+    return out;
+  }
+
+  function termOperands(argv) {
+    return argv.slice(1).filter(function (item) { return item.charAt(0) !== "-"; });
+  }
+
+  function termFlag(argv, letter) {
+    for (var i = 1; i < argv.length; i += 1) {
+      var item = argv[i];
+      if (item.charAt(0) === "-" && item.charAt(1) !== "-" && item.indexOf(letter, 1) > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Absolute path from whatever was typed. The daemon does this in Vfs,
+     including the part where a path that cannot be resolved falls back to the
+     working directory rather than escaping the root. */
+  function termResolve(path) {
+    if (!path) { return term.cwd; }
+    var start = term.cwd;
+    if (path === "~" || path.indexOf("~/") === 0) {
+      start = "/root";
+      path = path === "~" ? "" : path.slice(2);
+    } else if (path.charAt(0) === "/") {
+      start = "/";
+    }
+    var parts = start.split("/").concat(path.split("/"));
+    var stack = [];
+    parts.forEach(function (part) {
+      if (!part || part === ".") { return; }
+      if (part === "..") { stack.pop(); return; }
+      stack.push(part);
+    });
+    return "/" + stack.join("/");
+  }
+
+  function termFind(path) {
+    if (!term.fs) { return null; }
+    var node = term.fs[path];
+    if (node) { return node; }
+    // "/etc/" and "/etc" are the same place.
+    if (path.length > 1 && path.charAt(path.length - 1) === "/") {
+      return term.fs[path.slice(0, -1)] || null;
+    }
+    return null;
+  }
+
+  function termShortCwd() {
+    return term.cwd === "/root" ? "~" : term.cwd;
+  }
+
+  function termPrompt() {
+    return term.user + "@" + term.host + ":" + termShortCwd() + "# ";
+  }
+
+  function termPad(value, width) {
+    var out = String(value);
+    while (out.length < width) { out = " " + out; }
+    return out;
+  }
+
+  function termLongEntry(node, name) {
+    var links = node.dir ? String(2 + ((node.children || []).length)) : "1";
+    return node.mode + " " + links + " " + node.owner + " " + node.group + " " +
+      termPad(node.dir ? 4096 : node.size, 6) + " " + node.mtime + " " + name;
+  }
+
+  var TERM_COMMANDS = {
+    ls: function (argv) {
+      var targets = termOperands(argv);
+      var asked = targets.length ? targets[0] : ".";
+      var path = termResolve(asked);
+      var node = termFind(path);
+      if (!node) { return err("ls: cannot access '" + asked + "': No such file or directory\n"); }
+
+      var long = termFlag(argv, "l");
+      var hidden = termFlag(argv, "a");
+      if (!node.dir) { return out(long ? termLongEntry(node, asked) + "\n" : asked + "\n"); }
+
+      var names = (node.children || []).filter(function (name) {
+        return hidden || name.charAt(0) !== ".";
+      });
+      if (!names.length) { return out(""); }
+      if (!long) { return out(names.join("  ") + "\n"); }
+      var text = "";
+      names.forEach(function (name) {
+        var child = termFind(path === "/" ? "/" + name : path + "/" + name);
+        if (child) { text += termLongEntry(child, name) + "\n"; }
+      });
+      return out(text);
+    },
+
+    cd: function (argv) {
+      var targets = termOperands(argv);
+      var asked = targets.length ? targets[0] : "/root";
+      var path = termResolve(asked === "-" ? "/root" : asked);
+      var node = termFind(path);
+      if (!node) { return err("bash: cd: " + asked + ": No such file or directory\n"); }
+      if (!node.dir) { return err("bash: cd: " + asked + ": Not a directory\n"); }
+      term.cwd = path;
+      return out("");
+    },
+
+    pwd: function () { return out(term.cwd + "\n"); },
+
+    cat: function (argv) {
+      var targets = termOperands(argv);
+      if (!targets.length) { return out(""); }
+      var text = "";
+      var bad = false;
+      targets.forEach(function (target) {
+        var node = termFind(termResolve(target));
+        if (!node) { text += "cat: " + target + ": No such file or directory\n"; bad = true; return; }
+        if (node.dir) { text += "cat: " + target + ": Is a directory\n"; bad = true; return; }
+        text += node.content;
+      });
+      return bad ? err(text) : out(text);
+    },
+
+    head: function (argv) { return termHeadTail(argv, true); },
+    tail: function (argv) { return termHeadTail(argv, false); },
+
+    echo: function (argv) {
+      var quiet = argv.length > 1 && argv[1] === "-n";
+      var parts = argv.slice(quiet ? 2 : 1);
+      return out(parts.join(" ") + (quiet ? "" : "\n"));
+    },
+
+    whoami: function () { return out(term.user + "\n"); },
+    id: function () { return out("uid=0(root) gid=0(root) groups=0(root)\n"); },
+    hostname: function () { return out(term.host + "\n"); },
+    nproc: function () { return out("2\n"); },
+    date: function () { return out("Mon Nov  2 06:31:02 UTC 2026\n"); },
+
+    uname: function (argv) {
+      var kernel = "5.15.0-91-generic";
+      if (termFlag(argv, "a")) {
+        return out("Linux " + term.host + " " + kernel +
+          " #101-Ubuntu SMP Tue Nov 14 13:30:08 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux\n");
+      }
+      if (termFlag(argv, "r")) { return out(kernel + "\n"); }
+      if (termFlag(argv, "m")) { return out("x86_64\n"); }
+      if (termFlag(argv, "n")) { return out(term.host + "\n"); }
+      return out("Linux\n");
+    },
+
+    uptime: function () {
+      return out(" 06:31:02 up 5 days,  3:14,  1 user,  load average: 0.08, 0.12, 0.09\n");
+    },
+
+    w: function () {
+      return out(" 06:31:02 up 5 days,  3:14,  1 user,  load average: 0.08, 0.12, 0.09\n" +
+        "USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\n" +
+        term.user + "     pts/0    198.51.100.23    06:30    0.00s  0.03s  0.00s -bash\n");
+    },
+
+    ps: function (argv) {
+      if (termFlag(argv, "a") || argv.indexOf("aux") > 0 || termFlag(argv, "e")) {
+        return out(
+          "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\n" +
+          "root           1  0.0  0.6 168404 11820 ?        Ss   Oct28   0:24 /sbin/init\n" +
+          "root         412  0.0  0.4  61048  8104 ?        Ss   Oct28   0:03 /lib/systemd/systemd-journald\n" +
+          "root         655  0.0  0.2  15420  5332 ?        Ss   Oct28   0:01 sshd: /usr/sbin/sshd -D\n" +
+          "www-data    1104  0.0  1.1 214880 22440 ?        S    Oct28   0:12 nginx: worker process\n" +
+          "postgres    1210  0.0  2.3 398124 46512 ?        Ss   Oct28   1:47 /usr/lib/postgresql/14/bin/postgres\n" +
+          "deploy      2031  0.1  3.4 918244 68120 ?        Ssl  Oct28   4:02 /opt/app/bin/app --config /opt/app/.env\n" +
+          "root       41122  0.0  0.3  17204  6980 ?        Ss   03:11  0:00 sshd: " + term.user + " [priv]\n" +
+          "deploy     41880  0.0  0.1   9284  3120 ?        S    06:25  0:00 /bin/sh /opt/app/scripts/sync.sh\n");
+      }
+      return out("    PID TTY          TIME CMD\n" +
+        "  41124 pts/0    00:00:00 bash\n" +
+        "  41190 pts/0    00:00:00 ps\n");
+    },
+
+    free: function (argv) {
+      if (termFlag(argv, "h")) {
+        return out("               total        used        free      shared  buff/cache   available\n" +
+          "Mem:           3.8Gi       1.1Gi       774Mi        12Mi       2.0Gi       2.5Gi\n" +
+          "Swap:             0B          0B          0B\n");
+      }
+      return out("               total        used        free      shared  buff/cache   available\n" +
+        "Mem:         4030400     1128848      792504       12544     2089048     2574592\n" +
+        "Swap:              0           0           0\n");
+    },
+
+    df: function (argv) {
+      if (termFlag(argv, "h")) {
+        return out("Filesystem      Size  Used Avail Use% Mounted on\n" +
+          "/dev/vda1        79G   24G   52G  32% /\n" +
+          "tmpfs           1.9G     0  1.9G   0% /dev/shm\n" +
+          "tmpfs           394M  1.1M  393M   1% /run\n");
+      }
+      return out("Filesystem     1K-blocks     Used Available Use% Mounted on\n" +
+        "/dev/vda1       82437332 24518392  53728556  32% /\n" +
+        "tmpfs            2015200        0   2015200   0% /dev/shm\n");
+    },
+
+    netstat: function () {
+      return out("Active Internet connections (servers and established)\n" +
+        "Proto Recv-Q Send-Q Local Address           Foreign Address         State\n" +
+        "tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN\n" +
+        "tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN\n" +
+        "tcp        0      0 127.0.0.1:8000          0.0.0.0:*               LISTEN\n" +
+        "tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN\n" +
+        "tcp        0    312 10.0.3.14:22            198.51.100.23:51234     ESTABLISHED\n" +
+        "tcp6       0      0 :::22                   :::*                    LISTEN\n");
+    },
+
+    env: function () {
+      var text = "";
+      TERM_ENV.forEach(function (pair) {
+        text += pair[0] + "=" + (pair[0] === "PWD" ? term.cwd : pair[1]) + "\n";
+      });
+      return out(text);
+    },
+
+    which: function (argv) {
+      var text = "";
+      var missing = false;
+      termOperands(argv).forEach(function (name) {
+        if (TERM_WHICH[name]) { text += TERM_WHICH[name] + "\n"; } else { missing = true; }
+      });
+      return missing ? err(text) : out(text);
+    },
+
+    history: function () {
+      var text = "";
+      term.history.forEach(function (entry, index) {
+        text += "  " + (index + 1) + "  " + entry + "\n";
+      });
+      return out(text);
+    },
+
+    su: function () { return err("su: Authentication failure\n"); },
+
+    sudo: function (argv) {
+      if (argv.length < 2) { return err("usage: sudo [-u user] command\n"); }
+      return out("");
+    },
+
+    crontab: function (argv) {
+      if (termFlag(argv, "l")) {
+        return out("17 *    * * *   cd / && run-parts --report /etc/cron.hourly\n");
+      }
+      if (termFlag(argv, "e")) { return out("crontab: installing new crontab\n"); }
+      if (termFlag(argv, "r")) { return out(""); }
+      return out("crontab: usage error: file name must be specified for replace\n");
+    },
+
+    chmod: function (argv) {
+      var targets = termOperands(argv);
+      if (targets.length < 2) { return err("chmod: missing operand\n"); }
+      for (var i = 1; i < targets.length; i += 1) {
+        if (!termFind(termResolve(targets[i]))) {
+          return err("chmod: cannot access '" + targets[i] + "': No such file or directory\n");
+        }
+      }
+      return out("");
+    },
+
+    rm: function (argv) {
+      var force = termFlag(argv, "f");
+      var text = "";
+      var bad = false;
+      termOperands(argv).forEach(function (target) {
+        if (!termFind(termResolve(target)) && !force) {
+          text += "rm: cannot remove '" + target + "': No such file or directory\n";
+          bad = true;
+        }
+      });
+      return bad ? err(text) : out(text);
+    },
+
+    mkdir: function (argv) {
+      if (!termOperands(argv).length) { return err("mkdir: missing operand\n"); }
+      return out("");
+    },
+
+    touch: function (argv) {
+      if (!termOperands(argv).length) { return err("touch: missing file operand\n"); }
+      return out("");
+    },
+
+    wget: function (argv) { return termFetch(argv, "wget"); },
+    curl: function (argv) { return termFetch(argv, "curl"); },
+
+    clear: function () { el("shell-screen").textContent = ""; return out(""); },
+
+    exit: function () {
+      term.closed = true;
+      return out("logout\n");
+    },
+
+    help: function () {
+      return hint(t("shellHelp") + "\n  " + Object.keys(TERM_COMMANDS).sort().join("  ") + "\n");
+    }
+  };
+  TERM_COMMANDS.dir = TERM_COMMANDS.ls;
+  TERM_COMMANDS.who = TERM_COMMANDS.w;
+  TERM_COMMANDS.ss = TERM_COMMANDS.netstat;
+  TERM_COMMANDS.printenv = TERM_COMMANDS.env;
+  TERM_COMMANDS.whereis = TERM_COMMANDS.which;
+  TERM_COMMANDS.chown = TERM_COMMANDS.chmod;
+  TERM_COMMANDS.logout = TERM_COMMANDS.exit;
+
+  function out(text) { return { text: text, kind: "out" }; }
+  function err(text) { return { text: text, kind: "err" }; }
+  function hint(text) { return { text: text, kind: "hint" }; }
+
+  function termHeadTail(argv, fromTop) {
+    var targets = termOperands(argv);
+    if (!targets.length) { return out(""); }
+    var node = termFind(termResolve(targets[0]));
+    if (!node) { return err("head: cannot open '" + targets[0] + "' for reading: No such file or directory\n"); }
+    if (node.dir) { return err("head: error reading '" + targets[0] + "': Is a directory\n"); }
+    var lines = node.content.replace(/\n$/, "").split("\n");
+    var take = 10;
+    var chosen = fromTop ? lines.slice(0, take) : lines.slice(Math.max(0, lines.length - take));
+    return out(chosen.join("\n") + "\n");
+  }
+
+  /* The download commands. The honeypot really does fetch the URL, on a
+     worker thread, into an encrypted quarantine it never opens. The page
+     fetches nothing at all and says so, because a page that reached out to an
+     attacker's URL on a visitor's behalf would be a hazard rather than a
+     demonstration. */
+  function termFetch(argv, name) {
+    var url = "";
+    for (var i = 1; i < argv.length; i += 1) {
+      if (/^(https?|ftp|tftp):\/\//.test(argv[i])) { url = argv[i]; break; }
+    }
+    if (!url) {
+      return name === "wget"
+        ? err("wget: missing URL\nUsage: wget [OPTION]... [URL]...\n\nTry `wget --help' for more options.\n")
+        : err("curl: try 'curl --help' for more information\n");
+    }
+    return hint(t("shellNoFetch") + "\n");
+  }
+
+  function termWrite(text, kind) {
+    if (text === "") { return; }
+    var screen = el("shell-screen");
+    var block = document.createElement("div");
+    block.className = kind === "out" ? "out" : kind;
+    block.textContent = text.replace(/\n$/, "");
+    screen.appendChild(block);
+  }
+
+  function termEcho(line) {
+    var screen = el("shell-screen");
+    var row = document.createElement("div");
+    row.className = "replay-line";
+    var ps = document.createElement("span");
+    ps.className = "rps";
+    ps.textContent = termPrompt();
+    row.appendChild(ps);
+    var typed = document.createElement("span");
+    typed.className = "rcmd";
+    typed.textContent = line;
+    row.appendChild(typed);
+    screen.appendChild(row);
+  }
+
+  function termRun(line) {
+    termEcho(line);
+    var trimmed = line.trim();
+    if (trimmed) { term.history.push(trimmed); }
+    term.cursor = term.history.length;
+
+    if (!trimmed) { return; }
+    if (term.closed) { return; }
+
+    // One command, not a pipeline. The daemon parses segments and answers the
+    // first; the page says plainly that it is reading only the first word.
+    var argv = termSplit(trimmed.split("|")[0].split(";")[0]);
+    if (!argv.length) { return; }
+    var name = argv[0];
+
+    var handler = TERM_COMMANDS[name];
+    if (handler) {
+      var result = handler(argv);
+      termWrite(result.text, result.kind);
+      if (term.closed) { termWrite(t("shellClosed"), "hint"); }
+      return;
+    }
+    if (TERM_ELSEWHERE.indexOf(name) >= 0) {
+      termWrite(t("shellElsewhere"), "hint");
+      return;
+    }
+    termWrite("bash: " + name + ": command not found\n", "err");
+  }
+
+  function termReset() {
+    term.cwd = "/root";
+    term.closed = false;
+    term.history = [];
+    term.cursor = 0;
+    el("shell-screen").textContent = "";
+    termWrite(t("shellWelcome"), "hint");
+    termSyncPrompt();
+  }
+
+  function termSyncPrompt() {
+    el("shell-prompt").textContent = termPrompt();
+    var input = el("shell-input");
+    input.disabled = term.closed;
+  }
+
+  function startTerminal() {
+    var section = el("shell-section");
+    var form = el("shell-form");
+    var input = el("shell-input");
+    if (!section || !form || !input) { return; }
+
+    fetch("data/shell.json", { cache: "no-store" }).then(function (response) {
+      if (!response.ok) { throw new Error("shell.json " + response.status); }
+      return response.json();
+    }).then(function (payload) {
+      term.fs = payload.files || null;
+      term.host = payload.hostname || term.host;
+      section.hidden = false;
+      termReset();
+    }).catch(function () {
+      // Without the filesystem there is nothing honest to answer with.
+      section.hidden = true;
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var line = input.value;
+      input.value = "";
+      termRun(line);
+      termSyncPrompt();
+      var screen = el("shell-screen");
+      screen.scrollTop = screen.scrollHeight;
+    });
+
+    input.addEventListener("keydown", function (event) {
+      if (event.key !== "ArrowUp" && event.key !== "ArrowDown") { return; }
+      event.preventDefault();
+      if (!term.history.length) { return; }
+      term.cursor += event.key === "ArrowUp" ? -1 : 1;
+      term.cursor = Math.max(0, Math.min(term.history.length, term.cursor));
+      input.value = term.cursor < term.history.length ? term.history[term.cursor] : "";
+    });
+
+    el("shell-reset").addEventListener("click", function () {
+      termReset();
+      input.focus();
+    });
+
+    // A click anywhere on the screen puts the caret back in the prompt, the
+    // way clicking a terminal window does.
+    el("shell-screen").addEventListener("click", function () {
+      if (!term.closed) { input.focus(); }
+    });
+  }
+
   /* ---------- the boot sequence ---------- */
 
   /* The daemon coming up, typed out before the page appears. It is theatre,
@@ -3505,6 +4129,7 @@ footer a:hover, footer a:focus-visible { color: var(--amber); border-color: var(
       state.world = settled[1].status === "fulfilled" ? settled[1].value : null;
       render();
       startRain(state.data);
+      startTerminal();
       if (state.data && state.data.totals && state.data.totals.events > 0) { startLive(); }
     });
 

@@ -1,0 +1,461 @@
+{
+ "files": {
+  "/": {
+   "children": [
+    "bin",
+    "boot",
+    "dev",
+    "etc",
+    "home",
+    "lib",
+    "opt",
+    "proc",
+    "root",
+    "run",
+    "sbin",
+    "srv",
+    "tmp",
+    "usr",
+    "var"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/bin": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/boot": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/dev": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/etc": {
+   "children": [
+    "crontab",
+    "hostname",
+    "hosts",
+    "os-release",
+    "passwd",
+    "resolv.conf",
+    "shadow",
+    "ssh"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/etc/crontab": {
+   "content": "17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly\n25 6    * * *   root    test -x /usr/sbin/anacron || run-parts --report /etc/cron.daily\n*/10 *  * * *   deploy  /opt/app/scripts/sync.sh >> /var/log/sync.log 2>&1\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 231
+  },
+  "/etc/hostname": {
+   "content": "srv-web-03\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 11
+  },
+  "/etc/hosts": {
+   "content": "127.0.0.1 localhost\n127.0.1.1 srv-web-03\n10.0.3.14 db-internal\n::1 ip6-localhost ip6-loopback\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 94
+  },
+  "/etc/os-release": {
+   "content": "PRETTY_NAME=\"Ubuntu 22.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.3 LTS (Jammy Jellyfish)\"\nID=ubuntu\nID_LIKE=debian\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 131
+  },
+  "/etc/passwd": {
+   "content": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nbin:x:2:2:bin:/bin:/usr/sbin/nologin\nsys:x:3:3:sys:/dev:/usr/sbin/nologin\nsync:x:4:65534:sync:/bin:/bin/sync\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nsshd:x:105:65534::/run/sshd:/usr/sbin/nologin\npostgres:x:106:113:PostgreSQL administrator:/var/lib/postgresql:/bin/bash\ndeploy:x:1000:1000:deploy,,,:/home/deploy:/bin/bash\nmdias:x:1001:1001:Marcos Dias,,,:/home/mdias:/bin/bash\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 469
+  },
+  "/etc/resolv.conf": {
+   "content": "nameserver 127.0.0.53\noptions edns0 trust-ad\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 45
+  },
+  "/etc/shadow": {
+   "content": "root:$6$fZ8kQ2mR$0xK7vN3pLqW9cX1bT4yH6jU8sA2dF5gE7hI9kM0nP2qR4tV6wY8zB1cD3eF5gH7i:19845:0:99999:7:::\ndaemon:*:19845:0:99999:7:::\nwww-data:*:19845:0:99999:7:::\ndeploy:$6$mN4pQ7rS$9yL2xK5vB8nC1dF4gH7jM0pR3tW6zA9cE2fI5kN8qT1uX4yB7eH0jL3mP6sV9w:19901:0:99999:7:::\nmdias:$6$tR8vW1yZ$3cF6iL9oR2uX5aD8gJ1mP4sV7yB0eH3kN6qT9wZ2cF5iL8oR1uX4aD7gJ0mP3s:19912:0:99999:7:::\n",
+   "dir": false,
+   "group": "shadow",
+   "mode": "-rw-r-----",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 360
+  },
+  "/etc/ssh": {
+   "children": [
+    "sshd_config"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/etc/ssh/sshd_config": {
+   "content": "Port 22\nPermitRootLogin yes\nPasswordAuthentication yes\nX11Forwarding yes\nUsePAM yes\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 84
+  },
+  "/home": {
+   "children": [
+    "deploy",
+    "mdias"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/home/deploy": {
+   "children": [
+    ".bash_history",
+    ".bashrc",
+    "notes.txt"
+   ],
+   "dir": true,
+   "group": "deploy",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy"
+  },
+  "/home/deploy/.bash_history": {
+   "content": "cd /opt/app\ngit pull\ndocker compose restart web\npsql -h db-internal -U appuser appdb\nsudo systemctl status nginx\nexit\n",
+   "dir": false,
+   "group": "deploy",
+   "mode": "-rw-------",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy",
+   "size": 118
+  },
+  "/home/deploy/.bashrc": {
+   "content": "# ~/.bashrc\nexport PATH=$PATH:/opt/app/bin\nalias ll='ls -alF'\n",
+   "dir": false,
+   "group": "deploy",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy",
+   "size": 62
+  },
+  "/home/deploy/notes.txt": {
+   "content": "reminder: rotate the db password before the audit\nstaging box is 10.0.3.22, same key\n",
+   "dir": false,
+   "group": "deploy",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy",
+   "size": 85
+  },
+  "/home/mdias": {
+   "children": [
+    ".ssh"
+   ],
+   "dir": true,
+   "group": "mdias",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "mdias"
+  },
+  "/home/mdias/.ssh": {
+   "children": [
+    "authorized_keys"
+   ],
+   "dir": true,
+   "group": "mdias",
+   "mode": "drwx------",
+   "mtime": "Nov  2 14:30",
+   "owner": "mdias"
+  },
+  "/home/mdias/.ssh/authorized_keys": {
+   "content": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPlaceholderKeyNotRealDoNotUse mdias@laptop\n",
+   "dir": false,
+   "group": "mdias",
+   "mode": "-rw-------",
+   "mtime": "Nov  2 14:30",
+   "owner": "mdias",
+   "size": 80
+  },
+  "/lib": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/opt": {
+   "children": [
+    "app"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/opt/app": {
+   "children": [
+    ".env",
+    "docker-compose.yml"
+   ],
+   "dir": true,
+   "group": "deploy",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy"
+  },
+  "/opt/app/.env": {
+   "content": "APP_ENV=production\nAPP_KEY=base64:7Qx2VrNkDpLmS9fTgHjYwZ4cAeB6uI8oK1nM3bV5xC0=\nDB_HOST=db-internal\nDB_DATABASE=appdb\nDB_USERNAME=appuser\nDB_PASSWORD=Pr0d-Db-9fK2mQ7x\nREDIS_PASSWORD=r3d1s-S3cr3t-88\nMAIL_PASSWORD=smtp-Xk92LmQp\n",
+   "dir": false,
+   "group": "deploy",
+   "mode": "-rw-------",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy",
+   "size": 225
+  },
+  "/opt/app/docker-compose.yml": {
+   "content": "services:\n  web:\n    image: registry.internal/app:1.8.2\n    ports: [\"127.0.0.1:8000:8000\"]\n    env_file: .env\n",
+   "dir": false,
+   "group": "deploy",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "deploy",
+   "size": 110
+  },
+  "/proc": {
+   "children": [
+    "cpuinfo",
+    "meminfo"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/proc/cpuinfo": {
+   "content": "processor\t: 0\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 85\nmodel name\t: Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz\ncpu MHz\t\t: 2500.000\ncache size\t: 36608 KB\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 168
+  },
+  "/proc/meminfo": {
+   "content": "MemTotal:        4030400 kB\nMemFree:          812344 kB\nMemAvailable:    2914208 kB\nSwapTotal:             0 kB\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r--r--",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 112
+  },
+  "/root": {
+   "children": [
+    ".bash_history"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwx------",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/root/.bash_history": {
+   "content": "apt update && apt upgrade -y\nufw allow 22\nsystemctl restart sshd\nexit\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-------",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 70
+  },
+  "/run": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/sbin": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/srv": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/tmp": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxrwxrwt",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr": {
+   "children": [
+    "bin",
+    "lib",
+    "local",
+    "sbin",
+    "share"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr/bin": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr/lib": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr/local": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr/sbin": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/usr/share": {
+   "children": [],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/var": {
+   "children": [
+    "log",
+    "www"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/var/log": {
+   "children": [
+    "auth.log",
+    "syslog"
+   ],
+   "dir": true,
+   "group": "root",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "root"
+  },
+  "/var/log/auth.log": {
+   "content": "Nov  2 03:11:07 srv-web-03 sshd[41122]: Accepted publickey for deploy from 10.0.3.9 port 51234 ssh2\nNov  2 06:25:01 srv-web-03 CRON[41880]: pam_unix(cron:session): session opened for user deploy\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r-----",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 195
+  },
+  "/var/log/syslog": {
+   "content": "Nov  2 06:25:01 srv-web-03 CRON[41881]: (deploy) CMD (/opt/app/scripts/sync.sh)\n",
+   "dir": false,
+   "group": "root",
+   "mode": "-rw-r-----",
+   "mtime": "Nov  2 14:30",
+   "owner": "root",
+   "size": 80
+  },
+  "/var/www": {
+   "children": [],
+   "dir": true,
+   "group": "www-data",
+   "mode": "drwxr-xr-x",
+   "mtime": "Nov  2 14:30",
+   "owner": "www-data"
+  }
+ },
+ "hostname": "srv-web-03",
+ "note": "Generated by tools/shell_export.py from config/filesystem.yaml. Do not edit."
+}
