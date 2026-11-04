@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-<!-- These used to be response headers in netlify.toml. GitHub Pages serves a
-     static bucket and cannot set a header, so the policy moves into the
-     document. Two things do not survive the move and are gone: frame-ancestors,
-     which a user agent ignores in a meta tag, and the Cache-Control that kept
-     data/live.json from being served stale, which is why the page fetches it
-     with cache: "no-store" instead. X-Content-Type-Options, X-Frame-Options
-     and Permissions-Policy are header only and have no meta equivalent. -->
+<!-- The policy lives in the document because GitHub Pages serves a static
+     bucket and cannot set a response header. Two things cannot be carried this
+     way: frame-ancestors, which a user agent ignores in a meta tag, and the
+     Cache-Control that kept data/live.json from being served stale, which is
+     why the page fetches it with cache: "no-store" instead.
+     X-Content-Type-Options, X-Frame-Options and Permissions-Policy are header
+     only and have no meta equivalent at all. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <title>Arapuca, live honeypot</title>
 <meta name="description" content="A honeypot on a public address. See who is attacking it right now, from where, and with which passwords. You are invited to try.">
