@@ -1,7 +1,7 @@
 # Checks for the Python in tools/, pinned for the same reason the runtime
 # requirements are: these scripts run unattended on a schedule.
-ruff==0.14.2
-mypy==1.18.2
-types-requests==2.32.4.20250913
+ruff==0.17.4
+mypy==2.4.1
+types-requests==2.33.0.20261030
 types-PyYAML==6.0.12.20261103
-pytest==8.3.3
+pytest==9.2.0
