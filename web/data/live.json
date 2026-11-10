@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T17:42:49.349344Z",
+  "generated_at": "2026-11-10T23:13:26.645479Z",
   "window": "30 days",
   "target": "137.131.150.77",
   "sensor_location": {
@@ -9,26 +9,26 @@
     "country": "Brazil"
   },
   "totals": {
-    "events": 223892,
-    "attackers": 1637,
-    "sessions": 58184,
+    "events": 227296,
+    "attackers": 1677,
+    "sessions": 59023,
     "samples": 0,
-    "countries": 84
+    "countries": 86
   },
   "countries": [
     {
       "iso2": "NL",
       "id": "528",
       "name": "The Netherlands",
-      "attacks": 127664,
-      "attackers": 117
+      "attacks": 128113,
+      "attackers": 122
     },
     {
       "iso2": "FR",
       "id": "250",
       "name": "France",
-      "attacks": 47886,
-      "attackers": 58
+      "attacks": 49933,
+      "attackers": 60
     },
     {
       "iso2": "IR",
@@ -48,21 +48,21 @@
       "iso2": "AD",
       "id": "020",
       "name": "Andorra",
-      "attacks": 7475,
+      "attacks": 7478,
       "attackers": 17
     },
     {
       "iso2": "US",
       "id": "840",
       "name": "United States",
-      "attacks": 5780,
-      "attackers": 517
+      "attacks": 6160,
+      "attackers": 525
     },
     {
       "iso2": "GB",
       "id": "826",
       "name": "United Kingdom",
-      "attacks": 3315,
+      "attacks": 3412,
       "attackers": 153
     },
     {
@@ -76,29 +76,29 @@
       "iso2": "BR",
       "id": "076",
       "name": "Brazil",
-      "attacks": 2190,
+      "attacks": 2198,
       "attackers": 84
     },
     {
       "iso2": "DE",
       "id": "276",
       "name": "Germany",
-      "attacks": 2082,
-      "attackers": 85
+      "attacks": 2194,
+      "attackers": 92
     },
     {
       "iso2": "VN",
       "id": "704",
       "name": "Vietnam",
-      "attacks": 1298,
+      "attacks": 1300,
       "attackers": 6
     },
     {
       "iso2": "BE",
       "id": "056",
       "name": "Belgium",
-      "attacks": 1187,
-      "attackers": 68
+      "attacks": 1188,
+      "attackers": 69
     },
     {
       "iso2": "CN",
@@ -111,8 +111,15 @@
       "iso2": "TR",
       "id": "792",
       "name": "Turkey",
-      "attacks": 740,
+      "attacks": 770,
       "attackers": 14
+    },
+    {
+      "iso2": "HK",
+      "id": "344",
+      "name": "Hong Kong",
+      "attacks": 463,
+      "attackers": 21
     },
     {
       "iso2": "SG",
@@ -122,17 +129,10 @@
       "attackers": 19
     },
     {
-      "iso2": "HK",
-      "id": "344",
-      "name": "Hong Kong",
-      "attacks": 287,
-      "attackers": 20
-    },
-    {
       "iso2": "SE",
       "id": "752",
       "name": "Sweden",
-      "attacks": 218,
+      "attacks": 222,
       "attackers": 7
     },
     {
@@ -146,15 +146,15 @@
       "iso2": "PE",
       "id": "604",
       "name": "Peru",
-      "attacks": 154,
+      "attacks": 158,
       "attackers": 2
     },
     {
       "iso2": "RU",
       "id": "643",
       "name": "Russia",
-      "attacks": 144,
-      "attackers": 49
+      "attacks": 150,
+      "attackers": 51
     },
     {
       "iso2": "CA",
@@ -167,14 +167,14 @@
       "iso2": "AR",
       "id": "032",
       "name": "Argentina",
-      "attacks": 102,
-      "attackers": 40
+      "attacks": 106,
+      "attackers": 41
     },
     {
       "iso2": "CL",
       "id": "152",
       "name": "Chile",
-      "attacks": 90,
+      "attacks": 92,
       "attackers": 9
     },
     {
@@ -199,6 +199,13 @@
       "attackers": 5
     },
     {
+      "iso2": "UA",
+      "id": "804",
+      "name": "Ukraine",
+      "attacks": 84,
+      "attackers": 36
+    },
+    {
       "iso2": "UZ",
       "id": "860",
       "name": "Uzbekistan",
@@ -206,25 +213,25 @@
       "attackers": 8
     },
     {
-      "iso2": "UA",
-      "id": "804",
-      "name": "Ukraine",
-      "attacks": 80,
-      "attackers": 34
+      "iso2": "IN",
+      "id": "356",
+      "name": "India",
+      "attacks": 79,
+      "attackers": 15
     },
     {
       "iso2": "RO",
       "id": "642",
       "name": "Romania",
-      "attacks": 77,
-      "attackers": 4
+      "attacks": 79,
+      "attackers": 5
     },
     {
-      "iso2": "IN",
-      "id": "356",
-      "name": "India",
-      "attacks": 75,
-      "attackers": 15
+      "iso2": "LU",
+      "id": "442",
+      "name": "Luxembourg",
+      "attacks": 69,
+      "attackers": 1
     },
     {
       "iso2": "AZ",
@@ -234,6 +241,13 @@
       "attackers": 2
     },
     {
+      "iso2": "ID",
+      "id": "360",
+      "name": "Indonesia",
+      "attacks": 63,
+      "attackers": 12
+    },
+    {
       "iso2": "EG",
       "id": "818",
       "name": "Egypt",
@@ -241,11 +255,11 @@
       "attackers": 2
     },
     {
-      "iso2": "ID",
-      "id": "360",
-      "name": "Indonesia",
-      "attacks": 60,
-      "attackers": 12
+      "iso2": "BD",
+      "id": "050",
+      "name": "Bangladesh",
+      "attacks": 32,
+      "attackers": 6
     },
     {
       "iso2": "CR",
@@ -269,18 +283,11 @@
       "attackers": 14
     },
     {
-      "iso2": "LU",
-      "id": "442",
-      "name": "Luxembourg",
+      "iso2": "PK",
+      "id": "586",
+      "name": "Pakistan",
       "attacks": 29,
-      "attackers": 1
-    },
-    {
-      "iso2": "BD",
-      "id": "050",
-      "name": "Bangladesh",
-      "attacks": 28,
-      "attackers": 5
+      "attackers": 14
     },
     {
       "iso2": "MY",
@@ -288,13 +295,6 @@
       "name": "Malaysia",
       "attacks": 28,
       "attackers": 9
-    },
-    {
-      "iso2": "PK",
-      "id": "586",
-      "name": "Pakistan",
-      "attacks": 27,
-      "attackers": 13
     },
     {
       "iso2": "AU",
@@ -346,11 +346,25 @@
       "attackers": 4
     },
     {
+      "iso2": "AE",
+      "id": "784",
+      "name": "United Arab Emirates",
+      "attacks": 12,
+      "attackers": 4
+    },
+    {
       "iso2": "CM",
       "id": "120",
       "name": "Cameroon",
       "attacks": 12,
       "attackers": 1
+    },
+    {
+      "iso2": "KE",
+      "id": "404",
+      "name": "Kenya",
+      "attacks": 12,
+      "attackers": 5
     },
     {
       "iso2": "TH",
@@ -416,13 +430,6 @@
       "attackers": 3
     },
     {
-      "iso2": "KE",
-      "id": "404",
-      "name": "Kenya",
-      "attacks": 8,
-      "attackers": 4
-    },
-    {
       "iso2": "KZ",
       "id": "398",
       "name": "Kazakhstan",
@@ -472,18 +479,18 @@
       "attackers": 2
     },
     {
-      "iso2": "AE",
-      "id": "784",
-      "name": "United Arab Emirates",
-      "attacks": 4,
-      "attackers": 1
-    },
-    {
       "iso2": "BO",
       "id": "068",
       "name": "Bolivia",
       "attacks": 4,
       "attackers": 2
+    },
+    {
+      "iso2": "EE",
+      "id": "233",
+      "name": "Estonia",
+      "attacks": 4,
+      "attackers": 1
     },
     {
       "iso2": "ET",
@@ -512,6 +519,13 @@
       "name": "Lithuania",
       "attacks": 4,
       "attackers": 3
+    },
+    {
+      "iso2": "LY",
+      "id": "434",
+      "name": "Libya",
+      "attacks": 4,
+      "attackers": 1
     },
     {
       "iso2": "MA",
@@ -612,8 +626,8 @@
       "country": "The Netherlands",
       "lat": 52.3676,
       "lon": 4.90414,
-      "attacks": 127568,
-      "attackers": 95
+      "attacks": 128017,
+      "attackers": 100
     },
     {
       "city": "Paris",
@@ -621,8 +635,8 @@
       "country": "France",
       "lat": 48.8575,
       "lon": 2.35138,
-      "attacks": 47611,
-      "attackers": 32
+      "attacks": 49625,
+      "attackers": 33
     },
     {
       "city": "Esl\u0101m\u0101b\u0101d",
@@ -648,7 +662,7 @@
       "country": "Andorra",
       "lat": 42.5063,
       "lon": 1.52184,
-      "attacks": 7475,
+      "attacks": 7478,
       "attackers": 17
     },
     {
@@ -657,7 +671,7 @@
       "country": "United Kingdom",
       "lat": 52.2999,
       "lon": -0.613313,
-      "attacks": 2469,
+      "attacks": 2554,
       "attackers": 3
     },
     {
@@ -675,8 +689,8 @@
       "country": "United States",
       "lat": 37.3834,
       "lon": -121.983,
-      "attacks": 1692,
-      "attackers": 104
+      "attacks": 1704,
+      "attackers": 108
     },
     {
       "city": "Minkler",
@@ -693,8 +707,8 @@
       "country": "Germany",
       "lat": 50.1109,
       "lon": 8.68213,
-      "attacks": 1486,
-      "attackers": 60
+      "attacks": 1528,
+      "attackers": 63
     },
     {
       "city": "Mogi das Cruzes",
@@ -711,8 +725,17 @@
       "country": "Belgium",
       "lat": 50.8476,
       "lon": 4.35717,
-      "attacks": 1183,
-      "attackers": 67
+      "attacks": 1184,
+      "attackers": 68
+    },
+    {
+      "city": "London",
+      "iso2": "GB",
+      "country": "United Kingdom",
+      "lat": 51.5134,
+      "lon": -0.0890675,
+      "attacks": 827,
+      "attackers": 134
     },
     {
       "city": "Hanoi",
@@ -720,17 +743,8 @@
       "country": "Vietnam",
       "lat": 21.0278,
       "lon": 105.834,
-      "attacks": 820,
+      "attacks": 822,
       "attackers": 4
-    },
-    {
-      "city": "London",
-      "iso2": "GB",
-      "country": "United Kingdom",
-      "lat": 51.5273,
-      "lon": -0.08889419999999999,
-      "attacks": 815,
-      "attackers": 134
     },
     {
       "city": "Istanbul",
@@ -738,7 +752,7 @@
       "country": "Turkey",
       "lat": 41.0082,
       "lon": 28.9784,
-      "attacks": 724,
+      "attacks": 754,
       "attackers": 6
     },
     {
@@ -747,7 +761,7 @@
       "country": "Germany",
       "lat": 48.3459,
       "lon": 10.9161,
-      "attacks": 477,
+      "attacks": 515,
       "attackers": 4
     },
     {
@@ -783,8 +797,8 @@
       "country": "United States",
       "lat": 41.8781,
       "lon": -87.6298,
-      "attacks": 317,
-      "attackers": 9
+      "attacks": 323,
+      "attackers": 10
     },
     {
       "city": "North Bergen",
@@ -792,8 +806,26 @@
       "country": "United States",
       "lat": 40.8054,
       "lon": -74.0241,
-      "attacks": 260,
-      "attackers": 13
+      "attacks": 263,
+      "attackers": 14
+    },
+    {
+      "city": "Massy",
+      "iso2": "FR",
+      "country": "France",
+      "lat": 48.7217,
+      "lon": 2.28306,
+      "attacks": 244,
+      "attackers": 8
+    },
+    {
+      "city": "Washington",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 38.7134,
+      "lon": -78.1591,
+      "attacks": 240,
+      "attackers": 1
     },
     {
       "city": "Singapore (Central Area)",
@@ -810,16 +842,7 @@
       "country": "Sweden",
       "lat": 59.3293,
       "lon": 18.0686,
-      "attacks": 218,
-      "attackers": 7
-    },
-    {
-      "city": "Massy",
-      "iso2": "FR",
-      "country": "France",
-      "lat": 48.7217,
-      "lon": 2.28306,
-      "attacks": 211,
+      "attacks": 222,
       "attackers": 7
     },
     {
@@ -828,7 +851,7 @@
       "country": "United States",
       "lat": 34.0549,
       "lon": -118.243,
-      "attacks": 207,
+      "attacks": 208,
       "attackers": 45
     },
     {
@@ -850,12 +873,21 @@
       "attackers": 60
     },
     {
+      "city": "Sheung Wan",
+      "iso2": "HK",
+      "country": "Hong Kong",
+      "lat": 22.286,
+      "lon": 114.152,
+      "attacks": 170,
+      "attackers": 1
+    },
+    {
       "city": "Hanover (Cedar Knolls)",
       "iso2": "US",
       "country": "United States",
       "lat": 40.8218,
       "lon": -74.45,
-      "attacks": 162,
+      "attacks": 165,
       "attackers": 31
     },
     {
@@ -864,7 +896,7 @@
       "country": "Peru",
       "lat": -12.0875,
       "lon": -76.9735,
-      "attacks": 154,
+      "attacks": 158,
       "attackers": 2
     },
     {
@@ -873,7 +905,7 @@
       "country": "Hong Kong",
       "lat": 22.2862,
       "lon": 114.214,
-      "attacks": 144,
+      "attacks": 150,
       "attackers": 1
     },
     {
@@ -940,12 +972,12 @@
       "attackers": 1
     },
     {
-      "city": "Belford Roxo",
-      "iso2": "BR",
-      "country": "Brazil",
-      "lat": -22.7642,
-      "lon": -43.3994,
-      "attacks": 90,
+      "city": "Edison",
+      "iso2": "US",
+      "country": "United States",
+      "lat": 40.5187,
+      "lon": -74.4121,
+      "attacks": 96,
       "attackers": 1
     },
     {
@@ -954,8 +986,17 @@
       "country": "Brazil",
       "lat": -23.5558,
       "lon": -46.6396,
-      "attacks": 89,
+      "attacks": 95,
       "attackers": 11
+    },
+    {
+      "city": "Belford Roxo",
+      "iso2": "BR",
+      "country": "Brazil",
+      "lat": -22.7642,
+      "lon": -43.3994,
+      "attacks": 90,
+      "attackers": 1
     },
     {
       "city": "Singapore (Pioneer)",
@@ -994,6 +1035,15 @@
       "attackers": 15
     },
     {
+      "city": "Santiago",
+      "iso2": "CL",
+      "country": "Chile",
+      "lat": -33.4489,
+      "lon": -70.6693,
+      "attacks": 78,
+      "attackers": 3
+    },
+    {
       "city": "Hong Kong",
       "iso2": "HK",
       "country": "Hong Kong",
@@ -1003,21 +1053,21 @@
       "attackers": 15
     },
     {
-      "city": "Santiago",
-      "iso2": "CL",
-      "country": "Chile",
-      "lat": -33.4489,
-      "lon": -70.6693,
-      "attacks": 76,
-      "attackers": 3
-    },
-    {
       "city": "Slobozia Sucevei",
       "iso2": "RO",
       "country": "Romania",
       "lat": 47.7643,
       "lon": 26.0466,
       "attacks": 71,
+      "attackers": 1
+    },
+    {
+      "city": "Bissen",
+      "iso2": "LU",
+      "country": "Luxembourg",
+      "lat": 49.7902,
+      "lon": 6.08557,
+      "attacks": 69,
       "attackers": 1
     },
     {
@@ -1107,152 +1157,116 @@
       "country": "United States",
       "lat": 39.0438,
       "lon": -77.4874,
-      "attacks": 57,
+      "attacks": 58,
       "attackers": 34
-    },
-    {
-      "city": "Phoenix",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 33.4483,
-      "lon": -112.073,
-      "attacks": 57,
-      "attackers": 17
-    },
-    {
-      "city": "Beauharnois",
-      "iso2": "CA",
-      "country": "Canada",
-      "lat": 45.3147,
-      "lon": -73.8785,
-      "attacks": 56,
-      "attackers": 9
-    },
-    {
-      "city": "Hwaseong-si (Bansong-dong)",
-      "iso2": "KR",
-      "country": "South Korea",
-      "lat": 37.1975,
-      "lon": 127.071,
-      "attacks": 56,
-      "attackers": 1
-    },
-    {
-      "city": "Sacramento",
-      "iso2": "US",
-      "country": "United States",
-      "lat": 38.5816,
-      "lon": -121.494,
-      "attacks": 56,
-      "attackers": 2
     }
   ],
-  "located_events": 223212,
+  "located_events": 226616,
   "collecting_since": "2026-11-03T01:41:35.403000Z",
   "passwords": [
     {
       "label": "(empty)",
-      "value": 49671
+      "value": 50266
     },
     {
       "label": "123456",
-      "value": 2672
+      "value": 2707
     },
     {
       "label": "123",
-      "value": 1331
+      "value": 1343
     },
     {
       "label": "1234",
-      "value": 1030
+      "value": 1041
     },
     {
       "label": "12345678",
-      "value": 686
+      "value": 693
     },
     {
       "label": "password",
-      "value": 606
+      "value": 616
     },
     {
       "label": "root",
-      "value": 599
+      "value": 610
     },
     {
       "label": "1",
-      "value": 586
+      "value": 595
     },
     {
       "label": "12345",
-      "value": 523
+      "value": 531
     },
     {
       "label": "admin",
-      "value": 390
+      "value": 405
     },
     {
       "label": "123456789",
-      "value": 373
+      "value": 376
     },
     {
       "label": "123123",
-      "value": 264
+      "value": 265
     }
   ],
   "usernames": [
     {
       "label": "root",
-      "value": 36330
+      "value": 36768
     },
     {
       "label": "ubuntu",
-      "value": 7290
+      "value": 7322
     },
     {
       "label": "admin",
-      "value": 3661
+      "value": 3724
     },
     {
       "label": "user",
-      "value": 1835
+      "value": 1861
     },
     {
       "label": "deploy",
-      "value": 1537
+      "value": 1555
     },
     {
       "label": "test",
-      "value": 1123
+      "value": 1135
     },
     {
       "label": "user1",
-      "value": 712
+      "value": 718
     },
     {
       "label": "claude",
-      "value": 644
+      "value": 650
     },
     {
       "label": "debian",
-      "value": 550
+      "value": 554
     },
     {
       "label": "postgres",
-      "value": 543
+      "value": 551
     },
     {
       "label": "support",
-      "value": 520
+      "value": 532
     },
     {
-      "label": "minecraft",
-      "value": 486
+      "label": "Tronlong",
+      "value": 504
     }
   ],
   "commands": [
     {
       "label": "uname -s -v -n -r -m",
-      "value": 925,
+      "value": 934,
       "technique_id": "T1082",
       "technique": "System Information Discovery"
     },
@@ -1286,7 +1300,7 @@
     },
     {
       "label": "enable",
-      "value": 16
+      "value": 17
     },
     {
       "label": "sh",
@@ -1319,99 +1333,99 @@
     {
       "username": "root",
       "password": "",
-      "tries": 18120
+      "tries": 18336
     },
     {
       "username": "ubuntu",
       "password": "",
-      "tries": 3662
+      "tries": 3678
     },
     {
       "username": "admin",
       "password": "",
-      "tries": 1598
+      "tries": 1623
     },
     {
       "username": "user",
       "password": "",
-      "tries": 907
+      "tries": 920
     },
     {
       "username": "deploy",
       "password": "",
-      "tries": 768
+      "tries": 777
     },
     {
       "username": "test",
       "password": "",
-      "tries": 561
+      "tries": 567
     },
     {
       "username": "user1",
       "password": "",
-      "tries": 356
+      "tries": 359
     },
     {
       "username": "claude",
       "password": "",
-      "tries": 322
+      "tries": 325
     },
     {
       "username": "debian",
       "password": "",
-      "tries": 275
+      "tries": 277
     },
     {
       "username": "postgres",
       "password": "",
-      "tries": 271
+      "tries": 275
     },
     {
       "username": "support",
       "password": "",
-      "tries": 259
-    },
-    {
-      "username": "minecraft",
-      "password": "",
-      "tries": 243
-    },
-    {
-      "username": "dev",
-      "password": "",
-      "tries": 241
+      "tries": 265
     },
     {
       "username": "Tronlong",
       "password": "",
-      "tries": 235
+      "tries": 252
+    },
+    {
+      "username": "minecraft",
+      "password": "",
+      "tries": 246
+    },
+    {
+      "username": "dev",
+      "password": "",
+      "tries": 245
     }
   ],
   "techniques": [
     {
       "id": "T1110",
       "name": "Brute Force",
-      "events": 100412
+      "events": 101631
     },
     {
       "id": "T1059.004",
       "name": "Command and Scripting Interpreter: Unix Shell",
-      "events": 4156
+      "events": 4264
     },
     {
       "id": "T1552.001",
       "name": "Credentials In Files",
-      "events": 1252
+      "events": 1633
     },
     {
       "id": "T1082",
       "name": "System Information Discovery",
-      "events": 1013
+      "events": 1022
     },
     {
       "id": "T1021.004",
       "name": "Remote Services: SSH",
-      "events": 335
+      "events": 358
     },
     {
       "id": "T1105",
@@ -1431,61 +1445,16 @@
   ],
   "recent": [
     {
-      "at": "2026-11-10T17:40:05.412000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
+      "at": "2026-11-10T23:12:21.702000Z",
+      "ip": "109.160.32.x",
+      "country": "NL",
       "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "admin",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:40:05.204000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
+      "username": "",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:29:13.235000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "admin",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:29:12.952000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:24:24.303000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "admin",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:24:24.085000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:23:33.564000Z",
+      "at": "2026-11-10T23:08:48.717000Z",
       "ip": "78.153.140.x",
       "country": "GB",
       "kind": "http.login_attempt",
@@ -1494,178 +1463,169 @@
       "command": ""
     },
     {
-      "at": "2026-11-10T17:23:18.271000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "echo \"23BP\"\"_ARCH\"\"_BEGIN\"; uname -a; uname -m; cat /proc/cpuinfo; echo \"23BP\"\"_ARCH\"\"_END\""
-    },
-    {
-      "at": "2026-11-10T17:23:17.893000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "sh"
-    },
-    {
-      "at": "2026-11-10T17:23:17.893000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "ls /home; /bin/busybox BOTNET"
-    },
-    {
-      "at": "2026-11-10T17:23:17.892000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "enable"
-    },
-    {
-      "at": "2026-11-10T17:23:17.892000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "linuxshell"
-    },
-    {
-      "at": "2026-11-10T17:23:17.892000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.command",
-      "username": "",
-      "password": "",
-      "command": "system"
-    },
-    {
-      "at": "2026-11-10T17:23:17.516000Z",
-      "ip": "172.86.85.x",
-      "country": "US",
-      "kind": "telnet.auth_attempt",
-      "username": "user",
-      "password": "user",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:22:07.489000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "admin",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:22:07.249000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:20:12.279000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "admin",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:20:11.978000Z",
-      "ip": "77.90.185.x",
-      "country": "DE",
-      "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:19:20.435000Z",
-      "ip": "193.32.162.x",
-      "country": "NL",
-      "kind": "ssh.auth_attempt",
-      "username": "debian",
-      "password": "1234",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:19:20.011000Z",
-      "ip": "193.32.162.x",
-      "country": "NL",
-      "kind": "ssh.auth_attempt",
-      "username": "debian",
-      "password": "",
-      "command": ""
-    },
-    {
-      "at": "2026-11-10T17:18:02.850000Z",
+      "at": "2026-11-10T23:08:11.447000Z",
       "ip": "2.57.121.x",
       "country": "GB",
       "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "230591",
+      "username": "alonna",
+      "password": "alonna12345",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:18:02.642000Z",
+      "at": "2026-11-10T23:08:11.241000Z",
       "ip": "2.57.121.x",
       "country": "GB",
       "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "230780",
+      "username": "alonna",
+      "password": "alonna1234",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:18:02.432000Z",
+      "at": "2026-11-10T23:08:11.036000Z",
       "ip": "2.57.121.x",
       "country": "GB",
       "kind": "ssh.auth_attempt",
-      "username": "admin",
-      "password": "230792",
+      "username": "alonna",
+      "password": "alonna123",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:18:02.223000Z",
+      "at": "2026-11-10T23:08:10.831000Z",
       "ip": "2.57.121.x",
       "country": "GB",
       "kind": "ssh.auth_attempt",
-      "username": "admin",
+      "username": "alonna",
+      "password": "alonna1",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T23:08:10.625000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "alonna",
+      "password": "alonna",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T23:08:10.420000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "alonna",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:17:27.588000Z",
-      "ip": "193.32.162.x",
+      "at": "2026-11-10T23:00:14.638000Z",
+      "ip": "80.94.92.x",
       "country": "NL",
       "kind": "ssh.auth_attempt",
-      "username": "debian",
-      "password": "123",
+      "username": "root",
+      "password": "root5678",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:17:27.257000Z",
-      "ip": "193.32.162.x",
+      "at": "2026-11-10T23:00:14.131000Z",
+      "ip": "80.94.92.x",
       "country": "NL",
       "kind": "ssh.auth_attempt",
-      "username": "debian",
+      "username": "root",
       "password": "",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:16:15.010000Z",
+      "at": "2026-11-10T22:58:11.817000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root5555",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:58:11.495000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:56:13.533000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root4444",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:56:13.214000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:54:12.412000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root321",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:54:12.056000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:52:16.981000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root2222",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:52:16.639000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:50:20.869000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root2024",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:50:20.316000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:48:34.287000Z",
       "ip": "176.53.159.x",
       "country": "TR",
       "kind": "ssh.auth_attempt",
@@ -1674,7 +1634,7 @@
       "command": ""
     },
     {
-      "at": "2026-11-10T17:16:14.802000Z",
+      "at": "2026-11-10T22:48:34.078000Z",
       "ip": "176.53.159.x",
       "country": "TR",
       "kind": "ssh.auth_attempt",
@@ -1683,714 +1643,580 @@
       "command": ""
     },
     {
-      "at": "2026-11-10T17:15:31.798000Z",
-      "ip": "193.32.162.x",
+      "at": "2026-11-10T22:48:23.610000Z",
+      "ip": "80.94.92.x",
       "country": "NL",
       "kind": "ssh.auth_attempt",
-      "username": "daemon",
-      "password": "abc123",
+      "username": "root",
+      "password": "root1234",
       "command": ""
     },
     {
-      "at": "2026-11-10T17:15:31.167000Z",
-      "ip": "193.32.162.x",
+      "at": "2026-11-10T22:48:23.269000Z",
+      "ip": "80.94.92.x",
       "country": "NL",
       "kind": "ssh.auth_attempt",
-      "username": "daemon",
+      "username": "root",
       "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:46:28.026000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root123",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:46:27.601000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:44:33.442000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "root1111",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:44:32.899000Z",
+      "ip": "80.94.92.x",
+      "country": "NL",
+      "kind": "ssh.auth_attempt",
+      "username": "root",
+      "password": "",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:43:26.650000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "admin",
+      "password": "22091970",
+      "command": ""
+    },
+    {
+      "at": "2026-11-10T22:43:26.447000Z",
+      "ip": "2.57.121.x",
+      "country": "GB",
+      "kind": "ssh.auth_attempt",
+      "username": "admin",
+      "password": "22101982",
       "command": ""
     }
   ],
   "daily": [
     {
-      "at": "2026-10-11T17:42:46Z",
+      "at": "2026-10-11T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-12T17:42:46Z",
+      "at": "2026-10-12T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-13T17:42:46Z",
+      "at": "2026-10-13T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-14T17:42:46Z",
+      "at": "2026-10-14T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-15T17:42:46Z",
+      "at": "2026-10-15T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-16T17:42:46Z",
+      "at": "2026-10-16T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-17T17:42:46Z",
+      "at": "2026-10-17T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-18T17:42:46Z",
+      "at": "2026-10-18T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-19T17:42:46Z",
+      "at": "2026-10-19T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-20T17:42:46Z",
+      "at": "2026-10-20T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-21T17:42:46Z",
+      "at": "2026-10-21T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-22T17:42:46Z",
+      "at": "2026-10-22T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-23T17:42:46Z",
+      "at": "2026-10-23T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-24T17:42:46Z",
+      "at": "2026-10-24T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-25T17:42:46Z",
+      "at": "2026-10-25T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-26T17:42:46Z",
+      "at": "2026-10-26T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-27T17:42:46Z",
+      "at": "2026-10-27T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-28T17:42:46Z",
+      "at": "2026-10-28T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-29T17:42:46Z",
+      "at": "2026-10-29T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-30T17:42:46Z",
+      "at": "2026-10-30T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-10-31T17:42:46Z",
+      "at": "2026-10-31T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-11-01T17:42:46Z",
+      "at": "2026-11-01T23:13:24Z",
       "count": 0
     },
     {
-      "at": "2026-11-02T17:42:46Z",
-      "count": 21772
+      "at": "2026-11-02T23:13:24Z",
+      "count": 32038
     },
     {
-      "at": "2026-11-03T17:42:46Z",
-      "count": 34744
+      "at": "2026-11-03T23:13:24Z",
+      "count": 36657
     },
     {
-      "at": "2026-11-04T17:42:46Z",
-      "count": 34706
+      "at": "2026-11-04T23:13:24Z",
+      "count": 24443
     },
     {
-      "at": "2026-11-05T17:42:46Z",
-      "count": 11069
+      "at": "2026-11-05T23:13:24Z",
+      "count": 17296
     },
     {
-      "at": "2026-11-06T17:42:46Z",
-      "count": 32061
+      "at": "2026-11-06T23:13:24Z",
+      "count": 41584
     },
     {
-      "at": "2026-11-07T17:42:46Z",
-      "count": 34777
+      "at": "2026-11-07T23:13:24Z",
+      "count": 24802
     },
     {
-      "at": "2026-11-08T17:42:46Z",
-      "count": 25749
+      "at": "2026-11-08T23:13:24Z",
+      "count": 29544
     },
     {
-      "at": "2026-11-09T17:42:46Z",
-      "count": 29014
+      "at": "2026-11-09T23:13:24Z",
+      "count": 20932
     }
   ],
   "hourly": [
     {
-      "at": "2026-11-08T17:42:47Z",
-      "count": 736
+      "at": "2026-11-08T23:13:24Z",
+      "count": 1198
     },
     {
-      "at": "2026-11-08T18:42:47Z",
-      "count": 3080
+      "at": "2026-11-09T00:13:24Z",
+      "count": 936
     },
     {
-      "at": "2026-11-08T19:42:47Z",
-      "count": 1992
+      "at": "2026-11-09T01:13:24Z",
+      "count": 74
     },
     {
-      "at": "2026-11-08T20:42:47Z",
-      "count": 1386
+      "at": "2026-11-09T02:13:24Z",
+      "count": 321
     },
     {
-      "at": "2026-11-08T21:42:47Z",
-      "count": 437
-    },
-    {
-      "at": "2026-11-08T22:42:47Z",
-      "count": 314
-    },
-    {
-      "at": "2026-11-08T23:42:47Z",
-      "count": 1821
-    },
-    {
-      "at": "2026-11-09T00:42:47Z",
-      "count": 105
-    },
-    {
-      "at": "2026-11-09T01:42:47Z",
-      "count": 119
-    },
-    {
-      "at": "2026-11-09T02:42:47Z",
-      "count": 244
-    },
-    {
-      "at": "2026-11-09T03:42:47Z",
-      "count": 246
-    },
-    {
-      "at": "2026-11-09T04:42:47Z",
-      "count": 223
-    },
-    {
-      "at": "2026-11-09T05:42:47Z",
-      "count": 393
-    },
-    {
-      "at": "2026-11-09T06:42:47Z",
-      "count": 211
-    },
-    {
-      "at": "2026-11-09T07:42:47Z",
-      "count": 31
-    },
-    {
-      "at": "2026-11-09T08:42:47Z",
-      "count": 555
-    },
-    {
-      "at": "2026-11-09T09:42:47Z",
-      "count": 447
-    },
-    {
-      "at": "2026-11-09T10:42:47Z",
-      "count": 506
-    },
-    {
-      "at": "2026-11-09T11:42:47Z",
-      "count": 519
-    },
-    {
-      "at": "2026-11-09T12:42:47Z",
-      "count": 364
-    },
-    {
-      "at": "2026-11-09T13:42:47Z",
-      "count": 1151
-    },
-    {
-      "at": "2026-11-09T14:42:47Z",
-      "count": 3825
-    },
-    {
-      "at": "2026-11-09T15:42:47Z",
-      "count": 4455
-    },
-    {
-      "at": "2026-11-09T16:42:47Z",
-      "count": 2589
-    },
-    {
-      "at": "2026-11-09T17:42:47Z",
-      "count": 1145
-    },
-    {
-      "at": "2026-11-09T18:42:47Z",
-      "count": 3824
-    },
-    {
-      "at": "2026-11-09T19:42:47Z",
-      "count": 5384
-    },
-    {
-      "at": "2026-11-09T20:42:47Z",
-      "count": 342
-    },
-    {
-      "at": "2026-11-09T21:42:47Z",
-      "count": 655
-    },
-    {
-      "at": "2026-11-09T22:42:47Z",
-      "count": 165
-    },
-    {
-      "at": "2026-11-09T23:42:47Z",
-      "count": 2043
-    },
-    {
-      "at": "2026-11-10T00:42:47Z",
-      "count": 2824
-    },
-    {
-      "at": "2026-11-10T01:42:47Z",
+      "at": "2026-11-09T03:13:24Z",
       "count": 77
     },
     {
-      "at": "2026-11-10T02:42:47Z",
-      "count": 250
+      "at": "2026-11-09T04:13:24Z",
+      "count": 268
     },
     {
-      "at": "2026-11-10T03:42:47Z",
-      "count": 422
+      "at": "2026-11-09T05:13:24Z",
+      "count": 486
     },
     {
-      "at": "2026-11-10T04:42:47Z",
-      "count": 1179
+      "at": "2026-11-09T06:13:24Z",
+      "count": 162
     },
     {
-      "at": "2026-11-10T05:42:47Z",
-      "count": 1806
+      "at": "2026-11-09T07:13:24Z",
+      "count": 107
     },
     {
-      "at": "2026-11-10T06:42:47Z",
-      "count": 266
+      "at": "2026-11-09T08:13:24Z",
+      "count": 61
     },
     {
-      "at": "2026-11-10T07:42:47Z",
-      "count": 133
+      "at": "2026-11-09T09:13:24Z",
+      "count": 675
     },
     {
-      "at": "2026-11-10T08:42:47Z",
-      "count": 556
+      "at": "2026-11-09T10:13:24Z",
+      "count": 537
     },
     {
-      "at": "2026-11-10T09:42:47Z",
-      "count": 2820
+      "at": "2026-11-09T11:13:24Z",
+      "count": 549
     },
     {
-      "at": "2026-11-10T10:42:47Z",
-      "count": 1406
+      "at": "2026-11-09T12:13:24Z",
+      "count": 505
     },
     {
-      "at": "2026-11-10T11:42:47Z",
-      "count": 558
+      "at": "2026-11-09T13:13:24Z",
+      "count": 117
     },
     {
-      "at": "2026-11-10T12:42:47Z",
-      "count": 82
+      "at": "2026-11-09T14:13:24Z",
+      "count": 2636
     },
     {
-      "at": "2026-11-10T13:42:47Z",
-      "count": 67
+      "at": "2026-11-09T15:13:24Z",
+      "count": 5048
     },
     {
-      "at": "2026-11-10T14:42:47Z",
-      "count": 490
+      "at": "2026-11-09T16:13:24Z",
+      "count": 2444
     },
     {
-      "at": "2026-11-10T15:42:47Z",
-      "count": 1161
+      "at": "2026-11-09T17:13:24Z",
+      "count": 2890
     },
     {
-      "at": "2026-11-10T16:42:47Z",
-      "count": 1359
+      "at": "2026-11-09T18:13:24Z",
+      "count": 1442
+    },
+    {
+      "at": "2026-11-09T19:13:24Z",
+      "count": 5958
+    },
+    {
+      "at": "2026-11-09T20:13:24Z",
+      "count": 2128
+    },
+    {
+      "at": "2026-11-09T21:13:24Z",
+      "count": 510
+    },
+    {
+      "at": "2026-11-09T22:13:24Z",
+      "count": 415
+    },
+    {
+      "at": "2026-11-09T23:13:24Z",
+      "count": 733
+    },
+    {
+      "at": "2026-11-10T00:13:24Z",
+      "count": 2848
+    },
+    {
+      "at": "2026-11-10T01:13:24Z",
+      "count": 1361
+    },
+    {
+      "at": "2026-11-10T02:13:24Z",
+      "count": 79
+    },
+    {
+      "at": "2026-11-10T03:13:24Z",
+      "count": 306
+    },
+    {
+      "at": "2026-11-10T04:13:24Z",
+      "count": 388
+    },
+    {
+      "at": "2026-11-10T05:13:24Z",
+      "count": 2304
+    },
+    {
+      "at": "2026-11-10T06:13:24Z",
+      "count": 727
+    },
+    {
+      "at": "2026-11-10T07:13:24Z",
+      "count": 190
+    },
+    {
+      "at": "2026-11-10T08:13:24Z",
+      "count": 252
+    },
+    {
+      "at": "2026-11-10T09:13:24Z",
+      "count": 1772
+    },
+    {
+      "at": "2026-11-10T10:13:24Z",
+      "count": 2748
+    },
+    {
+      "at": "2026-11-10T11:13:24Z",
+      "count": 231
+    },
+    {
+      "at": "2026-11-10T12:13:24Z",
+      "count": 482
+    },
+    {
+      "at": "2026-11-10T13:13:24Z",
+      "count": 80
+    },
+    {
+      "at": "2026-11-10T14:13:24Z",
+      "count": 34
+    },
+    {
+      "at": "2026-11-10T15:13:24Z",
+      "count": 616
+    },
+    {
+      "at": "2026-11-10T16:13:24Z",
+      "count": 2282
+    },
+    {
+      "at": "2026-11-10T17:13:24Z",
+      "count": 208
+    },
+    {
+      "at": "2026-11-10T18:13:24Z",
+      "count": 157
+    },
+    {
+      "at": "2026-11-10T19:13:24Z",
+      "count": 271
+    },
+    {
+      "at": "2026-11-10T20:13:24Z",
+      "count": 100
+    },
+    {
+      "at": "2026-11-10T21:13:24Z",
+      "count": 1678
+    },
+    {
+      "at": "2026-11-10T22:13:24Z",
+      "count": 1085
     }
   ],
   "sessions": [
     {
-      "country": "AD",
-      "ip": "195.178.110.x",
-      "service": "ssh",
-      "started_at": "2026-11-10T12:15:15.756000Z",
-      "commands": [
-        {
-          "seq": 1,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_control'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.756000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 2,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_math'\"'\"' \"$((293*432+21))\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.757000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 3,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_pid'\"'\"' \"$$\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.757000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 4,
-          "command": "sh -c 'set -- '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_arg1'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.757000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 5,
-          "command": "sh -c 'f_check_c7c3a445ad5ddf82ce905b01fbde6cf6() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_function'\"'\"' \"$1|$#\"; }; f_check_c7c3a445ad5ddf82ce905b01fbde6cf6 '\"'\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.757000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 6,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_done'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.758000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 7,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_control'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7'\"'\"''",
-          "since_prev_ms": 1,
-          "at": "2026-11-10T12:15:15.759000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 8,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_math'\"'\"' \"$((921*478+3))\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.759000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 9,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_pid'\"'\"' \"$$\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.760000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 10,
-          "command": "sh -c 'set -- '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_arg1'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.760000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 11,
-          "command": "sh -c 'f_check_f8f3b3ef20bb9d362bd6e2a3904f09b7() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_function'\"'\"' \"$1|$#\"; }; f_check_f8f3b3ef20bb9d362bd6e2a3904f09b7 '\"'\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.760000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 12,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_done'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.760000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 13,
-          "command": "echo; echo 'check_a10f54bed5ccf1120422ba21f8a6b4e3_transport_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:15.761000Z"
-        },
-        {
-          "seq": 14,
-          "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_control|check_1aca79864b7f0e97e80e1e1c24b3b403'",
-          "since_prev_ms": 336,
-          "at": "2026-11-10T12:15:16.097000Z"
-        },
-        {
-          "seq": 15,
-          "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_math|'\"$((877*390+69))\"",
-          "since_prev_ms": 1,
-          "at": "2026-11-10T12:15:16.099000Z"
-        },
-        {
-          "seq": 16,
-          "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_pid|'\"$$\"",
-          "since_prev_ms": 1,
-          "at": "2026-11-10T12:15:16.100000Z"
-        },
-        {
-          "seq": 17,
-          "command": "set -- 'check_1aca79864b7f0e97e80e1e1c24b3b403_arg1' 'check_1aca79864b7f0e97e80e1e1c24b3b403_arg2'; echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_positional|'\"$#|$1|$2\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.100000Z"
-        },
-        {
-          "seq": 18,
-          "command": "f_check_1aca79864b7f0e97e80e1e1c24b3b403() { echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_function|'\"$1|$#\"; }; f_check_1aca79864b7f0e97e80e1e1c24b3b403 'check_1aca79864b7f0e97e80e1e1c24b3b403_f",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.101000Z"
-        },
-        {
-          "seq": 19,
-          "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.101000Z"
-        },
-        {
-          "seq": 20,
-          "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_control|check_2322b7d01d5fe9b1e632619f0f1183fa'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.101000Z"
-        },
-        {
-          "seq": 21,
-          "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_math|'\"$((22*480+71))\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.102000Z"
-        },
-        {
-          "seq": 22,
-          "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_pid|'\"$$\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.102000Z"
-        },
-        {
-          "seq": 23,
-          "command": "set -- 'check_2322b7d01d5fe9b1e632619f0f1183fa_arg1' 'check_2322b7d01d5fe9b1e632619f0f1183fa_arg2'; echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_positional|'\"$#|$1|$2\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.102000Z"
-        },
-        {
-          "seq": 24,
-          "command": "f_check_2322b7d01d5fe9b1e632619f0f1183fa() { echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_function|'\"$1|$#\"; }; f_check_2322b7d01d5fe9b1e632619f0f1183fa 'check_2322b7d01d5fe9b1e632619f0f1183fa_f",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.103000Z"
-        },
-        {
-          "seq": 25,
-          "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.103000Z"
-        },
-        {
-          "seq": 26,
-          "command": "echo; echo 'check_9c07b9f6a59bd9bca858544165bfc108_transport_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-10T12:15:16.104000Z"
-        }
-      ]
-    },
-    {
       "country": "NL",
       "ip": "92.118.39.x",
       "service": "ssh",
-      "started_at": "2026-11-10T07:19:37.215000Z",
+      "started_at": "2026-11-08T12:20:47.770000Z",
       "commands": [
         {
           "seq": 1,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_control'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_control'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.215000Z",
+          "at": "2026-11-08T12:20:47.770000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 2,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_math'\"'\"' \"$((275*423+22))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_math'\"'\"' \"$((577*312+25))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.216000Z",
+          "at": "2026-11-08T12:20:47.770000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 3,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.216000Z",
+          "at": "2026-11-08T12:20:47.770000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 4,
-          "command": "sh -c 'set -- '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_arg1'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_",
+          "command": "sh -c 'set -- '\"'\"'check_d873e59c6140168655912e42831adbdc_arg1'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.216000Z",
+          "at": "2026-11-08T12:20:47.771000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 5,
-          "command": "sh -c 'f_check_148b94c0d80ad6d58c43fe371bbf2b7d() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_function'\"'\"' \"$1|$#\"; }; f_check_148b94c0d80ad6d58c43fe371bbf2b7d '\"'\"",
+          "command": "sh -c 'f_check_d873e59c6140168655912e42831adbdc() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_function'\"'\"' \"$1|$#\"; }; f_check_d873e59c6140168655912e42831adbdc '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.216000Z",
+          "at": "2026-11-08T12:20:47.771000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 6,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_148b94c0d80ad6d58c43fe371bbf2b7d_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.217000Z",
+          "at": "2026-11-08T12:20:47.771000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 7,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_control'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_control'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.217000Z",
+          "at": "2026-11-08T12:20:47.772000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 8,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_math'\"'\"' \"$((400*477+96))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_math'\"'\"' \"$((215*808+88))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.217000Z",
+          "at": "2026-11-08T12:20:47.772000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 9,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.217000Z",
+          "at": "2026-11-08T12:20:47.772000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 10,
-          "command": "sh -c 'set -- '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_arg1'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_",
+          "command": "sh -c 'set -- '\"'\"'check_a468d431ca0034db30dc7617620092ae_arg1'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.218000Z",
+          "at": "2026-11-08T12:20:47.772000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 11,
-          "command": "sh -c 'f_check_df8c62a38d9ca5051aaa09b6ffb02125() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_function'\"'\"' \"$1|$#\"; }; f_check_df8c62a38d9ca5051aaa09b6ffb02125 '\"'\"",
+          "command": "sh -c 'f_check_a468d431ca0034db30dc7617620092ae() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_function'\"'\"' \"$1|$#\"; }; f_check_a468d431ca0034db30dc7617620092ae '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.218000Z",
+          "at": "2026-11-08T12:20:47.772000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 12,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_df8c62a38d9ca5051aaa09b6ffb02125_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.218000Z",
+          "at": "2026-11-08T12:20:47.773000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 13,
-          "command": "echo; echo 'check_11041fccdf0687d6db908408b52f7126_transport_done'",
+          "command": "echo; echo 'check_f191a399c48d8d666f717f5ac12e3042_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.218000Z"
+          "at": "2026-11-08T12:20:47.773000Z"
         },
         {
           "seq": 14,
-          "command": "echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_control|check_ed1bcea732db0bef9725c320aa90a8d5'",
-          "since_prev_ms": 427,
-          "at": "2026-11-10T07:19:37.646000Z"
+          "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_control|check_a237cec85dcefc6d110b993a64d10562'",
+          "since_prev_ms": 558,
+          "at": "2026-11-08T12:20:48.332000Z"
         },
         {
           "seq": 15,
-          "command": "echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_math|'\"$((880*381+75))\"",
+          "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_math|'\"$((651*414+12))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.647000Z"
+          "at": "2026-11-08T12:20:48.332000Z"
         },
         {
           "seq": 16,
-          "command": "echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_pid|'\"$$\"",
+          "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.647000Z"
+          "at": "2026-11-08T12:20:48.332000Z"
         },
         {
           "seq": 17,
-          "command": "set -- 'check_ed1bcea732db0bef9725c320aa90a8d5_arg1' 'check_ed1bcea732db0bef9725c320aa90a8d5_arg2'; echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_a237cec85dcefc6d110b993a64d10562_arg1' 'check_a237cec85dcefc6d110b993a64d10562_arg2'; echo 'check_a237cec85dcefc6d110b993a64d10562_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.647000Z"
+          "at": "2026-11-08T12:20:48.333000Z"
         },
         {
           "seq": 18,
-          "command": "f_check_ed1bcea732db0bef9725c320aa90a8d5() { echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_function|'\"$1|$#\"; }; f_check_ed1bcea732db0bef9725c320aa90a8d5 'check_ed1bcea732db0bef9725c320aa90a8d5_f",
+          "command": "f_check_a237cec85dcefc6d110b993a64d10562() { echo 'check_a237cec85dcefc6d110b993a64d10562_small_function|'\"$1|$#\"; }; f_check_a237cec85dcefc6d110b993a64d10562 'check_a237cec85dcefc6d110b993a64d10562_f",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.648000Z"
+          "at": "2026-11-08T12:20:48.333000Z"
         },
         {
           "seq": 19,
-          "command": "echo 'check_ed1bcea732db0bef9725c320aa90a8d5_small_done'",
+          "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.648000Z"
+          "at": "2026-11-08T12:20:48.334000Z"
         },
         {
           "seq": 20,
-          "command": "echo 'check_c269b699f541e35aeb6b211002a70c43_small_control|check_c269b699f541e35aeb6b211002a70c43'",
+          "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_control|check_e2c341e9790a807f1fb9d43e40b18422'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.648000Z"
+          "at": "2026-11-08T12:20:48.334000Z"
         },
         {
           "seq": 21,
-          "command": "echo 'check_c269b699f541e35aeb6b211002a70c43_small_math|'\"$((917*169+9))\"",
+          "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_math|'\"$((226*27+46))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.649000Z"
+          "at": "2026-11-08T12:20:48.334000Z"
         },
         {
           "seq": 22,
-          "command": "echo 'check_c269b699f541e35aeb6b211002a70c43_small_pid|'\"$$\"",
+          "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.649000Z"
+          "at": "2026-11-08T12:20:48.335000Z"
         },
         {
           "seq": 23,
-          "command": "set -- 'check_c269b699f541e35aeb6b211002a70c43_arg1' 'check_c269b699f541e35aeb6b211002a70c43_arg2'; echo 'check_c269b699f541e35aeb6b211002a70c43_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_e2c341e9790a807f1fb9d43e40b18422_arg1' 'check_e2c341e9790a807f1fb9d43e40b18422_arg2'; echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.649000Z"
+          "at": "2026-11-08T12:20:48.335000Z"
         },
         {
           "seq": 24,
-          "command": "f_check_c269b699f541e35aeb6b211002a70c43() { echo 'check_c269b699f541e35aeb6b211002a70c43_small_function|'\"$1|$#\"; }; f_check_c269b699f541e35aeb6b211002a70c43 'check_c269b699f541e35aeb6b211002a70c43_f",
+          "command": "f_check_e2c341e9790a807f1fb9d43e40b18422() { echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_function|'\"$1|$#\"; }; f_check_e2c341e9790a807f1fb9d43e40b18422 'check_e2c341e9790a807f1fb9d43e40b18422_f",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.649000Z"
+          "at": "2026-11-08T12:20:48.335000Z"
         },
         {
           "seq": 25,
-          "command": "echo 'check_c269b699f541e35aeb6b211002a70c43_small_done'",
+          "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.650000Z"
+          "at": "2026-11-08T12:20:48.336000Z"
         },
         {
           "seq": 26,
-          "command": "echo; echo 'check_d8a961c7e815e69aa3e69a96b3c0e311_transport_done'",
+          "command": "echo; echo 'check_da8b573cab382283479faa733ef228de_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-10T07:19:37.650000Z"
+          "at": "2026-11-08T12:20:48.336000Z"
         }
       ]
     },
@@ -2398,375 +2224,187 @@
       "country": "NL",
       "ip": "2.57.122.x",
       "service": "ssh",
-      "started_at": "2026-11-09T10:34:05.238000Z",
+      "started_at": "2026-11-08T05:12:30.248000Z",
       "commands": [
         {
           "seq": 1,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_control'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_control'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.238000Z",
+          "at": "2026-11-08T05:12:30.248000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 2,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_math'\"'\"' \"$((100*432+64))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_math'\"'\"' \"$((389*34+68))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.238000Z",
+          "at": "2026-11-08T05:12:30.248000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 3,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.239000Z",
+          "at": "2026-11-08T05:12:30.249000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 4,
-          "command": "sh -c 'set -- '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_arg1'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_",
+          "command": "sh -c 'set -- '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_arg1'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.239000Z",
+          "at": "2026-11-08T05:12:30.249000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 5,
-          "command": "sh -c 'f_check_791e0d4c011b2f6d34d93a21554879ca() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_function'\"'\"' \"$1|$#\"; }; f_check_791e0d4c011b2f6d34d93a21554879ca '\"'\"",
+          "command": "sh -c 'f_check_a516dcc8dee61bb27af449542fb257ff() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_function'\"'\"' \"$1|$#\"; }; f_check_a516dcc8dee61bb27af449542fb257ff '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.239000Z",
+          "at": "2026-11-08T05:12:30.249000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 6,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_791e0d4c011b2f6d34d93a21554879ca_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_a516dcc8dee61bb27af449542fb257ff_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.240000Z",
+          "at": "2026-11-08T05:12:30.249000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 7,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_control'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_control'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.240000Z",
+          "at": "2026-11-08T05:12:30.250000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 8,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_math'\"'\"' \"$((590*327+80))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_math'\"'\"' \"$((654*293+15))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.240000Z",
+          "at": "2026-11-08T05:12:30.250000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 9,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.240000Z",
+          "at": "2026-11-08T05:12:30.250000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 10,
-          "command": "sh -c 'set -- '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_arg1'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_",
+          "command": "sh -c 'set -- '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_arg1'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.241000Z",
+          "at": "2026-11-08T05:12:30.250000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 11,
-          "command": "sh -c 'f_check_8a9cca9211a10eef26687caca7ab173c() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_function'\"'\"' \"$1|$#\"; }; f_check_8a9cca9211a10eef26687caca7ab173c '\"'\"",
+          "command": "sh -c 'f_check_a23a337790cbb48bfd16a70187ecb36a() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_function'\"'\"' \"$1|$#\"; }; f_check_a23a337790cbb48bfd16a70187ecb36a '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.241000Z",
+          "at": "2026-11-08T05:12:30.251000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 12,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_8a9cca9211a10eef26687caca7ab173c_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_a23a337790cbb48bfd16a70187ecb36a_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.241000Z",
+          "at": "2026-11-08T05:12:30.251000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 13,
-          "command": "echo; echo 'check_2eee7e7247cd0eee188a942f8b740eb6_transport_done'",
+          "command": "echo; echo 'check_e92e49c95e80a4ea35a53b0a99baeae8_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.242000Z"
+          "at": "2026-11-08T05:12:30.251000Z"
         },
         {
           "seq": 14,
-          "command": "echo 'check_51a2f90ad62e132e26d00531b93822ad_small_control|check_51a2f90ad62e132e26d00531b93822ad'",
-          "since_prev_ms": 436,
-          "at": "2026-11-09T10:34:05.678000Z"
+          "command": "echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_control|check_338b4eb4b78cd0b8624bec74dab6eb6f'",
+          "since_prev_ms": 510,
+          "at": "2026-11-08T05:12:30.762000Z"
         },
         {
           "seq": 15,
-          "command": "echo 'check_51a2f90ad62e132e26d00531b93822ad_small_math|'\"$((959*331+44))\"",
+          "command": "echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_math|'\"$((235*329+4))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.678000Z"
+          "at": "2026-11-08T05:12:30.762000Z"
         },
         {
           "seq": 16,
-          "command": "echo 'check_51a2f90ad62e132e26d00531b93822ad_small_pid|'\"$$\"",
+          "command": "echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.679000Z"
+          "at": "2026-11-08T05:12:30.762000Z"
         },
         {
           "seq": 17,
-          "command": "set -- 'check_51a2f90ad62e132e26d00531b93822ad_arg1' 'check_51a2f90ad62e132e26d00531b93822ad_arg2'; echo 'check_51a2f90ad62e132e26d00531b93822ad_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_338b4eb4b78cd0b8624bec74dab6eb6f_arg1' 'check_338b4eb4b78cd0b8624bec74dab6eb6f_arg2'; echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.679000Z"
+          "at": "2026-11-08T05:12:30.762000Z"
         },
         {
           "seq": 18,
-          "command": "f_check_51a2f90ad62e132e26d00531b93822ad() { echo 'check_51a2f90ad62e132e26d00531b93822ad_small_function|'\"$1|$#\"; }; f_check_51a2f90ad62e132e26d00531b93822ad 'check_51a2f90ad62e132e26d00531b93822ad_f",
-          "since_prev_ms": 1,
-          "at": "2026-11-09T10:34:05.680000Z"
+          "command": "f_check_338b4eb4b78cd0b8624bec74dab6eb6f() { echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_function|'\"$1|$#\"; }; f_check_338b4eb4b78cd0b8624bec74dab6eb6f 'check_338b4eb4b78cd0b8624bec74dab6eb6f_f",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:12:30.763000Z"
         },
         {
           "seq": 19,
-          "command": "echo 'check_51a2f90ad62e132e26d00531b93822ad_small_done'",
+          "command": "echo 'check_338b4eb4b78cd0b8624bec74dab6eb6f_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.681000Z"
+          "at": "2026-11-08T05:12:30.763000Z"
         },
         {
           "seq": 20,
-          "command": "echo 'check_be9095be0d57bfecb477411e9e876717_small_control|check_be9095be0d57bfecb477411e9e876717'",
+          "command": "echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_control|check_284a83d4355eddb8dff6868fcb515fb3'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.681000Z"
+          "at": "2026-11-08T05:12:30.764000Z"
         },
         {
           "seq": 21,
-          "command": "echo 'check_be9095be0d57bfecb477411e9e876717_small_math|'\"$((929*677+91))\"",
+          "command": "echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_math|'\"$((345*55+33))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.681000Z"
+          "at": "2026-11-08T05:12:30.764000Z"
         },
         {
           "seq": 22,
-          "command": "echo 'check_be9095be0d57bfecb477411e9e876717_small_pid|'\"$$\"",
+          "command": "echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.681000Z"
+          "at": "2026-11-08T05:12:30.764000Z"
         },
         {
           "seq": 23,
-          "command": "set -- 'check_be9095be0d57bfecb477411e9e876717_arg1' 'check_be9095be0d57bfecb477411e9e876717_arg2'; echo 'check_be9095be0d57bfecb477411e9e876717_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_284a83d4355eddb8dff6868fcb515fb3_arg1' 'check_284a83d4355eddb8dff6868fcb515fb3_arg2'; echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.682000Z"
+          "at": "2026-11-08T05:12:30.765000Z"
         },
         {
           "seq": 24,
-          "command": "f_check_be9095be0d57bfecb477411e9e876717() { echo 'check_be9095be0d57bfecb477411e9e876717_small_function|'\"$1|$#\"; }; f_check_be9095be0d57bfecb477411e9e876717 'check_be9095be0d57bfecb477411e9e876717_f",
+          "command": "f_check_284a83d4355eddb8dff6868fcb515fb3() { echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_function|'\"$1|$#\"; }; f_check_284a83d4355eddb8dff6868fcb515fb3 'check_284a83d4355eddb8dff6868fcb515fb3_f",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.682000Z"
+          "at": "2026-11-08T05:12:30.765000Z"
         },
         {
           "seq": 25,
-          "command": "echo 'check_be9095be0d57bfecb477411e9e876717_small_done'",
+          "command": "echo 'check_284a83d4355eddb8dff6868fcb515fb3_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.682000Z"
+          "at": "2026-11-08T05:12:30.766000Z"
         },
         {
           "seq": 26,
-          "command": "echo; echo 'check_f339b335a93181d1aa2f3e4b7911e9ba_transport_done'",
+          "command": "echo; echo 'check_5087cd678106a094e5d5bc040ef14d9d_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-09T10:34:05.683000Z"
-        }
-      ]
-    },
-    {
-      "country": "NL",
-      "ip": "92.118.39.x",
-      "service": "ssh",
-      "started_at": "2026-11-05T00:16:43.157000Z",
-      "commands": [
-        {
-          "seq": 1,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_control'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.157000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 2,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_math'\"'\"' \"$((263*2+76))\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.157000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 3,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_pid'\"'\"' \"$$\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.157000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 4,
-          "command": "sh -c 'set -- '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_arg1'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.158000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 5,
-          "command": "sh -c 'f_check_71f7ec248495a8ec6e4058d0bdb351f8() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_function'\"'\"' \"$1|$#\"; }; f_check_71f7ec248495a8ec6e4058d0bdb351f8 '\"'\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.158000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 6,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_71f7ec248495a8ec6e4058d0bdb351f8_small_done'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.158000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 7,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_control'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5'\"'\"''",
-          "since_prev_ms": 2,
-          "at": "2026-11-05T00:16:43.160000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 8,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_math'\"'\"' \"$((858*563+57))\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.161000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 9,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_pid'\"'\"' \"$$\"'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.161000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 10,
-          "command": "sh -c 'set -- '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_arg1'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.161000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 11,
-          "command": "sh -c 'f_check_8ba828e8b1022b2961d0dd3b61b9d4e5() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_function'\"'\"' \"$1|$#\"; }; f_check_8ba828e8b1022b2961d0dd3b61b9d4e5 '\"'\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.161000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 12,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_8ba828e8b1022b2961d0dd3b61b9d4e5_small_done'\"'\"''",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.162000Z",
-          "technique_id": "T1059.004",
-          "technique": "Command and Scripting Interpreter: Unix Shell"
-        },
-        {
-          "seq": 13,
-          "command": "echo; echo 'check_7ef41fae104af2b87f5de8c87eb54562_transport_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:43.162000Z"
-        },
-        {
-          "seq": 14,
-          "command": "echo 'check_eee4079bce71e14dfde060db862d71d7_small_control|check_eee4079bce71e14dfde060db862d71d7'",
-          "since_prev_ms": 1332,
-          "at": "2026-11-05T00:16:44.494000Z"
-        },
-        {
-          "seq": 15,
-          "command": "echo 'check_eee4079bce71e14dfde060db862d71d7_small_math|'\"$((340*957+47))\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.494000Z"
-        },
-        {
-          "seq": 16,
-          "command": "echo 'check_eee4079bce71e14dfde060db862d71d7_small_pid|'\"$$\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.495000Z"
-        },
-        {
-          "seq": 17,
-          "command": "set -- 'check_eee4079bce71e14dfde060db862d71d7_arg1' 'check_eee4079bce71e14dfde060db862d71d7_arg2'; echo 'check_eee4079bce71e14dfde060db862d71d7_small_positional|'\"$#|$1|$2\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.495000Z"
-        },
-        {
-          "seq": 18,
-          "command": "f_check_eee4079bce71e14dfde060db862d71d7() { echo 'check_eee4079bce71e14dfde060db862d71d7_small_function|'\"$1|$#\"; }; f_check_eee4079bce71e14dfde060db862d71d7 'check_eee4079bce71e14dfde060db862d71d7_f",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.495000Z"
-        },
-        {
-          "seq": 19,
-          "command": "echo 'check_eee4079bce71e14dfde060db862d71d7_small_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.496000Z"
-        },
-        {
-          "seq": 20,
-          "command": "echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_control|check_c7ad1831a6af01268d62b3f3914d6efe'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.496000Z"
-        },
-        {
-          "seq": 21,
-          "command": "echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_math|'\"$((271*248+96))\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.496000Z"
-        },
-        {
-          "seq": 22,
-          "command": "echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_pid|'\"$$\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.497000Z"
-        },
-        {
-          "seq": 23,
-          "command": "set -- 'check_c7ad1831a6af01268d62b3f3914d6efe_arg1' 'check_c7ad1831a6af01268d62b3f3914d6efe_arg2'; echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_positional|'\"$#|$1|$2\"",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.497000Z"
-        },
-        {
-          "seq": 24,
-          "command": "f_check_c7ad1831a6af01268d62b3f3914d6efe() { echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_function|'\"$1|$#\"; }; f_check_c7ad1831a6af01268d62b3f3914d6efe 'check_c7ad1831a6af01268d62b3f3914d6efe_f",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.497000Z"
-        },
-        {
-          "seq": 25,
-          "command": "echo 'check_c7ad1831a6af01268d62b3f3914d6efe_small_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.498000Z"
-        },
-        {
-          "seq": 26,
-          "command": "echo; echo 'check_46e03328bd9924518d9bdab9ce4f0def_transport_done'",
-          "since_prev_ms": 0,
-          "at": "2026-11-05T00:16:44.498000Z"
+          "at": "2026-11-08T05:12:30.766000Z"
         }
       ]
     },
@@ -2774,376 +2412,752 @@
       "country": "NL",
       "ip": "2.57.122.x",
       "service": "ssh",
-      "started_at": "2026-11-06T17:10:51.014000Z",
+      "started_at": "2026-11-08T06:28:40.851000Z",
       "commands": [
         {
           "seq": 1,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_control'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_control'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.014000Z",
+          "at": "2026-11-08T06:28:40.851000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 2,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_math'\"'\"' \"$((62*297+96))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_math'\"'\"' \"$((905*708+33))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.015000Z",
+          "at": "2026-11-08T06:28:40.851000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 3,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.015000Z",
+          "at": "2026-11-08T06:28:40.852000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 4,
-          "command": "sh -c 'set -- '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_arg1'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_",
+          "command": "sh -c 'set -- '\"'\"'check_49a26f2727e410f49b3d42089218142c_arg1'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.015000Z",
+          "at": "2026-11-08T06:28:40.852000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 5,
-          "command": "sh -c 'f_check_7513b719a9ac2112e44b2d42707819f1() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_function'\"'\"' \"$1|$#\"; }; f_check_7513b719a9ac2112e44b2d42707819f1 '\"'\"",
+          "command": "sh -c 'f_check_49a26f2727e410f49b3d42089218142c() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_function'\"'\"' \"$1|$#\"; }; f_check_49a26f2727e410f49b3d42089218142c '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.016000Z",
+          "at": "2026-11-08T06:28:40.852000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 6,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_7513b719a9ac2112e44b2d42707819f1_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_49a26f2727e410f49b3d42089218142c_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.016000Z",
+          "at": "2026-11-08T06:28:40.853000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 7,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_control'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_control'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.016000Z",
+          "at": "2026-11-08T06:28:40.853000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 8,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_math'\"'\"' \"$((316*938+81))\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_math'\"'\"' \"$((166*6+24))\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.016000Z",
+          "at": "2026-11-08T06:28:40.853000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 9,
-          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_pid'\"'\"' \"$$\"'",
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_pid'\"'\"' \"$$\"'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.017000Z",
+          "at": "2026-11-08T06:28:40.854000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 10,
-          "command": "sh -c 'set -- '\"'\"'check_953996c331fb34178b3f3f64a024eb05_arg1'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_",
+          "command": "sh -c 'set -- '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_arg1'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.017000Z",
+          "at": "2026-11-08T06:28:40.854000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 11,
-          "command": "sh -c 'f_check_953996c331fb34178b3f3f64a024eb05() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_function'\"'\"' \"$1|$#\"; }; f_check_953996c331fb34178b3f3f64a024eb05 '\"'\"",
+          "command": "sh -c 'f_check_f6004992243542205cbaaf86eb6ae7cc() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_function'\"'\"' \"$1|$#\"; }; f_check_f6004992243542205cbaaf86eb6ae7cc '\"'\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.017000Z",
+          "at": "2026-11-08T06:28:40.854000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 12,
-          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_953996c331fb34178b3f3f64a024eb05_small_done'\"'\"''",
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_f6004992243542205cbaaf86eb6ae7cc_small_done'\"'\"''",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.017000Z",
+          "at": "2026-11-08T06:28:40.855000Z",
           "technique_id": "T1059.004",
           "technique": "Command and Scripting Interpreter: Unix Shell"
         },
         {
           "seq": 13,
-          "command": "echo; echo 'check_008b899aa339ad36cd0dfc98f51cfe5c_transport_done'",
+          "command": "echo; echo 'check_8b02593b2d97b1eeea0dee19fad0dcd6_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.018000Z"
+          "at": "2026-11-08T06:28:40.855000Z"
         },
         {
           "seq": 14,
-          "command": "echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_control|check_8c760c9e78e3ba94f988d855c7df3942'",
-          "since_prev_ms": 490,
-          "at": "2026-11-06T17:10:51.508000Z"
+          "command": "echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_control|check_c524fd8d479f1f843a16ddef2e65c2dc'",
+          "since_prev_ms": 456,
+          "at": "2026-11-08T06:28:41.311000Z"
         },
         {
           "seq": 15,
-          "command": "echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_math|'\"$((67*258+69))\"",
+          "command": "echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_math|'\"$((619*495+29))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.508000Z"
+          "at": "2026-11-08T06:28:41.312000Z"
         },
         {
           "seq": 16,
-          "command": "echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_pid|'\"$$\"",
+          "command": "echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.508000Z"
+          "at": "2026-11-08T06:28:41.312000Z"
         },
         {
           "seq": 17,
-          "command": "set -- 'check_8c760c9e78e3ba94f988d855c7df3942_arg1' 'check_8c760c9e78e3ba94f988d855c7df3942_arg2'; echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_c524fd8d479f1f843a16ddef2e65c2dc_arg1' 'check_c524fd8d479f1f843a16ddef2e65c2dc_arg2'; echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.509000Z"
+          "at": "2026-11-08T06:28:41.312000Z"
         },
         {
           "seq": 18,
-          "command": "f_check_8c760c9e78e3ba94f988d855c7df3942() { echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_function|'\"$1|$#\"; }; f_check_8c760c9e78e3ba94f988d855c7df3942 'check_8c760c9e78e3ba94f988d855c7df3942_f",
+          "command": "f_check_c524fd8d479f1f843a16ddef2e65c2dc() { echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_function|'\"$1|$#\"; }; f_check_c524fd8d479f1f843a16ddef2e65c2dc 'check_c524fd8d479f1f843a16ddef2e65c2dc_f",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.509000Z"
+          "at": "2026-11-08T06:28:41.313000Z"
         },
         {
           "seq": 19,
-          "command": "echo 'check_8c760c9e78e3ba94f988d855c7df3942_small_done'",
+          "command": "echo 'check_c524fd8d479f1f843a16ddef2e65c2dc_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.510000Z"
+          "at": "2026-11-08T06:28:41.314000Z"
         },
         {
           "seq": 20,
-          "command": "echo 'check_cd308dfff62d3721335ed3f187a086e4_small_control|check_cd308dfff62d3721335ed3f187a086e4'",
+          "command": "echo 'check_a479071bd198387ec6df507c82957f31_small_control|check_a479071bd198387ec6df507c82957f31'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.510000Z"
+          "at": "2026-11-08T06:28:41.314000Z"
         },
         {
           "seq": 21,
-          "command": "echo 'check_cd308dfff62d3721335ed3f187a086e4_small_math|'\"$((685*676+52))\"",
+          "command": "echo 'check_a479071bd198387ec6df507c82957f31_small_math|'\"$((232*829+8))\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.510000Z"
+          "at": "2026-11-08T06:28:41.314000Z"
         },
         {
           "seq": 22,
-          "command": "echo 'check_cd308dfff62d3721335ed3f187a086e4_small_pid|'\"$$\"",
+          "command": "echo 'check_a479071bd198387ec6df507c82957f31_small_pid|'\"$$\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.511000Z"
+          "at": "2026-11-08T06:28:41.315000Z"
         },
         {
           "seq": 23,
-          "command": "set -- 'check_cd308dfff62d3721335ed3f187a086e4_arg1' 'check_cd308dfff62d3721335ed3f187a086e4_arg2'; echo 'check_cd308dfff62d3721335ed3f187a086e4_small_positional|'\"$#|$1|$2\"",
+          "command": "set -- 'check_a479071bd198387ec6df507c82957f31_arg1' 'check_a479071bd198387ec6df507c82957f31_arg2'; echo 'check_a479071bd198387ec6df507c82957f31_small_positional|'\"$#|$1|$2\"",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.511000Z"
+          "at": "2026-11-08T06:28:41.315000Z"
         },
         {
           "seq": 24,
-          "command": "f_check_cd308dfff62d3721335ed3f187a086e4() { echo 'check_cd308dfff62d3721335ed3f187a086e4_small_function|'\"$1|$#\"; }; f_check_cd308dfff62d3721335ed3f187a086e4 'check_cd308dfff62d3721335ed3f187a086e4_f",
+          "command": "f_check_a479071bd198387ec6df507c82957f31() { echo 'check_a479071bd198387ec6df507c82957f31_small_function|'\"$1|$#\"; }; f_check_a479071bd198387ec6df507c82957f31 'check_a479071bd198387ec6df507c82957f31_f",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.511000Z"
+          "at": "2026-11-08T06:28:41.315000Z"
         },
         {
           "seq": 25,
-          "command": "echo 'check_cd308dfff62d3721335ed3f187a086e4_small_done'",
+          "command": "echo 'check_a479071bd198387ec6df507c82957f31_small_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.512000Z"
+          "at": "2026-11-08T06:28:41.316000Z"
         },
         {
           "seq": 26,
-          "command": "echo; echo 'check_bdf477337b505a008c73e2d7c1a15901_transport_done'",
+          "command": "echo; echo 'check_11bdb8d68e418f8da3c6f64a88ecf657_transport_done'",
           "since_prev_ms": 0,
-          "at": "2026-11-06T17:10:51.512000Z"
+          "at": "2026-11-08T06:28:41.316000Z"
+        }
+      ]
+    },
+    {
+      "country": "NL",
+      "ip": "2.57.122.x",
+      "service": "ssh",
+      "started_at": "2026-11-08T05:10:27.878000Z",
+      "commands": [
+        {
+          "seq": 1,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_control'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.878000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 2,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_math'\"'\"' \"$((604*256+24))\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.878000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 3,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_pid'\"'\"' \"$$\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.879000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 4,
+          "command": "sh -c 'set -- '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_arg1'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.880000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 5,
+          "command": "sh -c 'f_check_8e8ff8bf07a72b66f9269901e663173a() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_function'\"'\"' \"$1|$#\"; }; f_check_8e8ff8bf07a72b66f9269901e663173a '\"'\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.880000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 6,
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_8e8ff8bf07a72b66f9269901e663173a_small_done'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.880000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 7,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_control'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.880000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 8,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_math'\"'\"' \"$((180*512+51))\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.881000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 9,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_pid'\"'\"' \"$$\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.881000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 10,
+          "command": "sh -c 'set -- '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_arg1'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.881000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 11,
+          "command": "sh -c 'f_check_181124d6e0e11c835d5876a0cc92243d() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_function'\"'\"' \"$1|$#\"; }; f_check_181124d6e0e11c835d5876a0cc92243d '\"'\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.882000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 12,
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_181124d6e0e11c835d5876a0cc92243d_small_done'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.882000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 13,
+          "command": "echo; echo 'check_b6ea69f12a0192cd85f7d36bc11823f3_transport_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:27.882000Z"
+        },
+        {
+          "seq": 14,
+          "command": "echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_control|check_6e0ba67d6b038ba770ef870822bc6099'",
+          "since_prev_ms": 849,
+          "at": "2026-11-08T05:10:28.732000Z"
+        },
+        {
+          "seq": 15,
+          "command": "echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_math|'\"$((256*9+42))\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.732000Z"
+        },
+        {
+          "seq": 16,
+          "command": "echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_pid|'\"$$\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.732000Z"
+        },
+        {
+          "seq": 17,
+          "command": "set -- 'check_6e0ba67d6b038ba770ef870822bc6099_arg1' 'check_6e0ba67d6b038ba770ef870822bc6099_arg2'; echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_positional|'\"$#|$1|$2\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.732000Z"
+        },
+        {
+          "seq": 18,
+          "command": "f_check_6e0ba67d6b038ba770ef870822bc6099() { echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_function|'\"$1|$#\"; }; f_check_6e0ba67d6b038ba770ef870822bc6099 'check_6e0ba67d6b038ba770ef870822bc6099_f",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.733000Z"
+        },
+        {
+          "seq": 19,
+          "command": "echo 'check_6e0ba67d6b038ba770ef870822bc6099_small_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.733000Z"
+        },
+        {
+          "seq": 20,
+          "command": "echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_control|check_e8690f7dfccd4a613f99172c0ba71da3'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.733000Z"
+        },
+        {
+          "seq": 21,
+          "command": "echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_math|'\"$((675*2+37))\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.734000Z"
+        },
+        {
+          "seq": 22,
+          "command": "echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_pid|'\"$$\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.734000Z"
+        },
+        {
+          "seq": 23,
+          "command": "set -- 'check_e8690f7dfccd4a613f99172c0ba71da3_arg1' 'check_e8690f7dfccd4a613f99172c0ba71da3_arg2'; echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_positional|'\"$#|$1|$2\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.734000Z"
+        },
+        {
+          "seq": 24,
+          "command": "f_check_e8690f7dfccd4a613f99172c0ba71da3() { echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_function|'\"$1|$#\"; }; f_check_e8690f7dfccd4a613f99172c0ba71da3 'check_e8690f7dfccd4a613f99172c0ba71da3_f",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.735000Z"
+        },
+        {
+          "seq": 25,
+          "command": "echo 'check_e8690f7dfccd4a613f99172c0ba71da3_small_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.735000Z"
+        },
+        {
+          "seq": 26,
+          "command": "echo; echo 'check_1956032fb8da077a56b227754a31bd15_transport_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-08T05:10:28.735000Z"
+        }
+      ]
+    },
+    {
+      "country": "NL",
+      "ip": "193.32.162.x",
+      "service": "ssh",
+      "started_at": "2026-11-10T16:33:32.551000Z",
+      "commands": [
+        {
+          "seq": 1,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_control'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.551000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 2,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_math'\"'\"' \"$((859*315+65))\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.551000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 3,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_pid'\"'\"' \"$$\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.551000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 4,
+          "command": "sh -c 'set -- '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_arg1'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.551000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 5,
+          "command": "sh -c 'f_check_fc9a2411a8eeb2c40f66a3e63d1e1585() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_function'\"'\"' \"$1|$#\"; }; f_check_fc9a2411a8eeb2c40f66a3e63d1e1585 '\"'\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.552000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 6,
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_fc9a2411a8eeb2c40f66a3e63d1e1585_small_done'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.552000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 7,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_control'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.552000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 8,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_math'\"'\"' \"$((646*293+40))\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.553000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 9,
+          "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_pid'\"'\"' \"$$\"'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.553000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 10,
+          "command": "sh -c 'set -- '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_arg1'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.553000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 11,
+          "command": "sh -c 'f_check_d0ee564eea60e7bde52ba299bd7bfc01() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_function'\"'\"' \"$1|$#\"; }; f_check_d0ee564eea60e7bde52ba299bd7bfc01 '\"'\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.554000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 12,
+          "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_d0ee564eea60e7bde52ba299bd7bfc01_small_done'\"'\"''",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.554000Z",
+          "technique_id": "T1059.004",
+          "technique": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "seq": 13,
+          "command": "echo; echo 'check_f2edaa21492c824ea691ad030426821d_transport_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.554000Z"
+        },
+        {
+          "seq": 14,
+          "command": "echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_control|check_4a5eacbc6311c97b8c09099d998f2b62'",
+          "since_prev_ms": 419,
+          "at": "2026-11-10T16:33:32.974000Z"
+        },
+        {
+          "seq": 15,
+          "command": "echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_math|'\"$((96*617+27))\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.974000Z"
+        },
+        {
+          "seq": 16,
+          "command": "echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_pid|'\"$$\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.975000Z"
+        },
+        {
+          "seq": 17,
+          "command": "set -- 'check_4a5eacbc6311c97b8c09099d998f2b62_arg1' 'check_4a5eacbc6311c97b8c09099d998f2b62_arg2'; echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_positional|'\"$#|$1|$2\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.975000Z"
+        },
+        {
+          "seq": 18,
+          "command": "f_check_4a5eacbc6311c97b8c09099d998f2b62() { echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_function|'\"$1|$#\"; }; f_check_4a5eacbc6311c97b8c09099d998f2b62 'check_4a5eacbc6311c97b8c09099d998f2b62_f",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.975000Z"
+        },
+        {
+          "seq": 19,
+          "command": "echo 'check_4a5eacbc6311c97b8c09099d998f2b62_small_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.976000Z"
+        },
+        {
+          "seq": 20,
+          "command": "echo 'check_10fa9306f846569ed69290dc1aaddffc_small_control|check_10fa9306f846569ed69290dc1aaddffc'",
+          "since_prev_ms": 1,
+          "at": "2026-11-10T16:33:32.978000Z"
+        },
+        {
+          "seq": 21,
+          "command": "echo 'check_10fa9306f846569ed69290dc1aaddffc_small_math|'\"$((359*972+79))\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.978000Z"
+        },
+        {
+          "seq": 22,
+          "command": "echo 'check_10fa9306f846569ed69290dc1aaddffc_small_pid|'\"$$\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.978000Z"
+        },
+        {
+          "seq": 23,
+          "command": "set -- 'check_10fa9306f846569ed69290dc1aaddffc_arg1' 'check_10fa9306f846569ed69290dc1aaddffc_arg2'; echo 'check_10fa9306f846569ed69290dc1aaddffc_small_positional|'\"$#|$1|$2\"",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.979000Z"
+        },
+        {
+          "seq": 24,
+          "command": "f_check_10fa9306f846569ed69290dc1aaddffc() { echo 'check_10fa9306f846569ed69290dc1aaddffc_small_function|'\"$1|$#\"; }; f_check_10fa9306f846569ed69290dc1aaddffc 'check_10fa9306f846569ed69290dc1aaddffc_f",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.979000Z"
+        },
+        {
+          "seq": 25,
+          "command": "echo 'check_10fa9306f846569ed69290dc1aaddffc_small_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.980000Z"
+        },
+        {
+          "seq": 26,
+          "command": "echo; echo 'check_df7f56a7b8023e60d9d579ee4b5acfad_transport_done'",
+          "since_prev_ms": 0,
+          "at": "2026-11-10T16:33:32.980000Z"
         }
       ]
     }
   ],
   "session": {
-    "country": "AD",
-    "ip": "195.178.110.x",
+    "country": "NL",
+    "ip": "92.118.39.x",
     "service": "ssh",
-    "started_at": "2026-11-10T12:15:15.756000Z",
+    "started_at": "2026-11-08T12:20:47.770000Z",
     "commands": [
       {
         "seq": 1,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_control'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6'\"'\"''",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_control'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc'\"'\"''",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.756000Z",
+        "at": "2026-11-08T12:20:47.770000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 2,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_math'\"'\"' \"$((293*432+21))\"'",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_math'\"'\"' \"$((577*312+25))\"'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.757000Z",
+        "at": "2026-11-08T12:20:47.770000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 3,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_pid'\"'\"' \"$$\"'",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_pid'\"'\"' \"$$\"'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.757000Z",
+        "at": "2026-11-08T12:20:47.770000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 4,
-        "command": "sh -c 'set -- '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_arg1'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_",
+        "command": "sh -c 'set -- '\"'\"'check_d873e59c6140168655912e42831adbdc_arg1'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.757000Z",
+        "at": "2026-11-08T12:20:47.771000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 5,
-        "command": "sh -c 'f_check_c7c3a445ad5ddf82ce905b01fbde6cf6() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_function'\"'\"' \"$1|$#\"; }; f_check_c7c3a445ad5ddf82ce905b01fbde6cf6 '\"'\"",
+        "command": "sh -c 'f_check_d873e59c6140168655912e42831adbdc() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_function'\"'\"' \"$1|$#\"; }; f_check_d873e59c6140168655912e42831adbdc '\"'\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.757000Z",
+        "at": "2026-11-08T12:20:47.771000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 6,
-        "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_c7c3a445ad5ddf82ce905b01fbde6cf6_small_done'\"'\"''",
+        "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_d873e59c6140168655912e42831adbdc_small_done'\"'\"''",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.758000Z",
+        "at": "2026-11-08T12:20:47.771000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 7,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_control'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7'\"'\"''",
-        "since_prev_ms": 1,
-        "at": "2026-11-10T12:15:15.759000Z",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_control'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae'\"'\"''",
+        "since_prev_ms": 0,
+        "at": "2026-11-08T12:20:47.772000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 8,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_math'\"'\"' \"$((921*478+3))\"'",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_math'\"'\"' \"$((215*808+88))\"'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.759000Z",
+        "at": "2026-11-08T12:20:47.772000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 9,
-        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_pid'\"'\"' \"$$\"'",
+        "command": "sh -c 'printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_pid'\"'\"' \"$$\"'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.760000Z",
+        "at": "2026-11-08T12:20:47.772000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 10,
-        "command": "sh -c 'set -- '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_arg1'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_",
+        "command": "sh -c 'set -- '\"'\"'check_a468d431ca0034db30dc7617620092ae_arg1'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_arg2'\"'\"'; printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.760000Z",
+        "at": "2026-11-08T12:20:47.772000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 11,
-        "command": "sh -c 'f_check_f8f3b3ef20bb9d362bd6e2a3904f09b7() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_function'\"'\"' \"$1|$#\"; }; f_check_f8f3b3ef20bb9d362bd6e2a3904f09b7 '\"'\"",
+        "command": "sh -c 'f_check_a468d431ca0034db30dc7617620092ae() { printf '\"'\"'\\n%s|%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_function'\"'\"' \"$1|$#\"; }; f_check_a468d431ca0034db30dc7617620092ae '\"'\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.760000Z",
+        "at": "2026-11-08T12:20:47.772000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 12,
-        "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_f8f3b3ef20bb9d362bd6e2a3904f09b7_small_done'\"'\"''",
+        "command": "sh -c 'printf '\"'\"'\\n%s\\n'\"'\"' '\"'\"'check_a468d431ca0034db30dc7617620092ae_small_done'\"'\"''",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.760000Z",
+        "at": "2026-11-08T12:20:47.773000Z",
         "technique_id": "T1059.004",
         "technique": "Command and Scripting Interpreter: Unix Shell"
       },
       {
         "seq": 13,
-        "command": "echo; echo 'check_a10f54bed5ccf1120422ba21f8a6b4e3_transport_done'",
+        "command": "echo; echo 'check_f191a399c48d8d666f717f5ac12e3042_transport_done'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:15.761000Z"
+        "at": "2026-11-08T12:20:47.773000Z"
       },
       {
         "seq": 14,
-        "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_control|check_1aca79864b7f0e97e80e1e1c24b3b403'",
-        "since_prev_ms": 336,
-        "at": "2026-11-10T12:15:16.097000Z"
+        "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_control|check_a237cec85dcefc6d110b993a64d10562'",
+        "since_prev_ms": 558,
+        "at": "2026-11-08T12:20:48.332000Z"
       },
       {
         "seq": 15,
-        "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_math|'\"$((877*390+69))\"",
-        "since_prev_ms": 1,
-        "at": "2026-11-10T12:15:16.099000Z"
+        "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_math|'\"$((651*414+12))\"",
+        "since_prev_ms": 0,
+        "at": "2026-11-08T12:20:48.332000Z"
       },
       {
         "seq": 16,
-        "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_pid|'\"$$\"",
-        "since_prev_ms": 1,
-        "at": "2026-11-10T12:15:16.100000Z"
+        "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_pid|'\"$$\"",
+        "since_prev_ms": 0,
+        "at": "2026-11-08T12:20:48.332000Z"
       },
       {
         "seq": 17,
-        "command": "set -- 'check_1aca79864b7f0e97e80e1e1c24b3b403_arg1' 'check_1aca79864b7f0e97e80e1e1c24b3b403_arg2'; echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_positional|'\"$#|$1|$2\"",
+        "command": "set -- 'check_a237cec85dcefc6d110b993a64d10562_arg1' 'check_a237cec85dcefc6d110b993a64d10562_arg2'; echo 'check_a237cec85dcefc6d110b993a64d10562_small_positional|'\"$#|$1|$2\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.100000Z"
+        "at": "2026-11-08T12:20:48.333000Z"
       },
       {
         "seq": 18,
-        "command": "f_check_1aca79864b7f0e97e80e1e1c24b3b403() { echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_function|'\"$1|$#\"; }; f_check_1aca79864b7f0e97e80e1e1c24b3b403 'check_1aca79864b7f0e97e80e1e1c24b3b403_f",
+        "command": "f_check_a237cec85dcefc6d110b993a64d10562() { echo 'check_a237cec85dcefc6d110b993a64d10562_small_function|'\"$1|$#\"; }; f_check_a237cec85dcefc6d110b993a64d10562 'check_a237cec85dcefc6d110b993a64d10562_f",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.101000Z"
+        "at": "2026-11-08T12:20:48.333000Z"
       },
       {
         "seq": 19,
-        "command": "echo 'check_1aca79864b7f0e97e80e1e1c24b3b403_small_done'",
+        "command": "echo 'check_a237cec85dcefc6d110b993a64d10562_small_done'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.101000Z"
+        "at": "2026-11-08T12:20:48.334000Z"
       },
       {
         "seq": 20,
-        "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_control|check_2322b7d01d5fe9b1e632619f0f1183fa'",
+        "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_control|check_e2c341e9790a807f1fb9d43e40b18422'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.101000Z"
+        "at": "2026-11-08T12:20:48.334000Z"
       },
       {
         "seq": 21,
-        "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_math|'\"$((22*480+71))\"",
+        "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_math|'\"$((226*27+46))\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.102000Z"
+        "at": "2026-11-08T12:20:48.334000Z"
       },
       {
         "seq": 22,
-        "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_pid|'\"$$\"",
+        "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_pid|'\"$$\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.102000Z"
+        "at": "2026-11-08T12:20:48.335000Z"
       },
       {
         "seq": 23,
-        "command": "set -- 'check_2322b7d01d5fe9b1e632619f0f1183fa_arg1' 'check_2322b7d01d5fe9b1e632619f0f1183fa_arg2'; echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_positional|'\"$#|$1|$2\"",
+        "command": "set -- 'check_e2c341e9790a807f1fb9d43e40b18422_arg1' 'check_e2c341e9790a807f1fb9d43e40b18422_arg2'; echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_positional|'\"$#|$1|$2\"",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.102000Z"
+        "at": "2026-11-08T12:20:48.335000Z"
       },
       {
         "seq": 24,
-        "command": "f_check_2322b7d01d5fe9b1e632619f0f1183fa() { echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_function|'\"$1|$#\"; }; f_check_2322b7d01d5fe9b1e632619f0f1183fa 'check_2322b7d01d5fe9b1e632619f0f1183fa_f",
+        "command": "f_check_e2c341e9790a807f1fb9d43e40b18422() { echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_function|'\"$1|$#\"; }; f_check_e2c341e9790a807f1fb9d43e40b18422 'check_e2c341e9790a807f1fb9d43e40b18422_f",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.103000Z"
+        "at": "2026-11-08T12:20:48.335000Z"
       },
       {
         "seq": 25,
-        "command": "echo 'check_2322b7d01d5fe9b1e632619f0f1183fa_small_done'",
+        "command": "echo 'check_e2c341e9790a807f1fb9d43e40b18422_small_done'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.103000Z"
+        "at": "2026-11-08T12:20:48.336000Z"
       },
       {
         "seq": 26,
-        "command": "echo; echo 'check_9c07b9f6a59bd9bca858544165bfc108_transport_done'",
+        "command": "echo; echo 'check_da8b573cab382283479faa733ef228de_transport_done'",
         "since_prev_ms": 0,
-        "at": "2026-11-10T12:15:16.104000Z"
+        "at": "2026-11-08T12:20:48.336000Z"
       }
     ]
   }
