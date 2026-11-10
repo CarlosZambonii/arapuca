@@ -15,6 +15,14 @@ on:
     paths:
       - "web/**"
       - ".github/workflows/pages.yml"
+  # The live-map workflow commits web/data/live.json every hour using the
+  # default GITHUB_TOKEN, and GitHub does not let a push authored by that
+  # token trigger another workflow (the anti-loop rule), so the push trigger
+  # above never saw those commits. workflow_run does, because it reacts to
+  # the other workflow finishing rather than to the push itself.
+  workflow_run:
+    workflows: ["Live map data"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -33,11 +41,20 @@ jobs:
   deploy:
     name: Publish web/
     runs-on: ubuntu-24.04
+    # A workflow_run event fires on every conclusion, including a failed
+    # export; only deploy when the live-map run actually succeeded. Push and
+    # workflow_dispatch carry no workflow_run payload, so they pass through.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # workflow_run checks out the default branch by default, which can
+          # race ahead of the commit that finished; pin to the exact commit
+          # the triggering run acted on.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
