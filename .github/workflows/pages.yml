@@ -47,7 +47,7 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -65,5 +65,21 @@ jobs:
         with:
           path: web
 
+      # Since 23 November 2026 the artifact API sometimes does not list the
+      # artifact for a second or two after the upload step reports success,
+      # and deploy-pages then fails with 'No artifacts named "github-pages"
+      # were found'. The first attempt is allowed to fail; the retry runs only
+      # when it did, after a pause long enough for the listing to catch up.
+      # That error is raised before any deployment is created, so the retry
+      # does not collide with a half started one.
       - id: deploy
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: Wait for the artifact to be listed
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 20
+
+      - id: deploy_retry
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
